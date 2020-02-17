@@ -2,7 +2,7 @@ import re
 from typing import Dict, List
 
 # Release pattern should match lines like: "## [0.0.1] - 2020-12-31"
-release_pattern = re.compile("^## \[(.*)\] - (.*)$")
+release_pattern = re.compile(r"^## \[(.*)\] - (.*)$")
 
 
 def is_release(line: str) -> bool:
@@ -13,7 +13,7 @@ def add_release(changes: Dict[str, dict], line: str) -> dict:
     release_info = release_pattern.fullmatch(line)
     return changes.setdefault(
         release_info.group(1),
-        {"version": release_info.group(1), "release_date": release_info.group(2),},
+        {"version": release_info.group(1), "release_date": release_info.group(2)},
     )
 
 
@@ -36,7 +36,7 @@ def add_category(release: dict, line: str) -> List[str]:
 
 
 # Link pattern should match lines like: "[1.2.3]: https://github.com/user/project/releases/tag/v0.0.1"
-link_pattern = re.compile("^\[(.*)\]: (.*)$")
+link_pattern = re.compile(r"^\[(.*)\]: (.*)$")
 
 
 def is_information(line: str) -> bool:

@@ -2,18 +2,13 @@ import os
 import os.path
 
 import pytest
-from flask import Flask
-from flask_restplus import Api
 
-import layab
+import keepachangelog
 
 
 @pytest.fixture
-def changelog():
-    changelog_file_path = os.path.join(
-        os.path.abspath(os.path.dirname(__file__)), "..", "CHANGELOG.md"
-    )
-
+def changelog(tmpdir):
+    changelog_file_path = os.path.join(tmpdir, "CHANGELOG.md")
     with open(changelog_file_path, "wt") as file:
         file.write(
             """# Changelog
@@ -64,28 +59,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [1.0.0] - 2017-04-10
 """
         )
-    yield changelog_file_path
-    os.remove(changelog_file_path)
+    return changelog_file_path
 
 
-@pytest.fixture
-def app(changelog):
-    application = Flask(__name__)
-    application.testing = True
-    api = Api(application, version="3.2.1")
-
-    def pass_details():
-        return "pass", {"toto2": {"status": "pass"}}
-
-    layab.add_monitoring_namespace(api, pass_details)
-    return application
-
-
-def test_changelog_with_versions_and_no_deprecated(client):
-    response = client.get("/changelog")
-    assert response.status_code == 200
-    assert response.json == [
-        {
+def test_changelog_with_versions_and_no_deprecated(changelog):
+    assert keepachangelog.to_dict(changelog) == {
+        "1.1.0": {
             "changed": [
                 "- Enhancement 1 (1.1.0)",
                 "- sub enhancement 1",
@@ -95,7 +74,7 @@ def test_changelog_with_versions_and_no_deprecated(client):
             "release_date": "2018-05-31",
             "version": "1.1.0",
         },
-        {
+        "1.0.1": {
             "fixed": [
                 "- Bug fix 1 (1.0.1)",
                 "- sub bug 1",
@@ -105,5 +84,5 @@ def test_changelog_with_versions_and_no_deprecated(client):
             "release_date": "2018-05-31",
             "version": "1.0.1",
         },
-        {"release_date": "2017-04-10", "version": "1.0.0"},
-    ]
+        "1.0.0": {"release_date": "2017-04-10", "version": "1.0.0"},
+    }
