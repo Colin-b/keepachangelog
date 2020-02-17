@@ -11,10 +11,10 @@ def is_release(line: str) -> bool:
 
 def add_release(changes: Dict[str, dict], line: str) -> dict:
     release_info = release_pattern.fullmatch(line)
-    return changes.setdefault(release_info.group(1), {
-        "version": release_info.group(1),
-        "release_date": release_info.group(2),
-    })
+    return changes.setdefault(
+        release_info.group(1),
+        {"version": release_info.group(1), "release_date": release_info.group(2),},
+    )
 
 
 categories = {
