@@ -37,9 +37,12 @@ setup(
     install_requires=[],
     extras_require={
         "testing": [
+            # Used to check starlette endpoint
+            "starlette==0.13.*",
+            "requests==2.*",
             # Used to check coverage
             "pytest-cov==2.*",
-        ],
+        ]
     },
     python_requires=">=3.6",
     project_urls={
