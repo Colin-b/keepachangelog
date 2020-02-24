@@ -50,7 +50,7 @@ def add_information(category: List[str], line: str):
     category.append(line)
 
 
-def to_dict(changelog_path: str, show_unreleased: bool = False) -> Dict[str, dict]:
+def to_dict(changelog_path: str, *, show_unreleased: bool = False) -> Dict[str, dict]:
     changes = {}
     with open(changelog_path) as change_log:
         release = {}
