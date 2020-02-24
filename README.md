@@ -112,6 +112,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 [1.0.0]: https://github.test_url/test_project/releases/tag/v1.0.0
 ```
 
+You can specify a `show_unreleased` in order to include `Unreleased` changelog
+content.
+
 ## Endpoint
 
 ### Starlette
