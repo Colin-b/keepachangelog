@@ -1,12 +1,15 @@
 import re
 from typing import Dict, List
 
-# Release pattern should match lines like: "## [0.0.1] - 2020-12-31"
-release_pattern = re.compile(r"^## \[(.*)\] - (.*)$")
+# Release pattern should match lines like: "## [0.0.1] - 2020-12-31" or ## [Unreleased]
+release_pattern = re.compile(r"^## \[(.*)\](?: - (.*))?$")
 
 
-def is_release(line: str) -> bool:
-    return release_pattern.fullmatch(line) is not None
+def is_release(line: str, show_unreleased: bool) -> bool:
+    match = release_pattern.fullmatch(line)
+    if match and (not show_unreleased and match.group(1) == "Unreleased"):
+        return False
+    return match is not None
 
 
 def add_release(changes: Dict[str, dict], line: str) -> dict:
@@ -47,7 +50,7 @@ def add_information(category: List[str], line: str):
     category.append(line)
 
 
-def to_dict(changelog_path: str) -> Dict[str, dict]:
+def to_dict(changelog_path: str, *, show_unreleased: bool = False) -> Dict[str, dict]:
     changes = {}
     with open(changelog_path) as change_log:
         release = {}
@@ -55,7 +58,7 @@ def to_dict(changelog_path: str) -> Dict[str, dict]:
         for line in change_log:
             line = line.strip(" \n")
 
-            if is_release(line):
+            if is_release(line, show_unreleased):
                 release = add_release(changes, line)
             elif is_category(line):
                 category = add_category(release, line)
