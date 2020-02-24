@@ -76,44 +76,44 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 def test_changelog_with_versions_and_all_categories(changelog):
     assert keepachangelog.to_dict(changelog, show_unreleased=True) == {
-        'Unreleased': {
-            'version': 'Unreleased',
-            'release_date': None,
-            'changed': ['- Release note 1.', '- Release note 2.'],
-            'added': [
-                '- Enhancement 1',
-                '- sub enhancement 1',
-                '- sub enhancement 2',
-                '- Enhancement 2',
+        "Unreleased": {
+            "version": "Unreleased",
+            "release_date": None,
+            "changed": ["- Release note 1.", "- Release note 2."],
+            "added": [
+                "- Enhancement 1",
+                "- sub enhancement 1",
+                "- sub enhancement 2",
+                "- Enhancement 2",
             ],
-            'fixed': ['- Bug fix 1', '- sub bug 1', '- sub bug 2', '- Bug fix 2'],
-            'security': ['- Known issue 1', '- Known issue 2'],
-            'deprecated': ['- Deprecated feature 1', '- Future removal 2'],
-            'removed': ['- Deprecated feature 2', '- Future removal 1'],
+            "fixed": ["- Bug fix 1", "- sub bug 1", "- sub bug 2", "- Bug fix 2"],
+            "security": ["- Known issue 1", "- Known issue 2"],
+            "deprecated": ["- Deprecated feature 1", "- Future removal 2"],
+            "removed": ["- Deprecated feature 2", "- Future removal 1"],
         },
-        '1.1.0': {
-            'version': '1.1.0',
-            'release_date': '2018-05-31',
-            'changed': [
-                '- Enhancement 1 (1.1.0)',
-                '- sub enhancement 1',
-                '- sub enhancement 2',
-                '- Enhancement 2 (1.1.0)',
-            ],
-        },
-        '1.0.1': {
-            'version': '1.0.1',
-            'release_date': '2018-05-31',
-            'fixed': [
-                '- Bug fix 1 (1.0.1)',
-                '- sub bug 1',
-                '- sub bug 2',
-                '- Bug fix 2 (1.0.1)',
+        "1.1.0": {
+            "version": "1.1.0",
+            "release_date": "2018-05-31",
+            "changed": [
+                "- Enhancement 1 (1.1.0)",
+                "- sub enhancement 1",
+                "- sub enhancement 2",
+                "- Enhancement 2 (1.1.0)",
             ],
         },
-        '1.0.0': {
-            'version': '1.0.0',
-            'release_date': '2017-04-10',
-            'deprecated': ['- Known issue 1 (1.0.0)', '- Known issue 2 (1.0.0)'],
+        "1.0.1": {
+            "version": "1.0.1",
+            "release_date": "2018-05-31",
+            "fixed": [
+                "- Bug fix 1 (1.0.1)",
+                "- sub bug 1",
+                "- sub bug 2",
+                "- Bug fix 2 (1.0.1)",
+            ],
+        },
+        "1.0.0": {
+            "version": "1.0.0",
+            "release_date": "2017-04-10",
+            "deprecated": ["- Known issue 1 (1.0.0)", "- Known issue 2 (1.0.0)"],
         },
     }

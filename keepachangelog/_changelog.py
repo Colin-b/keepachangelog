@@ -1,13 +1,13 @@
 import re
 from typing import Dict, List
 
-# Release pattern should match lines like: "## [0.0.1] - 2020-12-31"
+# Release pattern should match lines like: "## [0.0.1] - 2020-12-31" or ## [Unreleased]
 release_pattern = re.compile(r"^## \[(.*)\](?: - (.*))?$")
 
 
 def is_release(line: str, show_unreleased: bool) -> bool:
     match = release_pattern.fullmatch(line)
-    if match and (not show_unreleased and match.group(1) == 'Unreleased'):
+    if match and (not show_unreleased and match.group(1) == "Unreleased"):
         return False
     return match is not None
 
