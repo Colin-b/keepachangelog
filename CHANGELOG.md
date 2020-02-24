@@ -6,6 +6,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+- It is now possible to retrieve "Unreleased" information thanks to the `show_unreleased` parameter.
+
 ## [0.1.0] - 2020-02-17
 ### Added
 - `keepachangelog.starlette.add_changelog_endpoint` function to add a changelog endpoint to a [Starlette](https://www.starlette.io) application.
