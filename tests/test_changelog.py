@@ -18,6 +18,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+
+## [1.2.0] - 2018-06-01
 ### Changed
 - Release note 1.
 - Release note 2.
@@ -76,6 +78,21 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 def test_changelog_with_versions_and_all_categories(changelog):
     assert keepachangelog.to_dict(changelog) == {
+        "1.2.0": {
+            "added": [
+                "Enhancement 1",
+                "sub enhancement 1",
+                "sub enhancement 2",
+                "Enhancement 2",
+            ],
+            "changed": ["Release note 1.", "Release note 2."],
+            "deprecated": ["Deprecated feature 1", "Future removal 2"],
+            "fixed": ["Bug fix 1", "sub bug 1", "sub bug 2", "Bug fix 2"],
+            "release_date": "2018-06-01",
+            "removed": ["Deprecated feature 2", "Future removal 1"],
+            "security": ["Known issue 1", "Known issue 2"],
+            "version": "1.2.0",
+        },
         "1.1.0": {
             "changed": [
                 "Enhancement 1 (1.1.0)",

@@ -65,14 +65,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 - Enhancement 1
-- sub enhancement 1
-- sub enhancement 2
+ - sub enhancement 1
+ - sub enhancement 2
 - Enhancement 2
 
 ### Fixed
 - Bug fix 1
-- sub bug 1
-- sub bug 2
+ - sub bug 1
+ - sub bug 2
 - Bug fix 2
 
 ### Security
@@ -90,15 +90,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [1.1.0] - 2018-05-31
 ### Changed
 - Enhancement 1 (1.1.0)
-- sub enhancement 1
-- sub enhancement 2
+ - sub enhancement 1
+ - sub enhancement 2
 - Enhancement 2 (1.1.0)
 
 ## [1.0.1] - 2018-05-31
 ### Fixed
 - Bug fix 1 (1.0.1)
-- sub bug 1
-- sub bug 2
+ - sub bug 1
+ - sub bug 2
 - Bug fix 2 (1.0.1)
 
 ## [1.0.0] - 2017-04-10
