@@ -47,7 +47,7 @@ def is_information(line: str) -> bool:
 
 
 def add_information(category: List[str], line: str):
-    category.append(line)
+    category.append(line.strip(" *-"))
 
 
 def to_dict(changelog_path: str, *, show_unreleased: bool = False) -> Dict[str, dict]:
