@@ -79,26 +79,26 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
         assert response.json() == {
             "1.1.0": {
                 "changed": [
-                    "- Enhancement 1 (1.1.0)",
-                    "- sub enhancement 1",
-                    "- sub enhancement 2",
-                    "- Enhancement 2 (1.1.0)",
+                    "Enhancement 1 (1.1.0)",
+                    "sub enhancement 1",
+                    "sub enhancement 2",
+                    "Enhancement 2 (1.1.0)",
                 ],
                 "release_date": "2018-05-31",
                 "version": "1.1.0",
             },
             "1.0.1": {
                 "fixed": [
-                    "- Bug fix 1 (1.0.1)",
-                    "- sub bug 1",
-                    "- sub bug 2",
-                    "- Bug fix 2 (1.0.1)",
+                    "Bug fix 1 (1.0.1)",
+                    "sub bug 1",
+                    "sub bug 2",
+                    "Bug fix 2 (1.0.1)",
                 ],
                 "release_date": "2018-05-31",
                 "version": "1.0.1",
             },
             "1.0.0": {
-                "deprecated": ["- Known issue 1 (1.0.0)", "- Known issue 2 (1.0.0)"],
+                "deprecated": ["Known issue 1 (1.0.0)", "Known issue 2 (1.0.0)"],
                 "release_date": "2017-04-10",
                 "version": "1.0.0",
             },

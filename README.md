@@ -5,7 +5,7 @@
 <a href="https://travis-ci.org/Colin-b/keepachangelog"><img alt="Build status" src="https://api.travis-ci.org/Colin-b/keepachangelog.svg?branch=master"></a>
 <a href="https://travis-ci.org/Colin-b/keepachangelog"><img alt="Coverage" src="https://img.shields.io/badge/coverage-100%25-brightgreen"></a>
 <a href="https://github.com/psf/black"><img alt="Code style: black" src="https://img.shields.io/badge/code%20style-black-000000.svg"></a>
-<a href="https://travis-ci.org/Colin-b/keepachangelog"><img alt="Number of tests" src="https://img.shields.io/badge/tests-11 passed-blue"></a>
+<a href="https://travis-ci.org/Colin-b/keepachangelog"><img alt="Number of tests" src="https://img.shields.io/badge/tests-12 passed-blue"></a>
 <a href="https://pypi.org/project/keepachangelog/"><img alt="Number of downloads" src="https://img.shields.io/pypi/dm/keepachangelog"></a>
 </p>
 
@@ -23,26 +23,26 @@ changes = keepachangelog.to_dict("path/to/CHANGELOG.md")
 changes = {
     "1.1.0": {
         "changed": [
-            "- Enhancement 1 (1.1.0)",
-            "- sub enhancement 1",
-            "- sub enhancement 2",
-            "- Enhancement 2 (1.1.0)",
+            "Enhancement 1 (1.1.0)",
+            "sub enhancement 1",
+            "sub enhancement 2",
+            "Enhancement 2 (1.1.0)",
         ],
         "release_date": "2018-05-31",
         "version": "1.1.0",
     },
     "1.0.1": {
         "fixed": [
-            "- Bug fix 1 (1.0.1)",
-            "- sub bug 1",
-            "- sub bug 2",
-            "- Bug fix 2 (1.0.1)",
+            "Bug fix 1 (1.0.1)",
+            "sub bug 1",
+            "sub bug 2",
+            "Bug fix 2 (1.0.1)",
         ],
         "release_date": "2018-05-31",
         "version": "1.0.1",
     },
     "1.0.0": {
-        "deprecated": ["- Known issue 1 (1.0.0)", "- Known issue 2 (1.0.0)"],
+        "deprecated": ["Known issue 1 (1.0.0)", "Known issue 2 (1.0.0)"],
         "release_date": "2017-04-10",
         "version": "1.0.0",
     },
@@ -65,14 +65,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 - Enhancement 1
-- sub enhancement 1
-- sub enhancement 2
+ - sub enhancement 1
+ - sub enhancement 2
 - Enhancement 2
 
 ### Fixed
 - Bug fix 1
-- sub bug 1
-- sub bug 2
+ - sub bug 1
+ - sub bug 2
 - Bug fix 2
 
 ### Security
@@ -90,15 +90,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [1.1.0] - 2018-05-31
 ### Changed
 - Enhancement 1 (1.1.0)
-- sub enhancement 1
-- sub enhancement 2
+ - sub enhancement 1
+ - sub enhancement 2
 - Enhancement 2 (1.1.0)
 
 ## [1.0.1] - 2018-05-31
 ### Fixed
 - Bug fix 1 (1.0.1)
-- sub bug 1
-- sub bug 2
+ - sub bug 1
+ - sub bug 2
 - Bug fix 2 (1.0.1)
 
 ## [1.0.0] - 2017-04-10
