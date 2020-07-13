@@ -49,7 +49,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [1.1.0] - 2018-05-31
 ### Changed
 - Enhancement 1 (1.1.0)
-- sub enhancement 1
+- sub *enhancement 1*
 - sub enhancement 2
 - Enhancement 2 (1.1.0)
 
@@ -96,7 +96,7 @@ def test_changelog_with_versions_and_all_categories(changelog):
             "release_date": "2018-05-31",
             "changed": [
                 "Enhancement 1 (1.1.0)",
-                "sub enhancement 1",
+                "sub *enhancement 1*",
                 "sub enhancement 2",
                 "Enhancement 2 (1.1.0)",
             ],
