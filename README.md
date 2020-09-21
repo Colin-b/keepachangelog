@@ -5,7 +5,7 @@
 <a href="https://travis-ci.org/Colin-b/keepachangelog"><img alt="Build status" src="https://api.travis-ci.org/Colin-b/keepachangelog.svg?branch=master"></a>
 <a href="https://travis-ci.org/Colin-b/keepachangelog"><img alt="Coverage" src="https://img.shields.io/badge/coverage-100%25-brightgreen"></a>
 <a href="https://github.com/psf/black"><img alt="Code style: black" src="https://img.shields.io/badge/code%20style-black-000000.svg"></a>
-<a href="https://travis-ci.org/Colin-b/keepachangelog"><img alt="Number of tests" src="https://img.shields.io/badge/tests-12 passed-blue"></a>
+<a href="https://travis-ci.org/Colin-b/keepachangelog"><img alt="Number of tests" src="https://img.shields.io/badge/tests-14 passed-blue"></a>
 <a href="https://pypi.org/project/keepachangelog/"><img alt="Number of downloads" src="https://img.shields.io/pypi/dm/keepachangelog"></a>
 </p>
 
@@ -132,6 +132,24 @@ add_changelog_endpoint(app, "path/to/CHANGELOG.md")
 ```
 
 Note: [starlette](https://pypi.python.org/pypi/starlette) module must be installed.
+
+### Flask-RestX
+
+An helper function is available to create a [Flask-RestX](https://flask-restx.readthedocs.io/en/latest/) endpoint to retrieve changelog as JSON.
+
+```python
+import flask
+import flask_restx
+from keepachangelog.flask_restx import add_changelog_endpoint
+
+
+app = flask.Flask(__name__)
+api = flask_restx.Api(app)
+# /changelog endpoint will return the dict extracted from the changelog as JSON.
+add_changelog_endpoint(api, "path/to/CHANGELOG.md")
+```
+
+Note: [flask-restx](https://pypi.python.org/pypi/flask-restx) module must be installed.
 
 ## How to install
 1. [python 3.6+](https://www.python.org/downloads/) must be installed
