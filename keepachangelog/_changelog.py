@@ -1,5 +1,6 @@
+import io
 import re
-from typing import Dict, List
+from typing import Dict, List, Union
 
 # Release pattern should match lines like: "## [0.0.1] - 2020-12-31" or ## [Unreleased]
 release_pattern = re.compile(r"^## \[(.*)\](?: - (.*))?$")
@@ -50,9 +51,11 @@ def add_information(category: List[str], line: str):
     category.append(line.lstrip(" *-").rstrip(" -"))
 
 
-def to_dict(changelog_path: str, *, show_unreleased: bool = False) -> Dict[str, dict]:
-    changes = {}
-    with open(changelog_path) as change_log:
+def to_dict(
+    changelog_path: Union[str, io.TextIOBase], *, show_unreleased: bool = False
+) -> Dict[str, dict]:
+    def _read(change_log: Union[str, io.TextIOBase]):
+        changes: dict = {}
         release = {}
         category = []
         for line in change_log:
@@ -65,4 +68,10 @@ def to_dict(changelog_path: str, *, show_unreleased: bool = False) -> Dict[str, 
             elif is_information(line):
                 add_information(category, line)
 
-    return changes
+        return changes
+
+    if isinstance(changelog_path, str):
+        with open(changelog_path) as change_log:
+            return _read(change_log)
+    else:
+        return _read(changelog_path)
