@@ -1,6 +1,8 @@
 import re
 from typing import Dict, List
 
+from keepachangelog._versioning import guess_unreleased_version
+
 # Release pattern should match lines like: "## [0.0.1] - 2020-12-31" or ## [Unreleased]
 release_pattern = re.compile(r"^## \[(.*)\](?: - (.*))?$")
 
@@ -66,3 +68,10 @@ def to_dict(changelog_path: str, *, show_unreleased: bool = False) -> Dict[str, 
                 add_information(category, line)
 
     return changes
+
+
+def release(changelog_path: str) -> str:
+    changelog = to_dict(changelog_path, show_unreleased=True)
+    current_version, new_version = guess_unreleased_version(changelog)
+
+    return new_version
