@@ -1,5 +1,6 @@
+import datetime
 import re
-from typing import Dict, List
+from typing import Dict, List, Optional
 
 from keepachangelog._versioning import guess_unreleased_version
 
@@ -73,5 +74,46 @@ def to_dict(changelog_path: str, *, show_unreleased: bool = False) -> Dict[str, 
 def release(changelog_path: str) -> str:
     changelog = to_dict(changelog_path, show_unreleased=True)
     current_version, new_version = guess_unreleased_version(changelog)
-
+    release_version(changelog_path, current_version, new_version)
     return new_version
+
+
+def release_version(
+    changelog_path: str, current_version: Optional[str], new_version: str
+):
+    unreleased_link_pattern = re.compile(r"^\[Unreleased\]: (.*)$", re.DOTALL)
+    lines = []
+    with open(changelog_path) as change_log:
+        for line in change_log.readlines():
+            # Move Unreleased section to new version
+            if re.fullmatch(r"^## \[Unreleased\].*$", line, re.DOTALL):
+                lines.append(line)
+                lines.append("\n")
+                lines.append(
+                    f"## [{new_version}] - {datetime.date.today().isoformat()}\n"
+                )
+            # Add new version link and update Unreleased link
+            elif unreleased_link_pattern.fullmatch(line):
+                unreleased_compare_pattern = re.fullmatch(
+                    "^.*/(.*)...HEAD.*$", line, re.DOTALL
+                )
+                # Unreleased link compare previous version to HEAD
+                if unreleased_compare_pattern:
+                    new_unreleased_link = line.replace(current_version, new_version)
+                    lines.append(new_unreleased_link)
+                    current_tag = unreleased_compare_pattern.group(1)
+                    new_tag = current_tag.replace(current_version, new_version)
+                    lines.append(
+                        line.replace(new_version, current_version)
+                        .replace("HEAD", new_tag)
+                        .replace("Unreleased", new_version)
+                    )
+                # Consider that there is no way to know how to create a link to compare versions
+                else:
+                    lines.append(line)
+                    lines.append(line.replace("Unreleased", new_version))
+            else:
+                lines.append(line)
+
+    with open(changelog_path, "wt") as change_log:
+        change_log.writelines(lines)

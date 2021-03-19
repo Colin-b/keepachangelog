@@ -53,11 +53,15 @@ def guess_unreleased_version(changelog: dict) -> Tuple[Optional[str], str]:
     return version, bump(unreleased, version)
 
 
+# Semantic versioning pattern should match version like 1.2.3"
+version_pattern = re.compile(r"^(\d+)\.(\d+)\.(\d+)$")
+
+
 def to_semantic(version: Optional[str]) -> Tuple[int, int, int]:
     if not version:
         return 0, 0, 0
 
-    match = re.search(r"(\d+)\.(\d+)\.(\d+)", version)
+    match = version_pattern.fullmatch(version)
     if match:
         return int(match.group(1)), int(match.group(2)), int(match.group(3))
 
