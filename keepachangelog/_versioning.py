@@ -44,9 +44,9 @@ def actual_version(changelog: dict) -> Optional[str]:
 
 def guess_unreleased_version(changelog: dict) -> Tuple[Optional[str], str]:
     unreleased = changelog.get("Unreleased", {})
-    if not unreleased:
+    if not unreleased or len(unreleased) < 3:
         raise Exception(
-            "Unable to guess unreleased version because there is not Unreleased section within changelog."
+            "Release content must be provided within changelog Unreleased section."
         )
 
     version = actual_version(changelog)

@@ -95,17 +95,18 @@ def release_version(
             # Add new version link and update Unreleased link
             elif unreleased_link_pattern.fullmatch(line):
                 unreleased_compare_pattern = re.fullmatch(
-                    "^.*/(.*)...HEAD.*$", line, re.DOTALL
+                    r"^.*/(.*)\.\.\.(\w*).*$", line, re.DOTALL
                 )
-                # Unreleased link compare previous version to HEAD
+                # Unreleased link compare previous version to HEAD (unreleased tag)
                 if unreleased_compare_pattern:
                     new_unreleased_link = line.replace(current_version, new_version)
                     lines.append(new_unreleased_link)
                     current_tag = unreleased_compare_pattern.group(1)
+                    unreleased_tag = unreleased_compare_pattern.group(2)
                     new_tag = current_tag.replace(current_version, new_version)
                     lines.append(
                         line.replace(new_version, current_version)
-                        .replace("HEAD", new_tag)
+                        .replace(unreleased_tag, new_tag)
                         .replace("Unreleased", new_version)
                     )
                 # Consider that there is no way to know how to create a link to compare versions

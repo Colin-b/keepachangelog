@@ -1,9 +1,35 @@
+import datetime
 import os
 import os.path
 
 import pytest
 
 import keepachangelog
+import keepachangelog._changelog
+
+_date_time_for_tests = datetime.datetime(2021, 3, 19, 15, 5, 5, 663979)
+
+
+class DateTimeModuleMock:
+    class DateTimeMock(datetime.datetime):
+        @classmethod
+        def now(cls, tz=None):
+            return _date_time_for_tests.replace(tzinfo=tz)
+
+    class DateMock(datetime.date):
+        @classmethod
+        def today(cls):
+            return _date_time_for_tests.date()
+
+    timedelta = datetime.timedelta
+    timezone = datetime.timezone
+    datetime = DateTimeMock
+    date = DateMock
+
+
+@pytest.fixture
+def mock_date(monkeypatch):
+    monkeypatch.setattr(keepachangelog._changelog, "datetime", DateTimeModuleMock)
 
 
 @pytest.fixture
@@ -289,6 +315,25 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 
 @pytest.fixture
+def empty_unreleased_changelog(tmpdir):
+    changelog_file_path = os.path.join(tmpdir, "EMPTY_UNRELEASED_CHANGELOG.md")
+    with open(changelog_file_path, "wt") as file:
+        file.write(
+            """# Changelog
+All notable changes to this project will be documented in this file.
+
+The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
+and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
+
+## [Unreleased]
+
+[Unreleased]: https://github.test_url/test_project
+"""
+        )
+    return changelog_file_path
+
+
+@pytest.fixture
 def empty_changelog(tmpdir):
     changelog_file_path = os.path.join(tmpdir, "EMPTY_CHANGELOG.md")
     with open(changelog_file_path, "wt") as file:
@@ -315,6 +360,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+### Changed
+- Enhancement 1 (1.1.0)
 
 ## [20180531] - 2018-05-31
 ### Changed
@@ -330,7 +377,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
     return changelog_file_path
 
 
-def test_major_release(major_changelog):
+def test_major_release(major_changelog, mock_date):
     assert keepachangelog.release(major_changelog) == "2.0.0"
     with open(major_changelog) as file:
         assert (
@@ -400,7 +447,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
         )
 
 
-def test_minor_release(minor_changelog):
+def test_minor_release(minor_changelog, mock_date):
     assert keepachangelog.release(minor_changelog) == "1.2.0"
     with open(minor_changelog) as file:
         assert (
@@ -462,7 +509,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
         )
 
 
-def test_patch_release(patch_changelog):
+def test_patch_release(patch_changelog, mock_date):
     assert keepachangelog.release(patch_changelog) == "1.1.1"
     with open(patch_changelog) as file:
         assert (
@@ -510,7 +557,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
         )
 
 
-def test_first_major_release(first_major_changelog):
+def test_first_major_release(first_major_changelog, mock_date):
     assert keepachangelog.release(first_major_changelog) == "1.0.0"
     with open(first_major_changelog) as file:
         assert (
@@ -558,7 +605,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
         )
 
 
-def test_first_minor_release(first_minor_changelog):
+def test_first_minor_release(first_minor_changelog, mock_date):
     assert keepachangelog.release(first_minor_changelog) == "0.1.0"
     with open(first_minor_changelog) as file:
         assert (
@@ -598,7 +645,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
         )
 
 
-def test_first_patch_release(first_patch_changelog):
+def test_first_patch_release(first_patch_changelog, mock_date):
     assert keepachangelog.release(first_patch_changelog) == "0.0.1"
     with open(first_patch_changelog) as file:
         assert (
@@ -629,7 +676,16 @@ def test_empty_release(empty_changelog):
         keepachangelog.release(empty_changelog)
     assert (
         str(exception_info.value)
-        == "Unable to guess unreleased version because there is not Unreleased section within changelog."
+        == "Release content must be provided within changelog Unreleased section."
+    )
+
+
+def test_empty_unreleased_release(empty_unreleased_changelog):
+    with pytest.raises(Exception) as exception_info:
+        keepachangelog.release(empty_unreleased_changelog)
+    assert (
+        str(exception_info.value)
+        == "Release content must be provided within changelog Unreleased section."
     )
 
 
