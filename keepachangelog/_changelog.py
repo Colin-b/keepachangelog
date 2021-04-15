@@ -56,17 +56,32 @@ def add_information(category: List[str], line: str):
 def to_dict(changelog_path: str, *, show_unreleased: bool = False) -> Dict[str, dict]:
     changes = {}
     with open(changelog_path) as change_log:
-        release = {}
+        current_release = {}
         category = []
         for line in change_log:
             line = line.strip(" \n")
 
             if is_release(line, show_unreleased):
-                release = add_release(changes, line)
+                current_release = add_release(changes, line)
             elif is_category(line):
-                category = add_category(release, line)
+                category = add_category(current_release, line)
             elif is_information(line):
                 add_information(category, line)
+
+    return changes
+
+
+def to_raw_dict(changelog_path: str) -> Dict[str, dict]:
+    changes = {}
+    with open(changelog_path) as change_log:
+        current_release = {}
+        for line in change_log:
+            clean_line = line.strip(" \n")
+
+            if is_release(clean_line, show_unreleased=False):
+                current_release = add_release(changes, clean_line)
+            elif is_category(clean_line) or is_information(clean_line):
+                current_release["raw"] = current_release.get("raw", "") + line
 
     return changes
 

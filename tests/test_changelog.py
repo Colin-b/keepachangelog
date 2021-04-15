@@ -119,3 +119,63 @@ def test_changelog_with_versions_and_all_categories(changelog):
             "version": "1.0.0",
         },
     }
+
+
+def test_raw_changelog_with_versions_and_all_categories(changelog):
+    assert keepachangelog.to_raw_dict(changelog) == {
+        "1.2.0": {
+            "raw": """### Changed
+- Release note 1.
+- Release note 2.
+### Added
+- Enhancement 1
+- sub enhancement 1
+- sub enhancement 2
+- Enhancement 2
+### Fixed
+- Bug fix 1
+- sub bug 1
+- sub bug 2
+- Bug fix 2
+### Security
+- Known issue 1
+- Known issue 2
+### Deprecated
+- Deprecated feature 1
+- Future removal 2
+### Removed
+- Deprecated feature 2
+- Future removal 1
+""",
+            "release_date": "2018-06-01",
+            "version": "1.2.0",
+        },
+        "1.1.0": {
+            "raw": """### Changed
+- Enhancement 1 (1.1.0)
+- sub enhancement 1
+- sub enhancement 2
+- Enhancement 2 (1.1.0)
+""",
+            "release_date": "2018-05-31",
+            "version": "1.1.0",
+        },
+        "1.0.1": {
+            "raw": """### Fixed
+- Bug fix 1 (1.0.1)
+- sub bug 1
+- sub bug 2
+- Bug fix 2 (1.0.1)
+""",
+            "release_date": "2018-05-31",
+            "version": "1.0.1",
+        },
+        "1.0.0": {
+            "raw": """### Deprecated
+- Known issue 1 (1.0.0)
+- Known issue 2 (1.0.0)
+""",
+            "release_date": "2017-04-10",
+            "version": "1.0.0",
+        },
+    }

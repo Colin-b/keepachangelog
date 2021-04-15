@@ -7,6 +7,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 ### Added
 - `keepachangelog.release` function to guess new version number based on `Unreleased` section, update changelog and return new version number.
+- `keepachangelog.to_raw_dict` function returning a raw markdown description of the release under `raw` dict.
 
 ## [0.4.0] - 2020-09-21
 ### Added
