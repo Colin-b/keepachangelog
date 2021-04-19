@@ -4,41 +4,50 @@ from typing import Dict, List, Optional
 
 from keepachangelog._versioning import guess_unreleased_version
 
-# Release pattern should match lines like: "## [0.0.1] - 2020-12-31" or ## [Unreleased]
-release_pattern = re.compile(r"^## \[(.*)\](?: - (.*))?$")
+
+def is_release(line: str) -> bool:
+    return line.startswith("## ")
 
 
-def is_release(line: str, show_unreleased: bool) -> bool:
-    match = release_pattern.fullmatch(line)
-    if match and (not show_unreleased and match.group(1) == "Unreleased"):
-        return False
-    return match is not None
-
-
-def add_release(changes: Dict[str, dict], line: str) -> dict:
-    release_info = release_pattern.fullmatch(line)
+def add_release(changes: Dict[str, dict], line: str, show_unreleased: bool) -> dict:
+    release_line = line[3:].lower().strip(" ")
+    # A release is separated by a space between version and release date
+    # Release pattern should match lines like: "[0.0.1] - 2020-12-31" or [Unreleased]
+    version, release_date = (
+        release_line.split(" ", maxsplit=1)
+        if " " in release_line
+        else (release_line, None)
+    )
+    if not show_unreleased and not release_date:
+        return {}
+    version = unlink(version)
     return changes.setdefault(
-        release_info.group(1),
-        {"version": release_info.group(1), "release_date": release_info.group(2)},
+        version,
+        {"version": version, "release_date": extract_date(release_date)},
     )
 
 
-categories = {
-    "### Added": "added",
-    "### Changed": "changed",
-    "### Deprecated": "deprecated",
-    "### Removed": "removed",
-    "### Fixed": "fixed",
-    "### Security": "security",
-}
+def unlink(value: str) -> str:
+    if not value:
+        return value
+
+    return value.lstrip("[").rstrip("]")
+
+
+def extract_date(date: str) -> str:
+    if not date:
+        return date
+
+    return date.lstrip(" -(").rstrip(" )")
 
 
 def is_category(line: str) -> bool:
-    return line in categories
+    return line.startswith("### ")
 
 
 def add_category(release: dict, line: str) -> List[str]:
-    return release.setdefault(categories[line], [])
+    category = line[4:].lower().strip(" ")
+    return release.setdefault(category, [])
 
 
 # Link pattern should match lines like: "[1.2.3]: https://github.com/user/project/releases/tag/v0.0.1"
@@ -61,8 +70,8 @@ def to_dict(changelog_path: str, *, show_unreleased: bool = False) -> Dict[str, 
         for line in change_log:
             line = line.strip(" \n")
 
-            if is_release(line, show_unreleased):
-                current_release = add_release(changes, line)
+            if is_release(line):
+                current_release = add_release(changes, line, show_unreleased)
             elif is_category(line):
                 category = add_category(current_release, line)
             elif is_information(line):
@@ -78,8 +87,10 @@ def to_raw_dict(changelog_path: str) -> Dict[str, dict]:
         for line in change_log:
             clean_line = line.strip(" \n")
 
-            if is_release(clean_line, show_unreleased=False):
-                current_release = add_release(changes, clean_line)
+            if is_release(clean_line):
+                current_release = add_release(
+                    changes, clean_line, show_unreleased=False
+                )
             elif is_category(clean_line) or is_information(clean_line):
                 current_release["raw"] = current_release.get("raw", "") + line
 
