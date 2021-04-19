@@ -28,9 +28,6 @@ def add_release(changes: Dict[str, dict], line: str, show_unreleased: bool) -> d
 
 
 def unlink(value: str) -> str:
-    if not value:
-        return value
-
     return value.lstrip("[").rstrip("]")
 
 
