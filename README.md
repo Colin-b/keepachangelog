@@ -1,15 +1,23 @@
-<h2 align="center">Convert changelog into dict</h2>
+<h2 align="center">Manipulate keep a changelog files</h2>
 
 <p align="center">
 <a href="https://pypi.org/project/keepachangelog/"><img alt="pypi version" src="https://img.shields.io/pypi/v/keepachangelog"></a>
-<a href="https://travis-ci.org/Colin-b/keepachangelog"><img alt="Build status" src="https://api.travis-ci.org/Colin-b/keepachangelog.svg?branch=master"></a>
-<a href="https://travis-ci.org/Colin-b/keepachangelog"><img alt="Coverage" src="https://img.shields.io/badge/coverage-100%25-brightgreen"></a>
+<a href="https://travis-ci.com/Colin-b/keepachangelog"><img alt="Build status" src="https://api.travis-ci.com/Colin-b/keepachangelog.svg?branch=master"></a>
+<a href="https://travis-ci.com/Colin-b/keepachangelog"><img alt="Coverage" src="https://img.shields.io/badge/coverage-100%25-brightgreen"></a>
 <a href="https://github.com/psf/black"><img alt="Code style: black" src="https://img.shields.io/badge/code%20style-black-000000.svg"></a>
-<a href="https://travis-ci.org/Colin-b/keepachangelog"><img alt="Number of tests" src="https://img.shields.io/badge/tests-14 passed-blue"></a>
+<a href="https://travis-ci.com/Colin-b/keepachangelog"><img alt="Number of tests" src="https://img.shields.io/badge/tests-22 passed-blue"></a>
 <a href="https://pypi.org/project/keepachangelog/"><img alt="Number of downloads" src="https://img.shields.io/pypi/dm/keepachangelog"></a>
 </p>
 
-Convert changelog markdown file following [keep a changelog](https://keepachangelog.com/en/1.0.0/) format into python dict.
+* [Convert to dict](#convert-changelog-to-dict)
+* [Release a new version](#release)
+* [Add changelog retrieval REST API endpoint](#endpoint)
+  * [Starlette](#starlette)
+  * [Flask-RestX](#flask-restx)
+
+## Convert changelog to dict
+
+Convert changelog markdown file following [keep a changelog](https://keepachangelog.com/en/1.1.0/) format into python dict.
 
 ```python
 import keepachangelog
@@ -55,7 +63,7 @@ For a markdown file with the following content:
 # Changelog
 All notable changes to this project will be documented in this file.
 
-The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
+The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
@@ -114,6 +122,26 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 `show_unreleased` parameter can be specified in order to include `Unreleased` section information.
 Note that `release_date` will be set to None in such as case.
+
+## Release
+
+You can create a new release by using `keepachangelog.release` function.
+
+```python
+import keepachangelog
+
+new_version = keepachangelog.release("path/to/CHANGELOG.md")
+```
+
+This will:
+* Guess the new version number and return it:
+  * `Removed` or `Changed` sections will be considered as breaking changes, thus incrementing the major version.
+  * If the only section is `Fixed`, only patch will be incremented.
+  * Otherwise, minor will be incremented.
+* Update changelog.
+  * Unreleased section content will be moved into a new section.
+  * `[Unreleased]` link will be updated.
+  * New link will be created corresponding to the new section (based on the format of the Unreleased link).
 
 ## Endpoint
 
