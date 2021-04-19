@@ -76,8 +76,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 def test_changelog_with_versions_and_all_categories(changelog):
     assert keepachangelog.to_dict(changelog, show_unreleased=True) == {
-        "Unreleased": {
-            "version": "Unreleased",
+        "unreleased": {
+            "version": "unreleased",
             "release_date": None,
             "changed": ["Release note 1.", "Release note 2."],
             "added": [

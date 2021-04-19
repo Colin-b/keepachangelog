@@ -37,13 +37,13 @@ def bump(unreleased: dict, version: str) -> str:
 def actual_version(changelog: dict) -> Optional[str]:
     versions = sorted(changelog.keys())
     current_version = versions.pop() if versions else None
-    while "Unreleased" == current_version:
+    while "unreleased" == current_version:
         current_version = versions.pop() if versions else None
     return current_version
 
 
 def guess_unreleased_version(changelog: dict) -> Tuple[Optional[str], str]:
-    unreleased = changelog.get("Unreleased", {})
+    unreleased = changelog.get("unreleased", {})
     if not unreleased or len(unreleased) < 3:
         raise Exception(
             "Release content must be provided within changelog Unreleased section."
