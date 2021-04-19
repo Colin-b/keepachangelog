@@ -17,3 +17,7 @@ def changelog(tmpdir):
 
 def test_changelog_without_versions(changelog):
     assert keepachangelog.to_dict(changelog) == {}
+
+
+def test_raw_changelog_without_versions(changelog):
+    assert keepachangelog.to_raw_dict(changelog) == {}

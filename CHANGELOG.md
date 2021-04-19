@@ -6,6 +6,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.5.0] - 2021-04-19
+### Added
+- `keepachangelog.release` function to guess new version number based on `Unreleased` section, update changelog and return new version number.
+- `keepachangelog.to_raw_dict` function returning a raw markdown description of the release under `raw` dict.
+
+### Fixed
+- Handle any category name.
+- Add more flexibility for release format.
+
+### Changed
+- `Unreleased` is now reported as lower cased `unreleased`.
+
 ## [0.4.0] - 2020-09-21
 ### Added
 - `keepachangelog.flask_restx.add_changelog_endpoint` function to add a changelog endpoint to a [Flask-RestX](https://flask-restx.readthedocs.io/en/latest/) application.
@@ -30,7 +42,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 - Initial release.
 
-[Unreleased]: https://github.com/Colin-b/keepachangelog/compare/v0.4.0...HEAD
+[Unreleased]: https://github.com/Colin-b/keepachangelog/compare/v0.5.0...HEAD
+[0.5.0]: https://github.com/Colin-b/keepachangelog/compare/v0.4.0...v0.5.0
 [0.4.0]: https://github.com/Colin-b/keepachangelog/compare/v0.3.1...v0.4.0
 [0.3.1]: https://github.com/Colin-b/keepachangelog/compare/v0.3.0...v0.3.1
 [0.3.0]: https://github.com/Colin-b/keepachangelog/compare/v0.2.0...v0.3.0
