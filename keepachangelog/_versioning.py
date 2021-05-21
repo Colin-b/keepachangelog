@@ -7,8 +7,7 @@ def contains_breaking_changes(unreleased: dict) -> bool:
 
 
 def only_contains_bug_fixes(unreleased: dict) -> bool:
-    # unreleased contains at least 2 entries: version and release_date
-    return "fixed" in unreleased and len(unreleased) == 3
+    return ["fixed"] == list(unreleased)
 
 
 def bump_major(version: str) -> str:
@@ -44,7 +43,12 @@ def actual_version(changelog: dict) -> Optional[str]:
 
 def guess_unreleased_version(changelog: dict) -> Tuple[Optional[str], str]:
     unreleased = changelog.get("unreleased", {})
-    if not unreleased or len(unreleased) < 3:
+    # Only keep user provided entries
+    unreleased = unreleased.copy()
+    unreleased.pop("version", None)
+    unreleased.pop("release_date", None)
+    unreleased.pop("url", None)
+    if not unreleased:
         raise Exception(
             "Release content must be provided within changelog Unreleased section."
         )

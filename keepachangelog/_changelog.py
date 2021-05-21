@@ -51,8 +51,12 @@ def add_category(release: dict, line: str) -> List[str]:
 link_pattern = re.compile(r"^\[(.*)\]: (.*)$")
 
 
+def is_link(line: str) -> bool:
+    return link_pattern.fullmatch(line) is not None
+
+
 def is_information(line: str) -> bool:
-    return line and not link_pattern.fullmatch(line)
+    return line and not is_link(line)
 
 
 def add_information(category: List[str], line: str):
@@ -61,6 +65,8 @@ def add_information(category: List[str], line: str):
 
 def to_dict(changelog_path: str, *, show_unreleased: bool = False) -> Dict[str, dict]:
     changes = {}
+    # As URLs can be defined before actual usage, maintain a separate dict
+    urls = {}
     with open(changelog_path) as change_log:
         current_release = {}
         category = []
@@ -71,8 +77,14 @@ def to_dict(changelog_path: str, *, show_unreleased: bool = False) -> Dict[str, 
                 current_release = add_release(changes, line, show_unreleased)
             elif is_category(line):
                 category = add_category(current_release, line)
+            elif is_link(line):
+                link_match = link_pattern.fullmatch(line)
+                urls[link_match.group(1).lower()] = link_match.group(2)
             elif is_information(line):
                 add_information(category, line)
+
+    for version, url in urls.items():
+        changes.get(version, {})["url"] = url
 
     return changes
 
