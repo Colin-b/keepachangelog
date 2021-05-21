@@ -87,6 +87,13 @@ def test_changelog_with_versions_and_all_categories(changelog):
             "removed": ["Deprecated feature 2", "Future removal 1"],
             "security": ["Known issue 1", "Known issue 2"],
             "version": "1.2.0",
+            "semantic_version": {
+                "buildmetadata": None,
+                "major": 1,
+                "minor": 2,
+                "patch": 0,
+                "prerelease": None,
+            },
         },
         "1.1.0": {
             "changed": [
@@ -97,6 +104,13 @@ def test_changelog_with_versions_and_all_categories(changelog):
             ],
             "release_date": "may 03, 2018",
             "version": "1.1.0",
+            "semantic_version": {
+                "buildmetadata": None,
+                "major": 1,
+                "minor": 1,
+                "patch": 0,
+                "prerelease": None,
+            },
         },
         "1.0.1": {
             "fixed": [
@@ -107,11 +121,25 @@ def test_changelog_with_versions_and_all_categories(changelog):
             ],
             "release_date": "may 01, 2018",
             "version": "1.0.1",
+            "semantic_version": {
+                "buildmetadata": None,
+                "major": 1,
+                "minor": 0,
+                "patch": 1,
+                "prerelease": None,
+            },
         },
         "1.0.0": {
             "deprecated": ["Known issue 1 (1.0.0)", "Known issue 2 (1.0.0)"],
             "release_date": "2017-01-01",
             "version": "1.0.0",
+            "semantic_version": {
+                "buildmetadata": None,
+                "major": 1,
+                "minor": 0,
+                "patch": 0,
+                "prerelease": None,
+            },
         },
     }
 
@@ -133,6 +161,13 @@ def test_changelog_with_unreleased_versions_and_all_categories(changelog):
             "removed": ["Deprecated feature 2", "Future removal 1"],
             "security": ["Known issue 1", "Known issue 2"],
             "version": "1.2.0",
+            "semantic_version": {
+                "buildmetadata": None,
+                "major": 1,
+                "minor": 2,
+                "patch": 0,
+                "prerelease": None,
+            },
         },
         "1.1.0": {
             "changed": [
@@ -143,6 +178,13 @@ def test_changelog_with_unreleased_versions_and_all_categories(changelog):
             ],
             "release_date": "may 03, 2018",
             "version": "1.1.0",
+            "semantic_version": {
+                "buildmetadata": None,
+                "major": 1,
+                "minor": 1,
+                "patch": 0,
+                "prerelease": None,
+            },
         },
         "1.0.1": {
             "fixed": [
@@ -153,11 +195,25 @@ def test_changelog_with_unreleased_versions_and_all_categories(changelog):
             ],
             "release_date": "may 01, 2018",
             "version": "1.0.1",
+            "semantic_version": {
+                "buildmetadata": None,
+                "major": 1,
+                "minor": 0,
+                "patch": 1,
+                "prerelease": None,
+            },
         },
         "1.0.0": {
             "deprecated": ["Known issue 1 (1.0.0)", "Known issue 2 (1.0.0)"],
             "release_date": "2017-01-01",
             "version": "1.0.0",
+            "semantic_version": {
+                "buildmetadata": None,
+                "major": 1,
+                "minor": 0,
+                "patch": 0,
+                "prerelease": None,
+            },
         },
     }
 
@@ -190,6 +246,13 @@ def test_raw_changelog_with_versions_and_all_categories(changelog):
 """,
             "release_date": "august 28, 2019",
             "version": "1.2.0",
+            "semantic_version": {
+                "buildmetadata": None,
+                "major": 1,
+                "minor": 2,
+                "patch": 0,
+                "prerelease": None,
+            },
         },
         "1.1.0": {
             "raw": """### Changed
@@ -200,6 +263,13 @@ def test_raw_changelog_with_versions_and_all_categories(changelog):
 """,
             "release_date": "may 03, 2018",
             "version": "1.1.0",
+            "semantic_version": {
+                "buildmetadata": None,
+                "major": 1,
+                "minor": 1,
+                "patch": 0,
+                "prerelease": None,
+            },
         },
         "1.0.1": {
             "raw": """### Fixed
@@ -210,6 +280,13 @@ def test_raw_changelog_with_versions_and_all_categories(changelog):
 """,
             "release_date": "may 01, 2018",
             "version": "1.0.1",
+            "semantic_version": {
+                "buildmetadata": None,
+                "major": 1,
+                "minor": 0,
+                "patch": 1,
+                "prerelease": None,
+            },
         },
         "1.0.0": {
             "raw": """### Deprecated
@@ -218,5 +295,12 @@ def test_raw_changelog_with_versions_and_all_categories(changelog):
 """,
             "release_date": "2017-01-01",
             "version": "1.0.0",
+            "semantic_version": {
+                "buildmetadata": None,
+                "major": 1,
+                "minor": 0,
+                "patch": 0,
+                "prerelease": None,
+            },
         },
     }

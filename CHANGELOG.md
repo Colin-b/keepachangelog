@@ -6,6 +6,21 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.0.0] - 2021-05-21
+### Changed
+- `keepachangelog.to_dict` now contains `url` key for each item if a link is available for the version.
+- `keepachangelog.to_raw_dict` now contains `url` key for each item if a link is available for the version.
+- `keepachangelog.to_dict` now contains `semantic_version` key for each item if the version follows semantic versioning.
+- `keepachangelog.to_raw_dict` now contains `semantic_version` key for each item if the version follows semantic versioning.
+
+### Added
+- `keepachangelog.release` is now allowing to provide a custom new version thanks to the new `new_version` parameter.
+
+### Fixed
+- `keepachangelog.release` now allows `pre-release` and `build metadata` information as part of valid semantic version. As per [semantic versioning specifications](https://semver.org). 
+  To ensure compatibility with some python specific versioning, `pre-release` is also handled as not being prefixed with `-`, or prefixed with `.`.
+- `keepachangelog.release` will now bump a pre-release version to a stable version. It was previously failing.
+
 ## [0.5.0] - 2021-04-19
 ### Added
 - `keepachangelog.release` function to guess new version number based on `Unreleased` section, update changelog and return new version number.
@@ -42,7 +57,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 - Initial release.
 
-[Unreleased]: https://github.com/Colin-b/keepachangelog/compare/v0.5.0...HEAD
+[Unreleased]: https://github.com/Colin-b/keepachangelog/compare/v1.0.0...HEAD
+[1.0.0]: https://github.com/Colin-b/keepachangelog/compare/v0.5.0...v1.0.0
 [0.5.0]: https://github.com/Colin-b/keepachangelog/compare/v0.4.0...v0.5.0
 [0.4.0]: https://github.com/Colin-b/keepachangelog/compare/v0.3.1...v0.4.0
 [0.3.1]: https://github.com/Colin-b/keepachangelog/compare/v0.3.0...v0.3.1

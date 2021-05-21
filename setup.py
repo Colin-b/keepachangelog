@@ -42,6 +42,7 @@ setup(
             "requests",
             "starlette==0.13.*",
             # Used to check flask-restx endpoint
+            "flask==1.*",
             "flask-restx==0.2.*",
             # Used to check coverage
             "pytest-cov==2.*",

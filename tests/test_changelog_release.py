@@ -79,6 +79,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - sub enhancement 2
 - Enhancement 2 (1.1.0)
 
+## [1.1.0.dev0] - 2018-05-31
+### Changed
+- Enhancement 1 (1.1.0)
+- sub *enhancement 1*
+- sub enhancement 2
+- Enhancement 2 (1.1.0)
+
 ## [1.0.1] - 2018-05-31
 ### Fixed
 - Bug fix 1 (1.0.1)
@@ -140,6 +147,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Enhancement 2 (1.1.0)
 
 ## [1.0.1] - 2018-05-31
+### Fixed
+- Bug fix 1 (1.0.1)
+- sub bug 1
+- sub bug 2
+- Bug fix 2 (1.0.1)
+
+## [1.0.1.dev0] - 2018-05-31
 ### Fixed
 - Bug fix 1 (1.0.1)
 - sub bug 1
@@ -377,6 +391,32 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
     return changelog_file_path
 
 
+@pytest.fixture
+def unstable_changelog(tmpdir):
+    changelog_file_path = os.path.join(tmpdir, "UNSTABLE_CHANGELOG.md")
+    with open(changelog_file_path, "wt") as file:
+        file.write(
+            """# Changelog
+All notable changes to this project will be documented in this file.
+
+The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
+and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
+
+## [Unreleased]
+### Changed
+- Enhancement 1 (1.1.0)
+
+## [2.5.0b51] - 2018-05-31
+### Changed
+- Enhancement 1 (1.1.0)
+- sub *enhancement 1*
+- sub enhancement 2
+- Enhancement 2 (1.1.0)
+"""
+        )
+    return changelog_file_path
+
+
 def test_major_release(major_changelog, mock_date):
     assert keepachangelog.release(major_changelog) == "2.0.0"
     with open(major_changelog) as file:
@@ -420,6 +460,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 * Future removal 1 
 
 ## [1.1.0] - 2018-05-31
+### Changed
+- Enhancement 1 (1.1.0)
+- sub *enhancement 1*
+- sub enhancement 2
+- Enhancement 2 (1.1.0)
+
+## [1.1.0.dev0] - 2018-05-31
 ### Changed
 - Enhancement 1 (1.1.0)
 - sub *enhancement 1*
@@ -489,6 +536,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Enhancement 2 (1.1.0)
 
 ## [1.0.1] - 2018-05-31
+### Fixed
+- Bug fix 1 (1.0.1)
+- sub bug 1
+- sub bug 2
+- Bug fix 2 (1.0.1)
+
+## [1.0.1.dev0] - 2018-05-31
 ### Fixed
 - Bug fix 1 (1.0.1)
 - sub bug 1
@@ -692,4 +746,63 @@ def test_empty_unreleased_release(empty_unreleased_changelog):
 def test_non_semantic_release(non_semantic_changelog):
     with pytest.raises(Exception) as exception_info:
         keepachangelog.release(non_semantic_changelog)
-    assert str(exception_info.value) == "20180531 is not following semantic versioning."
+    assert (
+        str(exception_info.value)
+        == "20180531 is not following semantic versioning. Check https://semver.org for more information."
+    )
+
+
+def test_first_stable_release(unstable_changelog, mock_date):
+    assert keepachangelog.release(unstable_changelog) == "2.5.0"
+    with open(unstable_changelog) as file:
+        assert (
+            file.read()
+            == """# Changelog
+All notable changes to this project will be documented in this file.
+
+The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
+and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
+
+## [Unreleased]
+
+## [2.5.0] - 2021-03-19
+### Changed
+- Enhancement 1 (1.1.0)
+
+## [2.5.0b51] - 2018-05-31
+### Changed
+- Enhancement 1 (1.1.0)
+- sub *enhancement 1*
+- sub enhancement 2
+- Enhancement 2 (1.1.0)
+"""
+        )
+
+
+def test_custom_release(unstable_changelog, mock_date):
+    assert (
+        keepachangelog.release(unstable_changelog, new_version="2.5.0b52") == "2.5.0b52"
+    )
+    with open(unstable_changelog) as file:
+        assert (
+            file.read()
+            == """# Changelog
+All notable changes to this project will be documented in this file.
+
+The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
+and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
+
+## [Unreleased]
+
+## [2.5.0b52] - 2021-03-19
+### Changed
+- Enhancement 1 (1.1.0)
+
+## [2.5.0b51] - 2018-05-31
+### Changed
+- Enhancement 1 (1.1.0)
+- sub *enhancement 1*
+- sub enhancement 2
+- Enhancement 2 (1.1.0)
+"""
+        )

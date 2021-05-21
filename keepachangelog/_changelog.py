@@ -2,7 +2,12 @@ import datetime
 import re
 from typing import Dict, List, Optional
 
-from keepachangelog._versioning import guess_unreleased_version
+from keepachangelog._versioning import (
+    actual_version,
+    guess_unreleased_version,
+    to_semantic,
+    InvalidSemanticVersion,
+)
 
 
 def is_release(line: str) -> bool:
@@ -21,10 +26,14 @@ def add_release(changes: Dict[str, dict], line: str, show_unreleased: bool) -> d
     if not show_unreleased and not release_date:
         return {}
     version = unlink(version)
-    return changes.setdefault(
-        version,
-        {"version": version, "release_date": extract_date(release_date)},
-    )
+
+    release_details = {"version": version, "release_date": extract_date(release_date)}
+    try:
+        release_details["semantic_version"] = to_semantic(version)
+    except InvalidSemanticVersion:
+        pass
+
+    return changes.setdefault(version, release_details)
 
 
 def unlink(value: str) -> str:
@@ -51,8 +60,8 @@ def add_category(release: dict, line: str) -> List[str]:
 link_pattern = re.compile(r"^\[(.*)\]: (.*)$")
 
 
-def is_information(line: str) -> bool:
-    return line and not link_pattern.fullmatch(line)
+def is_link(line: str) -> bool:
+    return link_pattern.fullmatch(line) is not None
 
 
 def add_information(category: List[str], line: str):
@@ -61,6 +70,8 @@ def add_information(category: List[str], line: str):
 
 def to_dict(changelog_path: str, *, show_unreleased: bool = False) -> Dict[str, dict]:
     changes = {}
+    # As URLs can be defined before actual usage, maintain a separate dict
+    urls = {}
     with open(changelog_path) as change_log:
         current_release = {}
         category = []
@@ -71,14 +82,22 @@ def to_dict(changelog_path: str, *, show_unreleased: bool = False) -> Dict[str, 
                 current_release = add_release(changes, line, show_unreleased)
             elif is_category(line):
                 category = add_category(current_release, line)
-            elif is_information(line):
+            elif is_link(line):
+                link_match = link_pattern.fullmatch(line)
+                urls[link_match.group(1).lower()] = link_match.group(2)
+            elif line:
                 add_information(category, line)
+
+    for version, url in urls.items():
+        changes.get(version, {})["url"] = url
 
     return changes
 
 
 def to_raw_dict(changelog_path: str) -> Dict[str, dict]:
     changes = {}
+    # As URLs can be defined before actual usage, maintain a separate dict
+    urls = {}
     with open(changelog_path) as change_log:
         current_release = {}
         for line in change_log:
@@ -88,15 +107,23 @@ def to_raw_dict(changelog_path: str) -> Dict[str, dict]:
                 current_release = add_release(
                     changes, clean_line, show_unreleased=False
                 )
-            elif is_category(clean_line) or is_information(clean_line):
+            elif is_link(clean_line):
+                link_match = link_pattern.fullmatch(clean_line)
+                urls[link_match.group(1).lower()] = link_match.group(2)
+            elif clean_line:
                 current_release["raw"] = current_release.get("raw", "") + line
+
+    for version, url in urls.items():
+        changes.get(version, {})["url"] = url
 
     return changes
 
 
-def release(changelog_path: str) -> str:
+def release(changelog_path: str, new_version: str = None) -> str:
     changelog = to_dict(changelog_path, show_unreleased=True)
-    current_version, new_version = guess_unreleased_version(changelog)
+    current_version, current_semantic_version = actual_version(changelog)
+    if not new_version:
+        new_version = guess_unreleased_version(changelog, current_semantic_version)
     release_version(changelog_path, current_version, new_version)
     return new_version
 
