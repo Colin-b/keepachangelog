@@ -3,6 +3,7 @@ import re
 from typing import Dict, List, Optional
 
 from keepachangelog._versioning import (
+    actual_version,
     guess_unreleased_version,
     to_semantic,
     InvalidSemanticVersion,
@@ -120,7 +121,8 @@ def to_raw_dict(changelog_path: str) -> Dict[str, dict]:
 
 def release(changelog_path: str) -> str:
     changelog = to_dict(changelog_path, show_unreleased=True)
-    current_version, new_version = guess_unreleased_version(changelog)
+    current_version, current_semantic_version = actual_version(changelog)
+    new_version = guess_unreleased_version(changelog, current_semantic_version)
     release_version(changelog_path, current_version, new_version)
     return new_version
 
