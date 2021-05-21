@@ -55,10 +55,6 @@ def is_link(line: str) -> bool:
     return link_pattern.fullmatch(line) is not None
 
 
-def is_information(line: str) -> bool:
-    return line and not is_link(line)
-
-
 def add_information(category: List[str], line: str):
     category.append(line.lstrip(" *-").rstrip(" -"))
 
@@ -80,7 +76,7 @@ def to_dict(changelog_path: str, *, show_unreleased: bool = False) -> Dict[str, 
             elif is_link(line):
                 link_match = link_pattern.fullmatch(line)
                 urls[link_match.group(1).lower()] = link_match.group(2)
-            elif is_information(line):
+            elif line:
                 add_information(category, line)
 
     for version, url in urls.items():
@@ -91,6 +87,8 @@ def to_dict(changelog_path: str, *, show_unreleased: bool = False) -> Dict[str, 
 
 def to_raw_dict(changelog_path: str) -> Dict[str, dict]:
     changes = {}
+    # As URLs can be defined before actual usage, maintain a separate dict
+    urls = {}
     with open(changelog_path) as change_log:
         current_release = {}
         for line in change_log:
@@ -100,8 +98,14 @@ def to_raw_dict(changelog_path: str) -> Dict[str, dict]:
                 current_release = add_release(
                     changes, clean_line, show_unreleased=False
                 )
-            elif is_category(clean_line) or is_information(clean_line):
+            elif is_link(clean_line):
+                link_match = link_pattern.fullmatch(clean_line)
+                urls[link_match.group(1).lower()] = link_match.group(2)
+            elif clean_line:
                 current_release["raw"] = current_release.get("raw", "") + line
+
+    for version, url in urls.items():
+        changes.get(version, {})["url"] = url
 
     return changes
 

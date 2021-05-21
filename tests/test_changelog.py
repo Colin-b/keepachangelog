@@ -162,6 +162,7 @@ def test_raw_changelog_with_versions_and_all_categories(changelog):
 """,
             "release_date": "2018-05-31",
             "version": "1.1.0",
+            "url": "https://github.test_url/test_project/compare/v1.0.1...v1.1.0",
         },
         "1.0.1": {
             "raw": """### Fixed
@@ -172,6 +173,7 @@ def test_raw_changelog_with_versions_and_all_categories(changelog):
 """,
             "release_date": "2018-05-31",
             "version": "1.0.1",
+            "url": "https://github.test_url/test_project/compare/v1.0.0...v1.0.1",
         },
         "1.0.0": {
             "raw": """### Deprecated
@@ -180,5 +182,6 @@ def test_raw_changelog_with_versions_and_all_categories(changelog):
 """,
             "release_date": "2017-04-10",
             "version": "1.0.0",
+            "url": "https://github.test_url/test_project/releases/tag/v1.0.0",
         },
     }

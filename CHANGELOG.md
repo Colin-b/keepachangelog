@@ -7,6 +7,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 ### Changed
 - `keepachangelog.to_dict` now contains `url` key for each item if a link is available for the version.
+- `keepachangelog.to_raw_dict` now contains `url` key for each item if a link is available for the version.
 
 ## [0.5.0] - 2021-04-19
 ### Added
