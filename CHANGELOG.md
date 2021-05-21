@@ -9,6 +9,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - `keepachangelog.to_dict` now contains `url` key for each item if a link is available for the version.
 - `keepachangelog.to_raw_dict` now contains `url` key for each item if a link is available for the version.
 
+### Fixed
+- `keepachangelog.release` now allows `pre-release` and `build metadata` information as part of valid semantic version. As per [semantic versioning specifications](https://semver.org). 
+  To ensure compatibility with some python specific versioning, `pre-release` is also handled as not being prefixed with `-`, or prefixed with `.`.
+- `keepachangelog.release` will now bump a pre-release version to a stable version. It was previously failing.
+
 ## [0.5.0] - 2021-04-19
 ### Added
 - `keepachangelog.release` function to guess new version number based on `Unreleased` section, update changelog and return new version number.
