@@ -11,6 +11,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - `keepachangelog.to_dict` now contains `semantic_version` key for each item if the version follows semantic versioning.
 - `keepachangelog.to_raw_dict` now contains `semantic_version` key for each item if the version follows semantic versioning.
 
+### Added
+- `keepachangelog.release` is now allowing to provide a custom new version thanks to the new `new_version` parameter.
+
 ### Fixed
 - `keepachangelog.release` now allows `pre-release` and `build metadata` information as part of valid semantic version. As per [semantic versioning specifications](https://semver.org). 
   To ensure compatibility with some python specific versioning, `pre-release` is also handled as not being prefixed with `-`, or prefixed with `.`.

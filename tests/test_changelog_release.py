@@ -777,3 +777,32 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Enhancement 2 (1.1.0)
 """
         )
+
+
+def test_custom_release(unstable_changelog, mock_date):
+    assert (
+        keepachangelog.release(unstable_changelog, new_version="2.5.0b52") == "2.5.0b52"
+    )
+    with open(unstable_changelog) as file:
+        assert (
+            file.read()
+            == """# Changelog
+All notable changes to this project will be documented in this file.
+
+The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
+and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
+
+## [Unreleased]
+
+## [2.5.0b52] - 2021-03-19
+### Changed
+- Enhancement 1 (1.1.0)
+
+## [2.5.0b51] - 2018-05-31
+### Changed
+- Enhancement 1 (1.1.0)
+- sub *enhancement 1*
+- sub enhancement 2
+- Enhancement 2 (1.1.0)
+"""
+        )

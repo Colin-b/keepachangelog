@@ -119,10 +119,11 @@ def to_raw_dict(changelog_path: str) -> Dict[str, dict]:
     return changes
 
 
-def release(changelog_path: str) -> str:
+def release(changelog_path: str, new_version: str = None) -> str:
     changelog = to_dict(changelog_path, show_unreleased=True)
     current_version, current_semantic_version = actual_version(changelog)
-    new_version = guess_unreleased_version(changelog, current_semantic_version)
+    if not new_version:
+        new_version = guess_unreleased_version(changelog, current_semantic_version)
     release_version(changelog_path, current_version, new_version)
     return new_version
 
