@@ -2,7 +2,11 @@ import datetime
 import re
 from typing import Dict, List, Optional
 
-from keepachangelog._versioning import guess_unreleased_version
+from keepachangelog._versioning import (
+    guess_unreleased_version,
+    to_semantic,
+    InvalidSemanticVersion,
+)
 
 
 def is_release(line: str) -> bool:
@@ -21,10 +25,14 @@ def add_release(changes: Dict[str, dict], line: str, show_unreleased: bool) -> d
     if not show_unreleased and not release_date:
         return {}
     version = unlink(version)
-    return changes.setdefault(
-        version,
-        {"version": version, "release_date": extract_date(release_date)},
-    )
+
+    release_details = {"version": version, "release_date": extract_date(release_date)}
+    try:
+        release_details["semantic_version"] = to_semantic(version)
+    except InvalidSemanticVersion:
+        pass
+
+    return changes.setdefault(version, release_details)
 
 
 def unlink(value: str) -> str:

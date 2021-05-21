@@ -8,6 +8,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 - `keepachangelog.to_dict` now contains `url` key for each item if a link is available for the version.
 - `keepachangelog.to_raw_dict` now contains `url` key for each item if a link is available for the version.
+- `keepachangelog.to_dict` now contains `semantic_version` key for each item if the version follows semantic versioning.
+- `keepachangelog.to_raw_dict` now contains `semantic_version` key for each item if the version follows semantic versioning.
 
 ### Fixed
 - `keepachangelog.release` now allows `pre-release` and `build metadata` information as part of valid semantic version. As per [semantic versioning specifications](https://semver.org). 

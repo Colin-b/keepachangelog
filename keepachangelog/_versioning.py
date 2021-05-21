@@ -11,6 +11,13 @@ initial_semantic_version = {
 }
 
 
+class InvalidSemanticVersion(Exception):
+    def __init__(self, version: str):
+        super().__init__(
+            f"{version} is not following semantic versioning. Check https://semver.org for more information."
+        )
+
+
 def contains_breaking_changes(unreleased: dict) -> bool:
     return "removed" in unreleased or "changed" in unreleased
 
@@ -106,9 +113,7 @@ def to_semantic(version: Optional[str]) -> dict:
             for key, value in match.groupdict().items()
         }
 
-    raise Exception(
-        f"{version} is not following semantic versioning. Check https://semver.org for more information."
-    )
+    raise InvalidSemanticVersion(version)
 
 
 def from_semantic(semantic_version: dict) -> str:

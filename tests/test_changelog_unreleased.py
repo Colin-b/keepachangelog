@@ -94,6 +94,13 @@ def test_changelog_with_versions_and_all_categories(changelog):
         },
         "1.1.0": {
             "version": "1.1.0",
+            "semantic_version": {
+                "buildmetadata": None,
+                "major": 1,
+                "minor": 1,
+                "patch": 0,
+                "prerelease": None,
+            },
             "release_date": "2018-05-31",
             "changed": [
                 "Enhancement 1 (1.1.0)",
@@ -105,6 +112,13 @@ def test_changelog_with_versions_and_all_categories(changelog):
         },
         "1.0.1": {
             "version": "1.0.1",
+            "semantic_version": {
+                "buildmetadata": None,
+                "major": 1,
+                "minor": 0,
+                "patch": 1,
+                "prerelease": None,
+            },
             "release_date": "2018-05-31",
             "fixed": [
                 "Bug fix 1 (1.0.1)",
@@ -116,6 +130,13 @@ def test_changelog_with_versions_and_all_categories(changelog):
         },
         "1.0.0": {
             "version": "1.0.0",
+            "semantic_version": {
+                "buildmetadata": None,
+                "major": 1,
+                "minor": 0,
+                "patch": 0,
+                "prerelease": None,
+            },
             "release_date": "2017-04-10",
             "deprecated": ["Known issue 1 (1.0.0)", "Known issue 2 (1.0.0)"],
             "url": "https://github.test_url/test_project/releases/tag/v1.0.0",
