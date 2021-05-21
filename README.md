@@ -147,6 +147,72 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 `show_unreleased` parameter can be specified in order to include `Unreleased` section information.
 Note that `release_date` will be set to None in such as case.
 
+### Retrieving the raw content
+
+If for some reason you would like to retrieve the raw content of a release you can use `to_raw_dict` instead.
+
+```python
+import keepachangelog
+
+changes = keepachangelog.to_raw_dict("path/to/CHANGELOG.md")
+```
+
+`changes` would look like:
+
+```python
+changes = {
+    "1.1.0": {
+        "raw": """### Changed
+- Enhancement 1 (1.1.0)
+ - sub enhancement 1
+ - sub enhancement 2
+- Enhancement 2 (1.1.0)""",
+        "release_date": "2018-05-31",
+        "version": "1.1.0",
+        "semantic_version": {
+            "major": 1,
+            "minor": 1,
+            "patch": 0,
+            "prerelease": None,
+            "buildmetadata": None,
+        },
+        "url": "https://github.test_url/test_project/compare/v1.0.1...v1.1.0",
+    },
+    "1.0.1": {
+        "raw": """### Fixed
+- Bug fix 1 (1.0.1)
+ - sub bug 1
+ - sub bug 2
+- Bug fix 2 (1.0.1)""",
+        "release_date": "2018-05-31",
+        "version": "1.0.1",
+        "semantic_version": {
+            "major": 1,
+            "minor": 0,
+            "patch": 1,
+            "prerelease": None,
+            "buildmetadata": None,
+        },
+        "url": "https://github.test_url/test_project/compare/v1.0.0...v1.0.1",
+    },
+    "1.0.0": {
+        "raw": """### Deprecated
+- Known issue 1 (1.0.0)
+- Known issue 2 (1.0.0)""",
+        "release_date": "2017-04-10",
+        "version": "1.0.0",
+        "semantic_version": {
+            "major": 1,
+            "minor": 0,
+            "patch": 0,
+            "prerelease": None,
+            "buildmetadata": None,
+        },
+        "url": "https://github.test_url/test_project/releases/tag/v1.0.0",
+    },
+}
+```
+
 ## Release
 
 You can create a new release by using `keepachangelog.release` function.
@@ -158,7 +224,7 @@ new_version = keepachangelog.release("path/to/CHANGELOG.md")
 ```
 
 This will:
-* Guess the new version number and return it:
+* If `new_version` parameter is not provided, guess the new version number and return it:
   * `Removed` or `Changed` sections will be considered as breaking changes, thus incrementing the major version.
   * If the only section is `Fixed`, only patch will be incremented.
   * Otherwise, minor will be incremented.
