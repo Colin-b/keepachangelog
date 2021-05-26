@@ -107,6 +107,55 @@ def to_dict(changelog_path: str, *, show_unreleased: bool = False) -> Dict[str, 
     return changes
 
 
+def from_dict(changes: Dict[str, dict]):
+    content = """# Changelog
+All notable changes to this project will be documented in this file.
+
+The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
+and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).\n"""
+
+    for current_release in changes.values():
+        content += f"\n## [{current_release['version'].capitalize()}]"
+
+        if current_release.get("release_date"):
+            content += f" - {current_release['release_date']}"
+
+        uncategorized = current_release.get("uncategorized", [])
+        for category_content in uncategorized:
+            content += f"\n* {category_content}"
+        if uncategorized:
+            content += "\n"
+
+        for category_name, category_content in current_release.items():
+            if category_name in [
+                "version",
+                "release_date",
+                "uncategorized",
+                "semantic_version",
+                "url",
+            ]:
+                continue
+
+            content += f"\n### {category_name.capitalize()}"
+
+            for categorized in category_content:
+                content += f"\n- {categorized}"
+
+            content += "\n"
+
+    content += "\n"
+
+    for current_release in changes.values():
+        if not current_release.get("url"):
+            continue
+
+        content += (
+            f"[{current_release['version'].capitalize()}]: {current_release['url']}\n"
+        )
+
+    return content
+
+
 def to_raw_dict(changelog_path: str) -> Dict[str, dict]:
     changes = {}
     # As URLs can be defined before actual usage, maintain a separate dict

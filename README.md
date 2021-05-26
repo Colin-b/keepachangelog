@@ -5,11 +5,12 @@
 <a href="https://travis-ci.com/Colin-b/keepachangelog"><img alt="Build status" src="https://api.travis-ci.com/Colin-b/keepachangelog.svg?branch=master"></a>
 <a href="https://travis-ci.com/Colin-b/keepachangelog"><img alt="Coverage" src="https://img.shields.io/badge/coverage-100%25-brightgreen"></a>
 <a href="https://github.com/psf/black"><img alt="Code style: black" src="https://img.shields.io/badge/code%20style-black-000000.svg"></a>
-<a href="https://travis-ci.com/Colin-b/keepachangelog"><img alt="Number of tests" src="https://img.shields.io/badge/tests-31 passed-blue"></a>
+<a href="https://travis-ci.com/Colin-b/keepachangelog"><img alt="Number of tests" src="https://img.shields.io/badge/tests-33 passed-blue"></a>
 <a href="https://pypi.org/project/keepachangelog/"><img alt="Number of downloads" src="https://img.shields.io/pypi/dm/keepachangelog"></a>
 </p>
 
 * [Convert to dict](#convert-changelog-to-dict)
+* [Convert from dict](#convert-dict-to-changelog)
 * [Release a new version](#release)
 * [Add changelog retrieval REST API endpoint](#endpoint)
   * [Starlette](#starlette)
@@ -211,6 +212,17 @@ changes = {
         "url": "https://github.test_url/test_project/releases/tag/v1.0.0",
     },
 }
+```
+
+## Convert dict to changelog
+
+Convert a python dict (resulting from [`keepachangelog.to_dict`](#convert-changelog-to-dict)) to a changelog markdown content following [keep a changelog](https://keepachangelog.com/en/1.1.0/) format.
+
+```python
+import keepachangelog
+
+changes = keepachangelog.to_dict("path/to/CHANGELOG.md")
+content = keepachangelog.from_dict(changes)
 ```
 
 ## Release

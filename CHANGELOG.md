@@ -12,6 +12,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 - `keepachangelog.to_dict` now contains `uncategorized` key for each item if uncategorized information are available for the version.
 
+### Added
+- `keepachangelog.from_dict` to create a changelog content based on a dictionary.
+
 ## [1.0.0] - 2021-05-21
 ### Changed
 - `keepachangelog.to_dict` now contains `url` key for each item if a link is available for the version.
