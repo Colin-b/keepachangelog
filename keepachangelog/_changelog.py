@@ -1,6 +1,6 @@
 import datetime
 import re
-from typing import Dict, List, Optional
+from typing import Dict, List, Optional, Iterable, Union
 
 from keepachangelog._versioning import (
     actual_version,
@@ -66,7 +66,9 @@ def add_information(category: List[str], line: str):
     category.append(line.lstrip(" *-").rstrip(" -"))
 
 
-def to_dict(changelog_path: str, *, show_unreleased: bool = False) -> Dict[str, dict]:
+def to_dict(
+    changelog_path: Union[str, Iterable[str]], *, show_unreleased: bool = False
+) -> Dict[str, dict]:
     """
     Convert changelog markdown file following keep a changelog format into python dict.
 
@@ -74,32 +76,33 @@ def to_dict(changelog_path: str, *, show_unreleased: bool = False) -> Dict[str, 
     :param show_unreleased: Add unreleased section (if any) to the resulting dictionary.
     :return python dict containing version as key and related changes as value.
     """
+    # Allow for changelog as a file path or as a context manager providing content
+    try:
+        with open(changelog_path) as change_log:
+            return _to_dict(change_log, show_unreleased)
+    except TypeError:
+        return _to_dict(changelog_path, show_unreleased)
+
+
+def _to_dict(change_log: Iterable[str], show_unreleased: bool) -> Dict[str, dict]:
     changes = {}
     # As URLs can be defined before actual usage, maintain a separate dict
     urls = {}
+    current_release = {}
+    category = []
+    for line in change_log:
+        line = line.strip(" \n")
 
-    # Allow for changelog as a file path or as a context manager providing content
-    try:
-        change_log = open(changelog_path)
-    except TypeError:
-        change_log = changelog_path
-
-    with change_log:
-        current_release = {}
-        category = []
-        for line in change_log:
-            line = line.strip(" \n")
-
-            if is_release(line):
-                current_release = add_release(changes, line)
-                category = current_release.setdefault("uncategorized", [])
-            elif is_category(line):
-                category = add_category(current_release, line)
-            elif is_link(line):
-                link_match = link_pattern.fullmatch(line)
-                urls[link_match.group(1).lower()] = link_match.group(2)
-            elif line:
-                add_information(category, line)
+        if is_release(line):
+            current_release = add_release(changes, line)
+            category = current_release.setdefault("uncategorized", [])
+        elif is_category(line):
+            category = add_category(current_release, line)
+        elif is_link(line):
+            link_match = link_pattern.fullmatch(line)
+            urls[link_match.group(1).lower()] = link_match.group(2)
+        elif line:
+            add_information(category, line)
 
     # Add url for each version (create version if not existing)
     for version, url in urls.items():
