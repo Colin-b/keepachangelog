@@ -68,7 +68,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Known issue 2 (1.0.0)
 
 [Unreleased]: https://github.test_url/test_project/compare/v1.1.0...HEAD
-[1.1.0]: https://github.test_url/test_project/compare/v1.0.1...v1.1.0
+[1.1.0]: https://github.test_url/test_project/compare/v1.0.2...v1.1.0
+[1.0.2]: https://github.test_url/test_project/compare/v1.0.1...v1.0.2
 [1.0.1]: https://github.test_url/test_project/compare/v1.0.0...v1.0.1
 [1.0.0]: https://github.test_url/test_project/releases/tag/v1.0.0
 """
@@ -116,7 +117,11 @@ def test_changelog_with_versions_and_all_categories(changelog):
                 "patch": 0,
                 "prerelease": None,
             },
-            "url": "https://github.test_url/test_project/compare/v1.0.1...v1.1.0",
+            "url": "https://github.test_url/test_project/compare/v1.0.2...v1.1.0",
+        },
+        "1.0.2": {
+            "version": "1.0.2",
+            "url": "https://github.test_url/test_project/compare/v1.0.1...v1.0.2",
         },
         "1.0.1": {
             "fixed": [
@@ -204,7 +209,11 @@ def test_raw_changelog_with_versions_and_all_categories(changelog):
                 "patch": 0,
                 "prerelease": None,
             },
-            "url": "https://github.test_url/test_project/compare/v1.0.1...v1.1.0",
+            "url": "https://github.test_url/test_project/compare/v1.0.2...v1.1.0",
+        },
+        "1.0.2": {
+            "version": "1.0.2",
+            "url": "https://github.test_url/test_project/compare/v1.0.1...v1.0.2",
         },
         "1.0.1": {
             "raw": """### Fixed

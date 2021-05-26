@@ -14,7 +14,7 @@ def is_release(line: str) -> bool:
     return line.startswith("## ")
 
 
-def add_release(changes: Dict[str, dict], line: str, show_unreleased: bool) -> dict:
+def add_release(changes: Dict[str, dict], line: str) -> dict:
     release_line = line[3:].lower().strip(" ")
     # A release is separated by a space between version and release date
     # Release pattern should match lines like: "[0.0.1] - 2020-12-31" or [Unreleased]
@@ -23,8 +23,6 @@ def add_release(changes: Dict[str, dict], line: str, show_unreleased: bool) -> d
         if " " in release_line
         else (release_line, None)
     )
-    if not show_unreleased and not release_date:
-        return {}
     version = unlink(version)
 
     release_details = {"version": version, "release_date": extract_date(release_date)}
@@ -79,7 +77,8 @@ def to_dict(changelog_path: str, *, show_unreleased: bool = False) -> Dict[str, 
             line = line.strip(" \n")
 
             if is_release(line):
-                current_release = add_release(changes, line, show_unreleased)
+                current_release = add_release(changes, line)
+                category = current_release.setdefault("uncategorized", [])
             elif is_category(line):
                 category = add_category(current_release, line)
             elif is_link(line):
@@ -88,8 +87,22 @@ def to_dict(changelog_path: str, *, show_unreleased: bool = False) -> Dict[str, 
             elif line:
                 add_information(category, line)
 
+    # Add url for each version (create version if not existing)
     for version, url in urls.items():
-        changes.get(version, {})["url"] = url
+        changes.setdefault(version, {"version": version})["url"] = url
+
+    # Avoid empty uncategorized
+    unreleased_version = None
+    for version, current_release in changes.items():
+        if not current_release.get("uncategorized"):
+            current_release.pop("uncategorized", None)
+
+        # If there is an empty release date, it identify the unreleased section
+        if ("release_date" in current_release) and not current_release["release_date"]:
+            unreleased_version = version
+
+    if not show_unreleased:
+        changes.pop(unreleased_version, None)
 
     return changes
 
@@ -104,17 +117,24 @@ def to_raw_dict(changelog_path: str) -> Dict[str, dict]:
             clean_line = line.strip(" \n")
 
             if is_release(clean_line):
-                current_release = add_release(
-                    changes, clean_line, show_unreleased=False
-                )
+                current_release = add_release(changes, clean_line)
             elif is_link(clean_line):
                 link_match = link_pattern.fullmatch(clean_line)
                 urls[link_match.group(1).lower()] = link_match.group(2)
             elif clean_line:
                 current_release["raw"] = current_release.get("raw", "") + line
 
+    # Add url for each version (create version if not existing)
     for version, url in urls.items():
-        changes.get(version, {})["url"] = url
+        changes.setdefault(version, {"version": version})["url"] = url
+
+    unreleased_version = None
+    for version, current_release in changes.items():
+        # If there is an empty release date, it identify the unreleased section
+        if ("release_date" in current_release) and not current_release["release_date"]:
+            unreleased_version = version
+
+    changes.pop(unreleased_version, None)
 
     return changes
 

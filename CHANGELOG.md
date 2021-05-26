@@ -5,6 +5,12 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+### Fixed
+- `keepachangelog.to_dict` now contains releases that have a URL but no section.
+- `keepachangelog.to_raw_dict` now contains releases that have a URL but no section.
+
+### Changed
+- `keepachangelog.to_dict` now contains `uncategorized` key for each item if uncategorized information are available for the version.
 
 ## [1.0.0] - 2021-05-21
 ### Changed

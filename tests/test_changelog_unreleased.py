@@ -18,6 +18,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+- Release note 0. 
 ### Changed
 - Release note 1. 
 * Release note 2.
@@ -88,6 +89,7 @@ def test_changelog_with_versions_and_all_categories(changelog):
             ],
             "fixed": ["Bug fix 1", "sub bug 1", "sub bug 2", "Bug fix 2"],
             "security": ["Known issue 1", "Known issue 2"],
+            "uncategorized": ["Release note 0."],
             "deprecated": ["Deprecated feature 1", "Future removal 2"],
             "removed": ["Deprecated feature 2", "Future removal 1"],
             "url": "https://github.test_url/test_project/compare/v1.1.0...HEAD",
