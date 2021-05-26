@@ -14,6 +14,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 - `keepachangelog.from_dict` to create a changelog content based on a dictionary.
+- `keepachangelog.to_dict` now allows to provide a context manager allowing to iterate on lines instead of a file path.
 
 ## [1.0.0] - 2021-05-21
 ### Changed

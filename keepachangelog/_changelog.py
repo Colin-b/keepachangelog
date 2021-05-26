@@ -67,10 +67,24 @@ def add_information(category: List[str], line: str):
 
 
 def to_dict(changelog_path: str, *, show_unreleased: bool = False) -> Dict[str, dict]:
+    """
+    Convert changelog markdown file following keep a changelog format into python dict.
+
+    :param changelog_path: Path to the changelog file, or context manager providing iteration on lines.
+    :param show_unreleased: Add unreleased section (if any) to the resulting dictionary.
+    :return python dict containing version as key and related changes as value.
+    """
     changes = {}
     # As URLs can be defined before actual usage, maintain a separate dict
     urls = {}
-    with open(changelog_path) as change_log:
+
+    # Allow for changelog as a file path or as a context manager providing content
+    try:
+        change_log = open(changelog_path)
+    except TypeError:
+        change_log = changelog_path
+
+    with change_log:
         current_release = {}
         category = []
         for line in change_log:
