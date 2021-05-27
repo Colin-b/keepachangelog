@@ -81,17 +81,15 @@ def actual_version(changelog: dict) -> Tuple[Optional[str], dict]:
     return versions.pop() if versions else (None, initial_semantic_version.copy())
 
 
-def guess_unreleased_version(changelog: dict, current_semantic_version: dict) -> str:
+def guess_unreleased_version(
+    changelog: dict, current_semantic_version: dict
+) -> Optional[str]:
     unreleased = changelog.get("unreleased", {})
     # Only keep user provided entries
     unreleased = unreleased.copy()
     unreleased.pop("metadata", None)
-    if not unreleased:
-        raise Exception(
-            "Release content must be provided within changelog Unreleased section."
-        )
-
-    return from_semantic(bump(unreleased, current_semantic_version))
+    if unreleased:
+        return from_semantic(bump(unreleased, current_semantic_version))
 
 
 semantic_versioning = re.compile(

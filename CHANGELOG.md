@@ -6,6 +6,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [2.0.0.dev1] - 2021-05-27
+### Changed
+- `keepachangelog.release` will now return `None` instead of throwing an exception if there is no Unreleased content.
+
 ## [2.0.0.dev0] - 2021-05-27
 ### Fixed
 - `keepachangelog.to_dict` now contains releases that have a URL but no section.
@@ -73,7 +77,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 - Initial release.
 
-[Unreleased]: https://github.com/Colin-b/keepachangelog/compare/v2.0.0.dev0...HEAD
+[Unreleased]: https://github.com/Colin-b/keepachangelog/compare/v2.0.0.dev1...HEAD
+[2.0.0.dev1]: https://github.com/Colin-b/keepachangelog/compare/v2.0.0.dev0...v2.0.0.dev1
 [2.0.0.dev0]: https://github.com/Colin-b/keepachangelog/compare/v1.0.0...v2.0.0.dev0
 [1.0.0]: https://github.com/Colin-b/keepachangelog/compare/v0.5.0...v1.0.0
 [0.5.0]: https://github.com/Colin-b/keepachangelog/compare/v0.4.0...v0.5.0

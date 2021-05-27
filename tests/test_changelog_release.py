@@ -726,21 +726,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 
 def test_empty_release(empty_changelog):
-    with pytest.raises(Exception) as exception_info:
-        keepachangelog.release(empty_changelog)
-    assert (
-        str(exception_info.value)
-        == "Release content must be provided within changelog Unreleased section."
-    )
+    assert not keepachangelog.release(empty_changelog)
 
 
 def test_empty_unreleased_release(empty_unreleased_changelog):
-    with pytest.raises(Exception) as exception_info:
-        keepachangelog.release(empty_unreleased_changelog)
-    assert (
-        str(exception_info.value)
-        == "Release content must be provided within changelog Unreleased section."
-    )
+    assert not keepachangelog.release(empty_unreleased_changelog)
 
 
 def test_non_semantic_release(non_semantic_changelog):
