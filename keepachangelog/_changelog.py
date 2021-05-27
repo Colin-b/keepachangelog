@@ -205,12 +205,20 @@ def to_raw_dict(changelog_path: str) -> Dict[str, dict]:
     return changes
 
 
-def release(changelog_path: str, new_version: str = None) -> str:
+def release(changelog_path: str, new_version: str = None) -> Optional[str]:
+    """
+    Release a new version based on changelog unreleased content.
+
+    :param changelog_path: Path to the changelog file.
+    :param new_version: The new version to use instead of trying to guess one.
+    :return: The new version, None if there was no change to release.
+    """
     changelog = to_dict(changelog_path, show_unreleased=True)
     current_version, current_semantic_version = actual_version(changelog)
     if not new_version:
         new_version = guess_unreleased_version(changelog, current_semantic_version)
-    release_version(changelog_path, current_version, new_version)
+    if new_version:
+        release_version(changelog_path, current_version, new_version)
     return new_version
 
 
