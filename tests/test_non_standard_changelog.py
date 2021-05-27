@@ -83,16 +83,18 @@ def test_changelog_with_versions_and_all_categories(changelog):
             "changed": ["Release note 1.", "Release note 2."],
             "deprecated": ["Deprecated feature 1", "Future removal 2"],
             "fixed": ["Bug fix 1", "sub bug 1", "sub bug 2", "Bug fix 2"],
-            "release_date": "august 28, 2019",
             "removed": ["Deprecated feature 2", "Future removal 1"],
             "security": ["Known issue 1", "Known issue 2"],
-            "version": "1.2.0",
-            "semantic_version": {
-                "buildmetadata": None,
-                "major": 1,
-                "minor": 2,
-                "patch": 0,
-                "prerelease": None,
+            "metadata": {
+                "release_date": "august 28, 2019",
+                "version": "1.2.0",
+                "semantic_version": {
+                    "buildmetadata": None,
+                    "major": 1,
+                    "minor": 2,
+                    "patch": 0,
+                    "prerelease": None,
+                },
             },
         },
         "1.1.0": {
@@ -102,14 +104,16 @@ def test_changelog_with_versions_and_all_categories(changelog):
                 "sub enhancement 2",
                 "Enhancement 2 (1.1.0)",
             ],
-            "release_date": "may 03, 2018",
-            "version": "1.1.0",
-            "semantic_version": {
-                "buildmetadata": None,
-                "major": 1,
-                "minor": 1,
-                "patch": 0,
-                "prerelease": None,
+            "metadata": {
+                "release_date": "may 03, 2018",
+                "version": "1.1.0",
+                "semantic_version": {
+                    "buildmetadata": None,
+                    "major": 1,
+                    "minor": 1,
+                    "patch": 0,
+                    "prerelease": None,
+                },
             },
         },
         "1.0.1": {
@@ -119,26 +123,30 @@ def test_changelog_with_versions_and_all_categories(changelog):
                 "sub bug 2",
                 "Bug fix 2 (1.0.1)",
             ],
-            "release_date": "may 01, 2018",
-            "version": "1.0.1",
-            "semantic_version": {
-                "buildmetadata": None,
-                "major": 1,
-                "minor": 0,
-                "patch": 1,
-                "prerelease": None,
+            "metadata": {
+                "release_date": "may 01, 2018",
+                "version": "1.0.1",
+                "semantic_version": {
+                    "buildmetadata": None,
+                    "major": 1,
+                    "minor": 0,
+                    "patch": 1,
+                    "prerelease": None,
+                },
             },
         },
         "1.0.0": {
             "deprecated": ["Known issue 1 (1.0.0)", "Known issue 2 (1.0.0)"],
-            "release_date": "2017-01-01",
-            "version": "1.0.0",
-            "semantic_version": {
-                "buildmetadata": None,
-                "major": 1,
-                "minor": 0,
-                "patch": 0,
-                "prerelease": None,
+            "metadata": {
+                "release_date": "2017-01-01",
+                "version": "1.0.0",
+                "semantic_version": {
+                    "buildmetadata": None,
+                    "major": 1,
+                    "minor": 0,
+                    "patch": 0,
+                    "prerelease": None,
+                },
             },
         },
     }
@@ -146,7 +154,9 @@ def test_changelog_with_versions_and_all_categories(changelog):
 
 def test_changelog_with_unreleased_versions_and_all_categories(changelog):
     assert keepachangelog.to_dict(changelog, show_unreleased=True) == {
-        "master": {"release_date": None, "version": "master"},
+        "master": {
+            "metadata": {"release_date": None, "version": "master"},
+        },
         "1.2.0": {
             "added": [
                 "Enhancement 1",
@@ -157,16 +167,18 @@ def test_changelog_with_unreleased_versions_and_all_categories(changelog):
             "changed": ["Release note 1.", "Release note 2."],
             "deprecated": ["Deprecated feature 1", "Future removal 2"],
             "fixed": ["Bug fix 1", "sub bug 1", "sub bug 2", "Bug fix 2"],
-            "release_date": "august 28, 2019",
             "removed": ["Deprecated feature 2", "Future removal 1"],
             "security": ["Known issue 1", "Known issue 2"],
-            "version": "1.2.0",
-            "semantic_version": {
-                "buildmetadata": None,
-                "major": 1,
-                "minor": 2,
-                "patch": 0,
-                "prerelease": None,
+            "metadata": {
+                "release_date": "august 28, 2019",
+                "version": "1.2.0",
+                "semantic_version": {
+                    "buildmetadata": None,
+                    "major": 1,
+                    "minor": 2,
+                    "patch": 0,
+                    "prerelease": None,
+                },
             },
         },
         "1.1.0": {
@@ -176,14 +188,16 @@ def test_changelog_with_unreleased_versions_and_all_categories(changelog):
                 "sub enhancement 2",
                 "Enhancement 2 (1.1.0)",
             ],
-            "release_date": "may 03, 2018",
-            "version": "1.1.0",
-            "semantic_version": {
-                "buildmetadata": None,
-                "major": 1,
-                "minor": 1,
-                "patch": 0,
-                "prerelease": None,
+            "metadata": {
+                "release_date": "may 03, 2018",
+                "version": "1.1.0",
+                "semantic_version": {
+                    "buildmetadata": None,
+                    "major": 1,
+                    "minor": 1,
+                    "patch": 0,
+                    "prerelease": None,
+                },
             },
         },
         "1.0.1": {
@@ -193,26 +207,30 @@ def test_changelog_with_unreleased_versions_and_all_categories(changelog):
                 "sub bug 2",
                 "Bug fix 2 (1.0.1)",
             ],
-            "release_date": "may 01, 2018",
-            "version": "1.0.1",
-            "semantic_version": {
-                "buildmetadata": None,
-                "major": 1,
-                "minor": 0,
-                "patch": 1,
-                "prerelease": None,
+            "metadata": {
+                "release_date": "may 01, 2018",
+                "version": "1.0.1",
+                "semantic_version": {
+                    "buildmetadata": None,
+                    "major": 1,
+                    "minor": 0,
+                    "patch": 1,
+                    "prerelease": None,
+                },
             },
         },
         "1.0.0": {
             "deprecated": ["Known issue 1 (1.0.0)", "Known issue 2 (1.0.0)"],
-            "release_date": "2017-01-01",
-            "version": "1.0.0",
-            "semantic_version": {
-                "buildmetadata": None,
-                "major": 1,
-                "minor": 0,
-                "patch": 0,
-                "prerelease": None,
+            "metadata": {
+                "release_date": "2017-01-01",
+                "version": "1.0.0",
+                "semantic_version": {
+                    "buildmetadata": None,
+                    "major": 1,
+                    "minor": 0,
+                    "patch": 0,
+                    "prerelease": None,
+                },
             },
         },
     }
@@ -244,14 +262,16 @@ def test_raw_changelog_with_versions_and_all_categories(changelog):
 - Deprecated feature 2
 - Future removal 1
 """,
-            "release_date": "august 28, 2019",
-            "version": "1.2.0",
-            "semantic_version": {
-                "buildmetadata": None,
-                "major": 1,
-                "minor": 2,
-                "patch": 0,
-                "prerelease": None,
+            "metadata": {
+                "release_date": "august 28, 2019",
+                "version": "1.2.0",
+                "semantic_version": {
+                    "buildmetadata": None,
+                    "major": 1,
+                    "minor": 2,
+                    "patch": 0,
+                    "prerelease": None,
+                },
             },
         },
         "1.1.0": {
@@ -261,14 +281,16 @@ def test_raw_changelog_with_versions_and_all_categories(changelog):
 - sub enhancement 2
 - Enhancement 2 (1.1.0)
 """,
-            "release_date": "may 03, 2018",
-            "version": "1.1.0",
-            "semantic_version": {
-                "buildmetadata": None,
-                "major": 1,
-                "minor": 1,
-                "patch": 0,
-                "prerelease": None,
+            "metadata": {
+                "release_date": "may 03, 2018",
+                "version": "1.1.0",
+                "semantic_version": {
+                    "buildmetadata": None,
+                    "major": 1,
+                    "minor": 1,
+                    "patch": 0,
+                    "prerelease": None,
+                },
             },
         },
         "1.0.1": {
@@ -278,14 +300,16 @@ def test_raw_changelog_with_versions_and_all_categories(changelog):
 - sub bug 2
 - Bug fix 2 (1.0.1)
 """,
-            "release_date": "may 01, 2018",
-            "version": "1.0.1",
-            "semantic_version": {
-                "buildmetadata": None,
-                "major": 1,
-                "minor": 0,
-                "patch": 1,
-                "prerelease": None,
+            "metadata": {
+                "release_date": "may 01, 2018",
+                "version": "1.0.1",
+                "semantic_version": {
+                    "buildmetadata": None,
+                    "major": 1,
+                    "minor": 0,
+                    "patch": 1,
+                    "prerelease": None,
+                },
             },
         },
         "1.0.0": {
@@ -293,14 +317,16 @@ def test_raw_changelog_with_versions_and_all_categories(changelog):
 - Known issue 1 (1.0.0)
 - Known issue 2 (1.0.0)
 """,
-            "release_date": "2017-01-01",
-            "version": "1.0.0",
-            "semantic_version": {
-                "buildmetadata": None,
-                "major": 1,
-                "minor": 0,
-                "patch": 0,
-                "prerelease": None,
+            "metadata": {
+                "release_date": "2017-01-01",
+                "version": "1.0.0",
+                "semantic_version": {
+                    "buildmetadata": None,
+                    "major": 1,
+                    "minor": 0,
+                    "patch": 0,
+                    "prerelease": None,
+                },
             },
         },
     }

@@ -85,16 +85,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
                     "sub enhancement 2",
                     "Enhancement 2 (1.1.0)",
                 ],
-                "release_date": "2018-05-31",
-                "version": "1.1.0",
-                "semantic_version": {
-                    "buildmetadata": None,
-                    "major": 1,
-                    "minor": 1,
-                    "patch": 0,
-                    "prerelease": None,
+                "metadata": {
+                    "release_date": "2018-05-31",
+                    "version": "1.1.0",
+                    "semantic_version": {
+                        "buildmetadata": None,
+                        "major": 1,
+                        "minor": 1,
+                        "patch": 0,
+                        "prerelease": None,
+                    },
+                    "url": "https://github.test_url/test_project/compare/v1.0.1...v1.1.0",
                 },
-                "url": "https://github.test_url/test_project/compare/v1.0.1...v1.1.0",
             },
             "1.0.1": {
                 "fixed": [
@@ -103,29 +105,33 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
                     "sub bug 2",
                     "Bug fix 2 (1.0.1)",
                 ],
-                "release_date": "2018-05-31",
-                "version": "1.0.1",
-                "semantic_version": {
-                    "buildmetadata": None,
-                    "major": 1,
-                    "minor": 0,
-                    "patch": 1,
-                    "prerelease": None,
+                "metadata": {
+                    "release_date": "2018-05-31",
+                    "version": "1.0.1",
+                    "semantic_version": {
+                        "buildmetadata": None,
+                        "major": 1,
+                        "minor": 0,
+                        "patch": 1,
+                        "prerelease": None,
+                    },
+                    "url": "https://github.test_url/test_project/compare/v1.0.0...v1.0.1",
                 },
-                "url": "https://github.test_url/test_project/compare/v1.0.0...v1.0.1",
             },
             "1.0.0": {
                 "deprecated": ["Known issue 1 (1.0.0)", "Known issue 2 (1.0.0)"],
-                "release_date": "2017-04-10",
-                "version": "1.0.0",
-                "semantic_version": {
-                    "buildmetadata": None,
-                    "major": 1,
-                    "minor": 0,
-                    "patch": 0,
-                    "prerelease": None,
+                "metadata": {
+                    "release_date": "2017-04-10",
+                    "version": "1.0.0",
+                    "semantic_version": {
+                        "buildmetadata": None,
+                        "major": 1,
+                        "minor": 0,
+                        "patch": 0,
+                        "prerelease": None,
+                    },
+                    "url": "https://github.test_url/test_project/releases/tag/v1.0.0",
                 },
-                "url": "https://github.test_url/test_project/releases/tag/v1.0.0",
             },
         }
 

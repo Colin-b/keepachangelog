@@ -85,9 +85,7 @@ def guess_unreleased_version(changelog: dict, current_semantic_version: dict) ->
     unreleased = changelog.get("unreleased", {})
     # Only keep user provided entries
     unreleased = unreleased.copy()
-    unreleased.pop("version", None)
-    unreleased.pop("release_date", None)
-    unreleased.pop("url", None)
+    unreleased.pop("metadata", None)
     if not unreleased:
         raise Exception(
             "Release content must be provided within changelog Unreleased section."

@@ -52,16 +52,18 @@ def test_changelog_with_empty_version(changelog):
             "changed": ["Release note 1.", "Release note 2."],
             "deprecated": ["Deprecated feature 1", "Future removal 2"],
             "fixed": ["Bug fix 1", "sub bug 1", "sub bug 2", "Bug fix 2"],
-            "release_date": "2018-06-01",
             "removed": ["Deprecated feature 2", "Future removal 1"],
             "security": ["Known issue 1", "Known issue 2"],
-            "version": "",
-            "semantic_version": {
-                "buildmetadata": None,
-                "major": 0,
-                "minor": 0,
-                "patch": 0,
-                "prerelease": None,
+            "metadata": {
+                "release_date": "2018-06-01",
+                "version": "",
+                "semantic_version": {
+                    "buildmetadata": None,
+                    "major": 0,
+                    "minor": 0,
+                    "patch": 0,
+                    "prerelease": None,
+                },
             },
         },
     }

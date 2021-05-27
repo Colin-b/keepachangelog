@@ -5,11 +5,12 @@
 <a href="https://travis-ci.com/Colin-b/keepachangelog"><img alt="Build status" src="https://api.travis-ci.com/Colin-b/keepachangelog.svg?branch=master"></a>
 <a href="https://travis-ci.com/Colin-b/keepachangelog"><img alt="Coverage" src="https://img.shields.io/badge/coverage-100%25-brightgreen"></a>
 <a href="https://github.com/psf/black"><img alt="Code style: black" src="https://img.shields.io/badge/code%20style-black-000000.svg"></a>
-<a href="https://travis-ci.com/Colin-b/keepachangelog"><img alt="Number of tests" src="https://img.shields.io/badge/tests-31 passed-blue"></a>
+<a href="https://travis-ci.com/Colin-b/keepachangelog"><img alt="Number of tests" src="https://img.shields.io/badge/tests-34 passed-blue"></a>
 <a href="https://pypi.org/project/keepachangelog/"><img alt="Number of downloads" src="https://img.shields.io/pypi/dm/keepachangelog"></a>
 </p>
 
 * [Convert to dict](#convert-changelog-to-dict)
+* [Convert from dict](#convert-dict-to-changelog)
 * [Release a new version](#release)
 * [Add changelog retrieval REST API endpoint](#endpoint)
   * [Starlette](#starlette)
@@ -36,16 +37,18 @@ changes = {
             "sub enhancement 2",
             "Enhancement 2 (1.1.0)",
         ],
-        "release_date": "2018-05-31",
-        "version": "1.1.0",
-        "semantic_version": {
-            "major": 1,
-            "minor": 1,
-            "patch": 0,
-            "prerelease": None,
-            "buildmetadata": None,
+        "metadata": {
+            "release_date": "2018-05-31",
+            "version": "1.1.0",
+            "semantic_version": {
+                "major": 1,
+                "minor": 1,
+                "patch": 0,
+                "prerelease": None,
+                "buildmetadata": None,
+            },
+            "url": "https://github.test_url/test_project/compare/v1.0.1...v1.1.0",
         },
-        "url": "https://github.test_url/test_project/compare/v1.0.1...v1.1.0",
     },
     "1.0.1": {
         "fixed": [
@@ -54,29 +57,33 @@ changes = {
             "sub bug 2",
             "Bug fix 2 (1.0.1)",
         ],
-        "release_date": "2018-05-31",
-        "version": "1.0.1",
-        "semantic_version": {
-            "major": 1,
-            "minor": 0,
-            "patch": 1,
-            "prerelease": None,
-            "buildmetadata": None,
+        "metadata": {
+            "release_date": "2018-05-31",
+            "version": "1.0.1",
+            "semantic_version": {
+                "major": 1,
+                "minor": 0,
+                "patch": 1,
+                "prerelease": None,
+                "buildmetadata": None,
+            },
+            "url": "https://github.test_url/test_project/compare/v1.0.0...v1.0.1",
         },
-        "url": "https://github.test_url/test_project/compare/v1.0.0...v1.0.1",
     },
     "1.0.0": {
         "deprecated": ["Known issue 1 (1.0.0)", "Known issue 2 (1.0.0)"],
-        "release_date": "2017-04-10",
-        "version": "1.0.0",
-        "semantic_version": {
-            "major": 1,
-            "minor": 0,
-            "patch": 0,
-            "prerelease": None,
-            "buildmetadata": None,
+        "metadata": {
+            "release_date": "2017-04-10",
+            "version": "1.0.0",
+            "semantic_version": {
+                "major": 1,
+                "minor": 0,
+                "patch": 0,
+                "prerelease": None,
+                "buildmetadata": None,
+            },
+            "url": "https://github.test_url/test_project/releases/tag/v1.0.0",
         },
-        "url": "https://github.test_url/test_project/releases/tag/v1.0.0",
     },
 }
 ```
@@ -145,7 +152,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ```
 
 `show_unreleased` parameter can be specified in order to include `Unreleased` section information.
-Note that `release_date` will be set to None in such as case.
+Note that `release_date` metadata will be set to None in such as case.
 
 ### Retrieving the raw content
 
@@ -167,16 +174,18 @@ changes = {
  - sub enhancement 1
  - sub enhancement 2
 - Enhancement 2 (1.1.0)""",
-        "release_date": "2018-05-31",
-        "version": "1.1.0",
-        "semantic_version": {
-            "major": 1,
-            "minor": 1,
-            "patch": 0,
-            "prerelease": None,
-            "buildmetadata": None,
+        "metadata": {
+            "release_date": "2018-05-31",
+            "version": "1.1.0",
+            "semantic_version": {
+                "major": 1,
+                "minor": 1,
+                "patch": 0,
+                "prerelease": None,
+                "buildmetadata": None,
+            },
+            "url": "https://github.test_url/test_project/compare/v1.0.1...v1.1.0",
         },
-        "url": "https://github.test_url/test_project/compare/v1.0.1...v1.1.0",
     },
     "1.0.1": {
         "raw": """### Fixed
@@ -184,33 +193,48 @@ changes = {
  - sub bug 1
  - sub bug 2
 - Bug fix 2 (1.0.1)""",
-        "release_date": "2018-05-31",
-        "version": "1.0.1",
-        "semantic_version": {
-            "major": 1,
-            "minor": 0,
-            "patch": 1,
-            "prerelease": None,
-            "buildmetadata": None,
+        "metadata": {
+            "release_date": "2018-05-31",
+            "version": "1.0.1",
+            "semantic_version": {
+                "major": 1,
+                "minor": 0,
+                "patch": 1,
+                "prerelease": None,
+                "buildmetadata": None,
+            },
+            "url": "https://github.test_url/test_project/compare/v1.0.0...v1.0.1",
         },
-        "url": "https://github.test_url/test_project/compare/v1.0.0...v1.0.1",
     },
     "1.0.0": {
         "raw": """### Deprecated
 - Known issue 1 (1.0.0)
 - Known issue 2 (1.0.0)""",
-        "release_date": "2017-04-10",
-        "version": "1.0.0",
-        "semantic_version": {
-            "major": 1,
-            "minor": 0,
-            "patch": 0,
-            "prerelease": None,
-            "buildmetadata": None,
+        "metadata": {
+            "release_date": "2017-04-10",
+            "version": "1.0.0",
+            "semantic_version": {
+                "major": 1,
+                "minor": 0,
+                "patch": 0,
+                "prerelease": None,
+                "buildmetadata": None,
+            },
+            "url": "https://github.test_url/test_project/releases/tag/v1.0.0",
         },
-        "url": "https://github.test_url/test_project/releases/tag/v1.0.0",
     },
 }
+```
+
+## Convert dict to changelog
+
+Convert a python dict (resulting from [`keepachangelog.to_dict`](#convert-changelog-to-dict)) to a changelog markdown content following [keep a changelog](https://keepachangelog.com/en/1.1.0/) format.
+
+```python
+import keepachangelog
+
+changes = keepachangelog.to_dict("path/to/CHANGELOG.md")
+content = keepachangelog.from_dict(changes)
 ```
 
 ## Release

@@ -6,6 +6,22 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [2.0.0.dev0] - 2021-05-27
+### Fixed
+- `keepachangelog.to_dict` now contains releases that have a URL but no section.
+- `keepachangelog.to_raw_dict` now contains releases that have a URL but no section.
+
+### Changed
+- `keepachangelog.to_dict` now contains `uncategorized` key for each item if uncategorized information are available for the version.
+- `keepachangelog.to_dict` now contains `metadata` key where `version`, `release_date`, `semantic_version` and `url` have been moved.
+- `keepachangelog.to_raw_dict` now contains `metadata` key where `version`, `release_date`, `semantic_version` and `url` have been moved.
+- As `keepachangelog.starlette.add_changelog_endpoint` is returning data as returned by `keepachangelog.to_dict`, the endpoint output is now modified.
+- As `keepachangelog.flask_restx.add_changelog_endpoint` is returning data as returned by `keepachangelog.to_dict`, the endpoint output is now modified.
+
+### Added
+- `keepachangelog.from_dict` to create a changelog content based on a dictionary.
+- `keepachangelog.to_dict` now allows to provide any line iterable instead of only a file path.
+
 ## [1.0.0] - 2021-05-21
 ### Changed
 - `keepachangelog.to_dict` now contains `url` key for each item if a link is available for the version.
@@ -57,7 +73,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 - Initial release.
 
-[Unreleased]: https://github.com/Colin-b/keepachangelog/compare/v1.0.0...HEAD
+[Unreleased]: https://github.com/Colin-b/keepachangelog/compare/v2.0.0.dev0...HEAD
+[2.0.0.dev0]: https://github.com/Colin-b/keepachangelog/compare/v1.0.0...v2.0.0.dev0
 [1.0.0]: https://github.com/Colin-b/keepachangelog/compare/v0.5.0...v1.0.0
 [0.5.0]: https://github.com/Colin-b/keepachangelog/compare/v0.4.0...v0.5.0
 [0.4.0]: https://github.com/Colin-b/keepachangelog/compare/v0.3.1...v0.4.0
