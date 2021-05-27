@@ -83,8 +83,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 def test_changelog_with_versions_and_all_categories(changelog):
     assert keepachangelog.to_dict(changelog, show_unreleased=True) == {
         "unreleased": {
-            "version": "unreleased",
-            "release_date": None,
             "changed": ["Release note 1.", "Release note 2."],
             "added": [
                 "Enhancement 1",
@@ -97,72 +95,86 @@ def test_changelog_with_versions_and_all_categories(changelog):
             "uncategorized": ["Release note 0."],
             "deprecated": ["Deprecated feature 1", "Future removal 2"],
             "removed": ["Deprecated feature 2", "Future removal 1"],
-            "url": "https://github.test_url/test_project/compare/v1.1.0...HEAD",
+            "metadata": {
+                "version": "unreleased",
+                "release_date": None,
+                "url": "https://github.test_url/test_project/compare/v1.1.0...HEAD",
+            },
         },
         "1.1.0": {
-            "version": "1.1.0",
-            "semantic_version": {
-                "buildmetadata": None,
-                "major": 1,
-                "minor": 1,
-                "patch": 0,
-                "prerelease": None,
-            },
-            "release_date": "2018-05-31",
             "changed": [
                 "Enhancement 1 (1.1.0)",
                 "sub *enhancement 1*",
                 "sub enhancement 2",
                 "Enhancement 2 (1.1.0)",
             ],
-            "url": "https://github.test_url/test_project/compare/v1.0.2...v1.1.0",
+            "metadata": {
+                "version": "1.1.0",
+                "semantic_version": {
+                    "buildmetadata": None,
+                    "major": 1,
+                    "minor": 1,
+                    "patch": 0,
+                    "prerelease": None,
+                },
+                "release_date": "2018-05-31",
+                "url": "https://github.test_url/test_project/compare/v1.0.2...v1.1.0",
+            },
         },
         "1.0.2": {
-            "url": "https://github.test_url/test_project/compare/v1.0.1...v1.0.2",
-            "version": "1.0.2",
+            "metadata": {
+                "url": "https://github.test_url/test_project/compare/v1.0.1...v1.0.2",
+                "version": "1.0.2",
+            },
         },
         "1.0.1": {
-            "version": "1.0.1",
-            "semantic_version": {
-                "buildmetadata": None,
-                "major": 1,
-                "minor": 0,
-                "patch": 1,
-                "prerelease": None,
-            },
-            "release_date": "2018-05-31",
             "fixed": [
                 "Bug fix 1 (1.0.1)",
                 "sub bug 1",
                 "sub bug 2",
                 "Bug fix 2 (1.0.1)",
             ],
-            "url": "https://github.test_url/test_project/compare/v1.0.0...v1.0.1",
+            "metadata": {
+                "version": "1.0.1",
+                "semantic_version": {
+                    "buildmetadata": None,
+                    "major": 1,
+                    "minor": 0,
+                    "patch": 1,
+                    "prerelease": None,
+                },
+                "release_date": "2018-05-31",
+                "url": "https://github.test_url/test_project/compare/v1.0.0...v1.0.1",
+            },
         },
         "1.0.0": {
-            "version": "1.0.0",
-            "semantic_version": {
-                "buildmetadata": None,
-                "major": 1,
-                "minor": 0,
-                "patch": 0,
-                "prerelease": None,
-            },
-            "release_date": "2017-04-10",
             "deprecated": ["Known issue 1 (1.0.0)", "Known issue 2 (1.0.0)"],
-            "url": "https://github.test_url/test_project/releases/tag/v1.0.0",
+            "metadata": {
+                "version": "1.0.0",
+                "semantic_version": {
+                    "buildmetadata": None,
+                    "major": 1,
+                    "minor": 0,
+                    "patch": 0,
+                    "prerelease": None,
+                },
+                "release_date": "2017-04-10",
+                "url": "https://github.test_url/test_project/releases/tag/v1.0.0",
+            },
         },
         "0.0.1": {
             "added": ["First release"],
-            "release_date": "2017-01-01",
-            "semantic_version": {
-                "buildmetadata": None,
-                "major": 0,
-                "minor": 0,
-                "patch": 1,
-                "prerelease": None,
+            "metadata": {
+                "release_date": "2017-01-01",
+                "semantic_version": {
+                    "buildmetadata": None,
+                    "major": 0,
+                    "minor": 0,
+                    "patch": 1,
+                    "prerelease": None,
+                },
+                "version": "0.0.1",
             },
-            "version": "0.0.1",
         },
     }
 

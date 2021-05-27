@@ -11,6 +11,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 - `keepachangelog.to_dict` now contains `uncategorized` key for each item if uncategorized information are available for the version.
+- `keepachangelog.to_dict` now contains `metadata` key where `version`, `release_date`, `semantic_version` and `url` have been moved.
+- `keepachangelog.to_raw_dict` now contains `metadata` key where `version`, `release_date`, `semantic_version` and `url` have been moved.
+- As `keepachangelog.starlette.add_changelog_endpoint` is returning data as returned by `keepachangelog.to_dict`, the endpoint output is now modified.
+- As `keepachangelog.flask_restx.add_changelog_endpoint` is returning data as returned by `keepachangelog.to_dict`, the endpoint output is now modified.
 
 ### Added
 - `keepachangelog.from_dict` to create a changelog content based on a dictionary.

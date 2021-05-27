@@ -25,13 +25,13 @@ def add_release(changes: Dict[str, dict], line: str) -> dict:
     )
     version = unlink(version)
 
-    release_details = {"version": version, "release_date": extract_date(release_date)}
+    metadata = {"version": version, "release_date": extract_date(release_date)}
     try:
-        release_details["semantic_version"] = to_semantic(version)
+        metadata["semantic_version"] = to_semantic(version)
     except InvalidSemanticVersion:
         pass
 
-    return changes.setdefault(version, release_details)
+    return changes.setdefault(version, {"metadata": metadata})
 
 
 def unlink(value: str) -> str:
@@ -106,16 +106,19 @@ def _to_dict(change_log: Iterable[str], show_unreleased: bool) -> Dict[str, dict
 
     # Add url for each version (create version if not existing)
     for version, url in urls.items():
-        changes.setdefault(version, {"version": version})["url"] = url
+        changes.setdefault(version, {"metadata": {"version": version}})["metadata"][
+            "url"
+        ] = url
 
     # Avoid empty uncategorized
     unreleased_version = None
     for version, current_release in changes.items():
+        metadata = current_release["metadata"]
         if not current_release.get("uncategorized"):
             current_release.pop("uncategorized", None)
 
         # If there is an empty release date, it identify the unreleased section
-        if ("release_date" in current_release) and not current_release["release_date"]:
+        if ("release_date" in metadata) and not metadata["release_date"]:
             unreleased_version = version
 
     if not show_unreleased:
@@ -132,10 +135,11 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).\n"""
 
     for current_release in changes.values():
-        content += f"\n## [{current_release['version'].capitalize()}]"
+        metadata = current_release["metadata"]
+        content += f"\n## [{metadata['version'].capitalize()}]"
 
-        if current_release.get("release_date"):
-            content += f" - {current_release['release_date']}"
+        if metadata.get("release_date"):
+            content += f" - {metadata['release_date']}"
 
         uncategorized = current_release.get("uncategorized", [])
         for category_content in uncategorized:
@@ -144,13 +148,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
             content += "\n"
 
         for category_name, category_content in current_release.items():
-            if category_name in [
-                "version",
-                "release_date",
-                "uncategorized",
-                "semantic_version",
-                "url",
-            ]:
+            if category_name in ["metadata", "uncategorized"]:
                 continue
 
             content += f"\n### {category_name.capitalize()}"
@@ -163,12 +161,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
     content += "\n"
 
     for current_release in changes.values():
-        if not current_release.get("url"):
+        metadata = current_release["metadata"]
+        if not metadata.get("url"):
             continue
 
-        content += (
-            f"[{current_release['version'].capitalize()}]: {current_release['url']}\n"
-        )
+        content += f"[{metadata['version'].capitalize()}]: {metadata['url']}\n"
 
     return content
 
@@ -192,12 +189,15 @@ def to_raw_dict(changelog_path: str) -> Dict[str, dict]:
 
     # Add url for each version (create version if not existing)
     for version, url in urls.items():
-        changes.setdefault(version, {"version": version})["url"] = url
+        changes.setdefault(version, {"metadata": {"version": version}})["metadata"][
+            "url"
+        ] = url
 
     unreleased_version = None
     for version, current_release in changes.items():
+        metadata = current_release["metadata"]
         # If there is an empty release date, it identify the unreleased section
-        if ("release_date" in current_release) and not current_release["release_date"]:
+        if ("release_date" in metadata) and not metadata["release_date"]:
             unreleased_version = version
 
     changes.pop(unreleased_version, None)

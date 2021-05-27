@@ -89,16 +89,18 @@ changelog_as_dict = {
         "changed": ["Release note 1.", "Release note 2."],
         "deprecated": ["Deprecated feature 1", "Future removal 2"],
         "fixed": ["Bug fix 1", "sub bug 1", "sub bug 2", "Bug fix 2"],
-        "release_date": "2018-06-01",
         "removed": ["Deprecated feature 2", "Future removal 1"],
         "security": ["Known issue 1", "Known issue 2"],
-        "version": "1.2.0",
-        "semantic_version": {
-            "buildmetadata": None,
-            "major": 1,
-            "minor": 2,
-            "patch": 0,
-            "prerelease": None,
+        "metadata": {
+            "release_date": "2018-06-01",
+            "version": "1.2.0",
+            "semantic_version": {
+                "buildmetadata": None,
+                "major": 1,
+                "minor": 2,
+                "patch": 0,
+                "prerelease": None,
+            },
         },
     },
     "1.1.0": {
@@ -108,20 +110,24 @@ changelog_as_dict = {
             "sub enhancement 2",
             "Enhancement 2 (1.1.0)",
         ],
-        "release_date": "2018-05-31",
-        "version": "1.1.0",
-        "semantic_version": {
-            "buildmetadata": None,
-            "major": 1,
-            "minor": 1,
-            "patch": 0,
-            "prerelease": None,
+        "metadata": {
+            "release_date": "2018-05-31",
+            "version": "1.1.0",
+            "semantic_version": {
+                "buildmetadata": None,
+                "major": 1,
+                "minor": 1,
+                "patch": 0,
+                "prerelease": None,
+            },
+            "url": "https://github.test_url/test_project/compare/v1.0.2...v1.1.0",
         },
-        "url": "https://github.test_url/test_project/compare/v1.0.2...v1.1.0",
     },
     "1.0.2": {
-        "version": "1.0.2",
-        "url": "https://github.test_url/test_project/compare/v1.0.1...v1.0.2",
+        "metadata": {
+            "version": "1.0.2",
+            "url": "https://github.test_url/test_project/compare/v1.0.1...v1.0.2",
+        }
     },
     "1.0.1": {
         "fixed": [
@@ -130,29 +136,33 @@ changelog_as_dict = {
             "sub bug 2",
             "Bug fix 2 (1.0.1)",
         ],
-        "release_date": "2018-05-31",
-        "version": "1.0.1",
-        "semantic_version": {
-            "buildmetadata": None,
-            "major": 1,
-            "minor": 0,
-            "patch": 1,
-            "prerelease": None,
+        "metadata": {
+            "release_date": "2018-05-31",
+            "version": "1.0.1",
+            "semantic_version": {
+                "buildmetadata": None,
+                "major": 1,
+                "minor": 0,
+                "patch": 1,
+                "prerelease": None,
+            },
+            "url": "https://github.test_url/test_project/compare/v1.0.0...v1.0.1",
         },
-        "url": "https://github.test_url/test_project/compare/v1.0.0...v1.0.1",
     },
     "1.0.0": {
         "deprecated": ["Known issue 1 (1.0.0)", "Known issue 2 (1.0.0)"],
-        "release_date": "2017-04-10",
-        "version": "1.0.0",
-        "semantic_version": {
-            "buildmetadata": None,
-            "major": 1,
-            "minor": 0,
-            "patch": 0,
-            "prerelease": None,
+        "metadata": {
+            "release_date": "2017-04-10",
+            "version": "1.0.0",
+            "semantic_version": {
+                "buildmetadata": None,
+                "major": 1,
+                "minor": 0,
+                "patch": 0,
+                "prerelease": None,
+            },
+            "url": "https://github.test_url/test_project/releases/tag/v1.0.0",
         },
-        "url": "https://github.test_url/test_project/releases/tag/v1.0.0",
     },
 }
 
@@ -196,14 +206,16 @@ def test_raw_changelog_with_versions_and_all_categories(changelog):
 - Deprecated feature 2
 - Future removal 1
 """,
-            "release_date": "2018-06-01",
-            "version": "1.2.0",
-            "semantic_version": {
-                "buildmetadata": None,
-                "major": 1,
-                "minor": 2,
-                "patch": 0,
-                "prerelease": None,
+            "metadata": {
+                "release_date": "2018-06-01",
+                "version": "1.2.0",
+                "semantic_version": {
+                    "buildmetadata": None,
+                    "major": 1,
+                    "minor": 2,
+                    "patch": 0,
+                    "prerelease": None,
+                },
             },
         },
         "1.1.0": {
@@ -213,20 +225,24 @@ def test_raw_changelog_with_versions_and_all_categories(changelog):
 - sub enhancement 2
 - Enhancement 2 (1.1.0)
 """,
-            "release_date": "2018-05-31",
-            "version": "1.1.0",
-            "semantic_version": {
-                "buildmetadata": None,
-                "major": 1,
-                "minor": 1,
-                "patch": 0,
-                "prerelease": None,
+            "metadata": {
+                "release_date": "2018-05-31",
+                "version": "1.1.0",
+                "semantic_version": {
+                    "buildmetadata": None,
+                    "major": 1,
+                    "minor": 1,
+                    "patch": 0,
+                    "prerelease": None,
+                },
+                "url": "https://github.test_url/test_project/compare/v1.0.2...v1.1.0",
             },
-            "url": "https://github.test_url/test_project/compare/v1.0.2...v1.1.0",
         },
         "1.0.2": {
-            "version": "1.0.2",
-            "url": "https://github.test_url/test_project/compare/v1.0.1...v1.0.2",
+            "metadata": {
+                "version": "1.0.2",
+                "url": "https://github.test_url/test_project/compare/v1.0.1...v1.0.2",
+            },
         },
         "1.0.1": {
             "raw": """### Fixed
@@ -235,31 +251,35 @@ def test_raw_changelog_with_versions_and_all_categories(changelog):
 - sub bug 2
 - Bug fix 2 (1.0.1)
 """,
-            "release_date": "2018-05-31",
-            "version": "1.0.1",
-            "semantic_version": {
-                "buildmetadata": None,
-                "major": 1,
-                "minor": 0,
-                "patch": 1,
-                "prerelease": None,
+            "metadata": {
+                "release_date": "2018-05-31",
+                "version": "1.0.1",
+                "semantic_version": {
+                    "buildmetadata": None,
+                    "major": 1,
+                    "minor": 0,
+                    "patch": 1,
+                    "prerelease": None,
+                },
+                "url": "https://github.test_url/test_project/compare/v1.0.0...v1.0.1",
             },
-            "url": "https://github.test_url/test_project/compare/v1.0.0...v1.0.1",
         },
         "1.0.0": {
             "raw": """### Deprecated
 - Known issue 1 (1.0.0)
 - Known issue 2 (1.0.0)
 """,
-            "release_date": "2017-04-10",
-            "version": "1.0.0",
-            "semantic_version": {
-                "buildmetadata": None,
-                "major": 1,
-                "minor": 0,
-                "patch": 0,
-                "prerelease": None,
+            "metadata": {
+                "release_date": "2017-04-10",
+                "version": "1.0.0",
+                "semantic_version": {
+                    "buildmetadata": None,
+                    "major": 1,
+                    "minor": 0,
+                    "patch": 0,
+                    "prerelease": None,
+                },
+                "url": "https://github.test_url/test_project/releases/tag/v1.0.0",
             },
-            "url": "https://github.test_url/test_project/releases/tag/v1.0.0",
         },
     }

@@ -25,15 +25,20 @@ def add_changelog_endpoint(
                     namespace.model(
                         "ChangelogReleaseModel",
                         {
-                            "version": flask_restx.fields.String(
-                                description="Release version following semantic versioning.",
-                                required=True,
-                                example="3.12.5",
-                            ),
-                            "release_date": flask_restx.fields.Date(
-                                description="Release date.",
-                                required=True,
-                                example="2019-12-31",
+                            "metadata": namespace.model(
+                                "ChangelogReleaseMetaDataModel",
+                                {
+                                    "version": flask_restx.fields.String(
+                                        description="Release version following semantic versioning.",
+                                        required=True,
+                                        example="3.12.5",
+                                    ),
+                                    "release_date": flask_restx.fields.Date(
+                                        description="Release date.",
+                                        required=True,
+                                        example="2019-12-31",
+                                    ),
+                                },
                             ),
                             "added": flask_restx.fields.List(
                                 flask_restx.fields.String(description="New features.")
