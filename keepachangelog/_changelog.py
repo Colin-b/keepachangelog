@@ -1,6 +1,6 @@
 import datetime
 import re
-from typing import Dict, List, Optional, Iterable, Union
+from typing import Dict, List, Optional, Iterable, Union, Tuple
 
 from keepachangelog._versioning import (
     actual_version,
@@ -14,7 +14,7 @@ def is_release(line: str) -> bool:
     return line.startswith("## ")
 
 
-def add_release(changes: Dict[str, dict], line: str) -> dict:
+def extract_release(line: str) -> Tuple[str, dict]:
     release_line = line[3:].lower().strip(" ")
     # A release is separated by a space between version and release date
     # Release pattern should match lines like: "[0.0.1] - 2020-12-31" or [Unreleased]
@@ -31,7 +31,7 @@ def add_release(changes: Dict[str, dict], line: str) -> dict:
     except InvalidSemanticVersion:
         pass
 
-    return changes.setdefault(version, {"metadata": metadata})
+    return version, metadata
 
 
 def unlink(value: str) -> str:
@@ -94,7 +94,8 @@ def _to_dict(change_log: Iterable[str], show_unreleased: bool) -> Dict[str, dict
         line = line.strip(" \n")
 
         if is_release(line):
-            current_release = add_release(changes, line)
+            version, metadata = extract_release(line)
+            current_release = changes.setdefault(version, {"metadata": metadata})
             category = current_release.setdefault("uncategorized", [])
         elif is_category(line):
             category = add_category(current_release, line)
@@ -180,7 +181,8 @@ def to_raw_dict(changelog_path: str) -> Dict[str, dict]:
             clean_line = line.strip(" \n")
 
             if is_release(clean_line):
-                current_release = add_release(changes, clean_line)
+                version, metadata = extract_release(clean_line)
+                current_release = changes.setdefault(version, {"metadata": metadata})
             elif is_link(clean_line):
                 link_match = link_pattern.fullmatch(clean_line)
                 urls[link_match.group(1).lower()] = link_match.group(2)
