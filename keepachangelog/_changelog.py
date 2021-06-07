@@ -23,7 +23,7 @@ def extract_release(line: str) -> Tuple[str, dict]:
         if " " in release_line
         else (release_line, None)
     )
-    version = unlink(version)
+    version = strip_link(version)
 
     metadata = {"version": version, "release_date": extract_date(release_date)}
     try:
@@ -34,7 +34,7 @@ def extract_release(line: str) -> Tuple[str, dict]:
     return version, metadata
 
 
-def unlink(value: str) -> str:
+def strip_link(value: str) -> str:
     return value.lstrip("[").rstrip("]")
 
 
