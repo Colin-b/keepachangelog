@@ -61,8 +61,8 @@ def is_link(line: str) -> bool:
     return link_pattern.fullmatch(line) is not None
 
 
-def add_information(category: List[str], line: str):
-    category.append(line.lstrip(" *-").rstrip(" -"))
+def extract_information(line: str) -> str:
+    return line.lstrip(" *-").rstrip(" -")
 
 
 def to_dict(
@@ -103,7 +103,7 @@ def _to_dict(change_log: Iterable[str], show_unreleased: bool) -> Dict[str, dict
             link_match = link_pattern.fullmatch(line)
             urls[link_match.group(1).lower()] = link_match.group(2)
         elif line:
-            add_information(category, line)
+            category.append(extract_information(line))
 
     # Add url for each version (create version if not existing)
     for version, url in urls.items():
