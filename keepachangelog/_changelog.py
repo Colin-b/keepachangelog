@@ -49,9 +49,8 @@ def is_category(line: str) -> bool:
     return line.startswith("### ")
 
 
-def add_category(release: dict, line: str) -> List[str]:
-    category = line[4:].lower().strip(" ")
-    return release.setdefault(category, [])
+def extract_category(line: str) -> str:
+    return line[4:].lower().strip(" ")
 
 
 # Link pattern should match lines like: "[1.2.3]: https://github.com/user/project/releases/tag/v0.0.1"
@@ -98,7 +97,8 @@ def _to_dict(change_log: Iterable[str], show_unreleased: bool) -> Dict[str, dict
             current_release = changes.setdefault(version, {"metadata": metadata})
             category = current_release.setdefault("uncategorized", [])
         elif is_category(line):
-            category = add_category(current_release, line)
+            category_name = extract_category(line)
+            category = current_release.setdefault(category_name, [])
         elif is_link(line):
             link_match = link_pattern.fullmatch(line)
             urls[link_match.group(1).lower()] = link_match.group(2)
