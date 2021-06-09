@@ -3,9 +3,13 @@ import re
 import string
 from dataclasses import dataclass, field, fields
 from datetime import date, datetime
-from typing import List, Optional, Tuple, Any, Dict, Callable
+from typing import List, Optional, Tuple, Any, Dict, Callable, Generator
 
-from keepachangelog._versioning import to_semantic, InvalidSemanticVersion
+from keepachangelog._versioning import (
+    to_semantic,
+    InvalidSemanticVersion,
+    UnmatchingSemanticVersion,
+)
 
 DictFactoryCallable = Callable[[List[Tuple[str, Any]]], Dict[str, Any]]
 UNRELEASED = "unreleased"
@@ -46,6 +50,13 @@ class SemanticVersion:
         if self.to_tuple() == (0, 0, 0, None, None):
             return
         return dataclasses.asdict(self)
+
+    def __str__(self):
+        return (
+            f"{self.major}.{self.minor}.{self.patch}"
+            f"{'-' if self.prerelease is not None else ''}{self.prerelease}"
+            f"{'+' if self.buildmetadata is not None else ''}{self.buildmetadata}"
+        )
 
 
 @dataclass
@@ -163,6 +174,9 @@ class Category(List[Note]):
         if note:
             self.append(note)
 
+    def to_markdown(self, *, bullet: str = "-") -> str:
+        return "\n".join(f"{bullet} {note}" for note in self)
+
 
 @dataclass
 class Change:
@@ -179,6 +193,19 @@ class Change:
         self.__lines: List[str] = []
         self.__active_category: Optional[Category] = self.uncategorized
         if isinstance(self.metadata, dict):
+            if "semantic_version" in self.metadata:
+                semver = SemanticVersion(**self.metadata["semantic_version"])
+                if "version" in self.metadata:
+                    semver2 = SemanticVersion.from_version_string(
+                        self.metadata["version"]
+                    )
+                    if semver != semver2:
+                        raise UnmatchingSemanticVersion(
+                            self.metadata["version"], self.metadata["semantic_version"]
+                        )
+                else:
+                    self.metadata["version"] = str(semver)
+                self.metadata.pop("semantic_version")
             self.metadata = Metadata(**self.metadata)
         for f in fields(self):
             if f.type is not Category:
@@ -189,6 +216,20 @@ class Change:
     @property
     def is_released(self):
         return self.metadata.is_released
+
+    def to_markdown(self) -> str:
+        out = []
+        if self.uncategorized:
+            out.append(self.uncategorized.to_markdown(bullet="*"))
+            out.append("")
+        for f in fields(self):
+            if f.type is Category and f.name != "uncategorized":
+                category: Category = getattr(self, f.name)
+                if category:
+                    out.append(f"### {f.name.capitalize()}")
+                    out.append(category.to_markdown())
+                    out.append("")
+        return "\n".join(out)
 
     def to_dict(self, *, raw=False) -> dict:
         out = {"metadata": self.metadata.to_dict(raw=raw)}
@@ -202,7 +243,7 @@ class Change:
                 if f.type is Category:
                     category = getattr(self, f.name)
                     if category:
-                        out[f.name] = getattr(self, f.name)
+                        out[f.name] = category
         return out
 
     def parse_category_line(self, line: str):
@@ -233,6 +274,30 @@ class Changelog:
             if isinstance(change, dict):
                 temp_changes[key] = Change(**change)
         self.changes = temp_changes
+
+    def links(self) -> Generator[List[Tuple[str, str]], None, None]:
+        for version, change in self.changes.items():
+            yield version, change.metadata.url
+
+    def to_markdown(self) -> str:
+        out = self.header[:] + [""]
+        for version, change in self.changes.items():
+            if change.metadata.release_date is not None:
+                out.append(
+                    f"## [{version.capitalize()}] - {change.metadata.release_date}"
+                )
+            else:
+                out.append(f"## [{version.capitalize()}]")
+            change_md = change.to_markdown()
+            if change_md:
+                out.append(change_md)
+        out += [
+            f"[{v.capitalize()}]: {link}"
+            for v, link in self.links()
+            if link is not None
+        ]
+        out.append("")
+        return "\n".join(out)
 
     def to_dict(self, *, show_unreleased: bool = False, raw: bool = False):
         return {

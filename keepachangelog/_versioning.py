@@ -18,6 +18,13 @@ class InvalidSemanticVersion(Exception):
         )
 
 
+class UnmatchingSemanticVersion(Exception):
+    def __init__(self, version: str, semantic_version: dict):
+        super().__init__(
+            f"Semantic version {semantic_version} does not match version {version}."
+        )
+
+
 def contains_breaking_changes(unreleased: dict) -> bool:
     return "removed" in unreleased or "changed" in unreleased
 

@@ -110,47 +110,15 @@ def _to_dict(
     return changes
 
 
-def from_dict(changes: Dict[str, dict]):
-    content = """# Changelog
+def from_dict(changes: Dict[str, dict]) -> str:
+    header = """# Changelog
 All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).\n"""
 
-    for current_release in changes.values():
-        metadata = current_release["metadata"]
-        content += f"\n## [{metadata['version'].capitalize()}]"
-
-        if metadata.get("release_date"):
-            content += f" - {metadata['release_date']}"
-
-        uncategorized = current_release.get("uncategorized", [])
-        for category_content in uncategorized:
-            content += f"\n* {category_content}"
-        if uncategorized:
-            content += "\n"
-
-        for category_name, category_content in current_release.items():
-            if category_name in ["metadata", "uncategorized"]:
-                continue
-
-            content += f"\n### {category_name.capitalize()}"
-
-            for categorized in category_content:
-                content += f"\n- {categorized}"
-
-            content += "\n"
-
-    content += "\n"
-
-    for current_release in changes.values():
-        metadata = current_release["metadata"]
-        if not metadata.get("url"):
-            continue
-
-        content += f"[{metadata['version'].capitalize()}]: {metadata['url']}\n"
-
-    return content
+    changelog: Changelog = Changelog(header=header.splitlines(), changes=changes)
+    return changelog.to_markdown()
 
 
 def release(changelog_path: str, new_version: str = None) -> Optional[str]:
