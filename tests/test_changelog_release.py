@@ -3,33 +3,12 @@ import os
 import os.path
 
 import pytest
+from freezegun import freeze_time
 
 import keepachangelog
 import keepachangelog._changelog
 
 _date_time_for_tests = datetime.datetime(2021, 3, 19, 15, 5, 5, 663979)
-
-
-class DateTimeModuleMock:
-    class DateTimeMock(datetime.datetime):
-        @classmethod
-        def now(cls, tz=None):
-            return _date_time_for_tests.replace(tzinfo=tz)
-
-    class DateMock(datetime.date):
-        @classmethod
-        def today(cls):
-            return _date_time_for_tests.date()
-
-    timedelta = datetime.timedelta
-    timezone = datetime.timezone
-    datetime = DateTimeMock
-    date = DateMock
-
-
-@pytest.fixture
-def mock_date(monkeypatch):
-    monkeypatch.setattr(keepachangelog._changelog, "datetime", DateTimeModuleMock)
 
 
 @pytest.fixture
@@ -497,8 +476,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
         )
     return changelog_file_path
 
-
-def test_major_release(major_changelog, mock_date):
+@freeze_time(_date_time_for_tests)
+def test_major_release(major_changelog):
     assert keepachangelog.release(major_changelog) == "2.0.0"
     with open(major_changelog) as file:
         assert (
@@ -575,7 +554,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
         )
 
 
-def test_minor_release(minor_changelog, mock_date):
+@freeze_time(_date_time_for_tests)
+def test_minor_release(minor_changelog):
     assert keepachangelog.release(minor_changelog) == "1.2.0"
     with open(minor_changelog) as file:
         assert (
@@ -644,7 +624,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
         )
 
 
-def test_major_digit_release(major_digit_changelog, mock_date):
+@freeze_time(_date_time_for_tests)
+def test_major_digit_release(major_digit_changelog):
     assert keepachangelog.release(major_digit_changelog) == "11.0.0"
     with open(major_digit_changelog) as file:
         assert (
@@ -672,7 +653,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
         )
 
 
-def test_minor_digit_release(minor_digit_changelog, mock_date):
+@freeze_time(_date_time_for_tests)
+def test_minor_digit_release(minor_digit_changelog):
     assert keepachangelog.release(minor_digit_changelog) == "9.11.0"
     with open(minor_digit_changelog) as file:
         assert (
@@ -700,7 +682,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
         )
 
 
-def test_patch_digit_release(patch_digit_changelog, mock_date):
+@freeze_time(_date_time_for_tests)
+def test_patch_digit_release(patch_digit_changelog):
     assert keepachangelog.release(patch_digit_changelog) == "9.9.11"
     with open(patch_digit_changelog) as file:
         assert (
@@ -728,7 +711,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
         )
 
 
-def test_sorted_major_digit_semantic_release(major_digit_changelog, mock_date):
+@freeze_time(_date_time_for_tests)
+def test_sorted_major_digit_semantic_release(major_digit_changelog):
     assert keepachangelog.to_sorted_semantic(
         keepachangelog.to_raw_dict(major_digit_changelog)
     ) == [
@@ -755,7 +739,8 @@ def test_sorted_major_digit_semantic_release(major_digit_changelog, mock_date):
     ]
 
 
-def test_sorted_minor_digit_semantic_release(minor_digit_changelog, mock_date):
+@freeze_time(_date_time_for_tests)
+def test_sorted_minor_digit_semantic_release(minor_digit_changelog):
     assert keepachangelog.to_sorted_semantic(
         keepachangelog.to_raw_dict(minor_digit_changelog)
     ) == [
@@ -782,7 +767,8 @@ def test_sorted_minor_digit_semantic_release(minor_digit_changelog, mock_date):
     ]
 
 
-def test_sorted_patch_digit_semantic_release(patch_digit_changelog, mock_date):
+@freeze_time(_date_time_for_tests)
+def test_sorted_patch_digit_semantic_release(patch_digit_changelog):
     assert keepachangelog.to_sorted_semantic(
         keepachangelog.to_raw_dict(patch_digit_changelog)
     ) == [
@@ -809,7 +795,8 @@ def test_sorted_patch_digit_semantic_release(patch_digit_changelog, mock_date):
     ]
 
 
-def test_patch_release(patch_changelog, mock_date):
+@freeze_time(_date_time_for_tests)
+def test_patch_release(patch_changelog):
     assert keepachangelog.release(patch_changelog) == "1.1.1"
     with open(patch_changelog) as file:
         assert (
@@ -857,7 +844,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
         )
 
 
-def test_first_major_release(first_major_changelog, mock_date):
+@freeze_time(_date_time_for_tests)
+def test_first_major_release(first_major_changelog):
     assert keepachangelog.release(first_major_changelog) == "1.0.0"
     with open(first_major_changelog) as file:
         assert (
@@ -905,7 +893,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
         )
 
 
-def test_first_minor_release(first_minor_changelog, mock_date):
+@freeze_time(_date_time_for_tests)
+def test_first_minor_release(first_minor_changelog):
     assert keepachangelog.release(first_minor_changelog) == "0.1.0"
     with open(first_minor_changelog) as file:
         assert (
@@ -945,7 +934,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
         )
 
 
-def test_first_patch_release(first_patch_changelog, mock_date):
+@freeze_time(_date_time_for_tests)
+def test_first_patch_release(first_patch_changelog):
     assert keepachangelog.release(first_patch_changelog) == "0.0.1"
     with open(first_patch_changelog) as file:
         assert (
@@ -988,7 +978,8 @@ def test_non_semantic_release(non_semantic_changelog):
     )
 
 
-def test_first_stable_release(unstable_changelog, mock_date):
+@freeze_time(_date_time_for_tests)
+def test_first_stable_release(unstable_changelog):
     assert keepachangelog.release(unstable_changelog) == "2.5.0"
     with open(unstable_changelog) as file:
         assert (
@@ -1015,7 +1006,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
         )
 
 
-def test_custom_release(unstable_changelog, mock_date):
+@freeze_time(_date_time_for_tests)
+def test_custom_release(unstable_changelog):
     assert (
         keepachangelog.release(unstable_changelog, new_version="2.5.0b52") == "2.5.0b52"
     )

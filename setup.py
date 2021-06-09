@@ -46,6 +46,8 @@ setup(
             "flask-restx==0.5.*",
             # Used to check coverage
             "pytest-cov==3.*",
+            # For clean datetime mock
+            "freezegun==1.1.0",
         ]
     },
     python_requires=">=3.6",
