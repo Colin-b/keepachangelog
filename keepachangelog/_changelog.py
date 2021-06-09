@@ -25,29 +25,6 @@ def to_raw_dict(changelog_path: str, *, show_unreleased=False) -> Dict[str, dict
     )
 
 
-def _callback_proxy(
-    callback: Callable[[Iterable[str], ...], Any],
-    changelog_path: Union[str, Iterable[str]],
-    *args,
-    **kwargs,
-) -> Any:
-    # Allow for changelog as a file path or as a context manager providing content
-    if "\n" in changelog_path:
-        return callback(changelog_path, *args, **kwargs)
-    path = pathlib.Path(changelog_path)
-    with open(path) as change_log:
-        return callback(change_log, *args, **kwargs)
-
-
-def _to_dict(
-    change_log: Iterable[str], *, show_unreleased: bool, raw: bool
-) -> Dict[str, dict]:
-    changelog: Changelog = Changelog()
-    changelog.streamlines(change_log)
-    changes = changelog.to_dict(show_unreleased=show_unreleased, raw=raw)
-    return changes
-
-
 def from_dict(changes: Dict[str, dict]) -> str:
     header = """# Changelog
 All notable changes to this project will be documented in this file.
@@ -72,6 +49,29 @@ def release(changelog_path: str, new_version: str = None) -> Optional[str]:
     success = _release_version(changelog_path, changelog, new_version)
     if success:
         return changelog.current_version_string
+
+
+def _callback_proxy(
+    callback: Callable[[Iterable[str], ...], Any],
+    changelog_path: Union[str, Iterable[str]],
+    *args,
+    **kwargs,
+) -> Any:
+    # Allow for changelog as a file path or as a context manager providing content
+    if "\n" in changelog_path:
+        return callback(changelog_path, *args, **kwargs)
+    path = pathlib.Path(changelog_path)
+    with open(path) as change_log:
+        return callback(change_log, *args, **kwargs)
+
+
+def _to_dict(
+    change_log: Iterable[str], *, show_unreleased: bool, raw: bool
+) -> Dict[str, dict]:
+    changelog: Changelog = Changelog()
+    changelog.streamlines(change_log)
+    changes = changelog.to_dict(show_unreleased=show_unreleased, raw=raw)
+    return changes
 
 
 def _release_version(
