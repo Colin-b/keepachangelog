@@ -80,6 +80,10 @@ def to_dict(
     return _to_dict_proxy(changelog_path, show_unreleased=show_unreleased, raw=False)
 
 
+def to_raw_dict(changelog_path: str, *, show_unreleased=False) -> Dict[str, dict]:
+    return _to_dict_proxy(changelog_path, show_unreleased=show_unreleased, raw=True)
+
+
 def _to_dict_proxy(
     changelog_path: Union[str, Iterable[str]],
     *,
@@ -147,10 +151,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
         content += f"[{metadata['version'].capitalize()}]: {metadata['url']}\n"
 
     return content
-
-
-def to_raw_dict(changelog_path: str, *, show_unreleased=False) -> Dict[str, dict]:
-    return _to_dict_proxy(changelog_path, show_unreleased=show_unreleased, raw=True)
 
 
 def release(changelog_path: str, new_version: str = None) -> Optional[str]:
