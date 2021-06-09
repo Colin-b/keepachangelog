@@ -15,7 +15,6 @@ from typing import (
 )
 
 from keepachangelog._versioning import (
-    to_semantic,
     InvalidSemanticVersion,
     UnmatchingSemanticVersion,
 )
@@ -26,7 +25,9 @@ UNRELEASED = "unreleased"
 RE_URL = re.compile(r"^.*/(?P<current_tag>.*)\.\.\.(?P<un_tag>\w*).*$", re.DOTALL)
 # Link pattern should match lines like: "[1.2.3]: https://github.com/user/project/releases/tag/v0.0.1"
 RE_LINK_LINE = re.compile(r"^\[(?P<version>.*)\]: (?P<url>.*)$")
-
+RE_SEMVER = re.compile(
+    r"^(?P<major>0|[1-9]\d*)\.(?P<minor>0|[1-9]\d*)\.(?P<patch>0|[1-9]\d*)(?:[-\.]?(?P<prerelease>(?:0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*)(?:\.(?:0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*))*))?(?:\+(?P<buildmetadata>[0-9a-zA-Z-]+(?:\.[0-9a-zA-Z-]+)*))?$"
+)
 
 def is_release(line: str) -> bool:
     return line.startswith("## ")
@@ -59,12 +60,25 @@ class SemanticVersion:
         self.__prerelease_cmp = "1" if value is None else f"0{self.__prerelease}"
 
     @classmethod
+    def to_semantic(cls, version: Optional[str]) -> dict:
+        if not version:
+            return cls.initial_version().to_dict()
+        match = RE_SEMVER.fullmatch(version)
+        if match:
+            return {
+                key: int(value) if key in ("major", "minor", "patch") else value
+                for key, value in match.groupdict().items()
+            }
+
+        raise InvalidSemanticVersion(version)
+
+    @classmethod
     def initial_version(cls):
         return cls.from_version_string("0.0.0")
 
     @classmethod
     def from_version_string(cls, version_string: str) -> "SemanticVersion":
-        semver = to_semantic(version_string)
+        semver = cls.to_semantic(version_string)
         return cls.from_dict(semver)
 
     @classmethod
