@@ -1,7 +1,9 @@
 import datetime
+import pathlib
 import re
-from typing import Dict, List, Optional, Iterable, Union, Tuple
+from typing import Dict, Optional, Iterable, Union, Tuple
 
+from keepachangelog._changelog_dataclasses import Changelog
 from keepachangelog._versioning import (
     actual_version,
     guess_unreleased_version,
@@ -76,55 +78,20 @@ def to_dict(
     :return python dict containing version as key and related changes as value.
     """
     # Allow for changelog as a file path or as a context manager providing content
-    try:
-        with open(changelog_path) as change_log:
-            return _to_dict(change_log, show_unreleased)
-    except TypeError:
+    if "\n" in changelog_path:
         return _to_dict(changelog_path, show_unreleased)
+    path = pathlib.Path(changelog_path)
+    with open(path) as change_log:
+        return _to_dict(change_log, show_unreleased)
 
 
 def _to_dict(change_log: Iterable[str], show_unreleased: bool) -> Dict[str, dict]:
-    changes = {}
-    # As URLs can be defined before actual usage, maintain a separate dict
-    urls = {}
-    current_release = {}
-    category = []
+    changelog: Changelog = Changelog()
     for line in change_log:
         line = line.strip(" \n")
+        changelog.streamline(line)
 
-        if is_release(line):
-            version, metadata = extract_release(line)
-            current_release = changes.setdefault(version, {"metadata": metadata})
-            category = current_release.setdefault("uncategorized", [])
-        elif is_category(line):
-            category_name = extract_category(line)
-            category = current_release.setdefault(category_name, [])
-        elif is_link(line):
-            link_match = link_pattern.fullmatch(line)
-            urls[link_match.group(1).lower()] = link_match.group(2)
-        elif line:
-            category.append(extract_information(line))
-
-    # Add url for each version (create version if not existing)
-    for version, url in urls.items():
-        changes.setdefault(version, {"metadata": {"version": version}})["metadata"][
-            "url"
-        ] = url
-
-    # Avoid empty uncategorized
-    unreleased_version = None
-    for version, current_release in changes.items():
-        metadata = current_release["metadata"]
-        if not current_release.get("uncategorized"):
-            current_release.pop("uncategorized", None)
-
-        # If there is an empty release date, it identify the unreleased section
-        if ("release_date" in metadata) and not metadata["release_date"]:
-            unreleased_version = version
-
-    if not show_unreleased:
-        changes.pop(unreleased_version, None)
-
+    changes = changelog.to_dict(show_unreleased=show_unreleased)
     return changes
 
 

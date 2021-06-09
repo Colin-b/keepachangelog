@@ -86,7 +86,7 @@ def test_changelog_with_versions_and_all_categories(changelog):
             "removed": ["Deprecated feature 2", "Future removal 1"],
             "security": ["Known issue 1", "Known issue 2"],
             "metadata": {
-                "release_date": "august 28, 2019",
+                "release_date": "2019-08-28",
                 "version": "1.2.0",
                 "semantic_version": {
                     "buildmetadata": None,
@@ -105,7 +105,7 @@ def test_changelog_with_versions_and_all_categories(changelog):
                 "Enhancement 2 (1.1.0)",
             ],
             "metadata": {
-                "release_date": "may 03, 2018",
+                "release_date": "2018-05-03",
                 "version": "1.1.0",
                 "semantic_version": {
                     "buildmetadata": None,
@@ -124,7 +124,7 @@ def test_changelog_with_versions_and_all_categories(changelog):
                 "Bug fix 2 (1.0.1)",
             ],
             "metadata": {
-                "release_date": "may 01, 2018",
+                "release_date": "2018-05-01",
                 "version": "1.0.1",
                 "semantic_version": {
                     "buildmetadata": None,
@@ -170,7 +170,7 @@ def test_changelog_with_unreleased_versions_and_all_categories(changelog):
             "removed": ["Deprecated feature 2", "Future removal 1"],
             "security": ["Known issue 1", "Known issue 2"],
             "metadata": {
-                "release_date": "august 28, 2019",
+                "release_date": "2019-08-28",
                 "version": "1.2.0",
                 "semantic_version": {
                     "buildmetadata": None,
@@ -189,7 +189,7 @@ def test_changelog_with_unreleased_versions_and_all_categories(changelog):
                 "Enhancement 2 (1.1.0)",
             ],
             "metadata": {
-                "release_date": "may 03, 2018",
+                "release_date": "2018-05-03",
                 "version": "1.1.0",
                 "semantic_version": {
                     "buildmetadata": None,
@@ -208,7 +208,7 @@ def test_changelog_with_unreleased_versions_and_all_categories(changelog):
                 "Bug fix 2 (1.0.1)",
             ],
             "metadata": {
-                "release_date": "may 01, 2018",
+                "release_date": "2018-05-01",
                 "version": "1.0.1",
                 "semantic_version": {
                     "buildmetadata": None,

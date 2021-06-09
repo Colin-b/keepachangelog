@@ -126,6 +126,13 @@ changelog_as_dict = {
     "1.0.2": {
         "metadata": {
             "version": "1.0.2",
+            "semantic_version": {
+                "buildmetadata": None,
+                "major": 1,
+                "minor": 0,
+                "patch": 2,
+                "prerelease": None,
+            },
             "url": "https://github.test_url/test_project/compare/v1.0.1...v1.0.2",
         }
     },

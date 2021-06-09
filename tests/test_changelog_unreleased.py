@@ -125,6 +125,13 @@ def test_changelog_with_versions_and_all_categories(changelog):
             "metadata": {
                 "url": "https://github.test_url/test_project/compare/v1.0.1...v1.0.2",
                 "version": "1.0.2",
+                "semantic_version": {
+                    "buildmetadata": None,
+                    "major": 1,
+                    "minor": 0,
+                    "patch": 2,
+                    "prerelease": None,
+                },
             },
         },
         "1.0.1": {

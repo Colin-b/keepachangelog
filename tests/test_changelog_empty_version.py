@@ -57,13 +57,6 @@ def test_changelog_with_empty_version(changelog):
             "metadata": {
                 "release_date": "2018-06-01",
                 "version": "",
-                "semantic_version": {
-                    "buildmetadata": None,
-                    "major": 0,
-                    "minor": 0,
-                    "patch": 0,
-                    "prerelease": None,
-                },
             },
         },
     }

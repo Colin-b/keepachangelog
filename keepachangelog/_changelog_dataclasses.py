@@ -59,7 +59,9 @@ class Metadata:
 
     @property
     def is_released(self):
-        return not self.version.lower() == UNRELEASED and (self.release_date is not None or self.url is not None)
+        return not self.version.lower() == UNRELEASED and (
+            self.release_date is not None or self.url is not None
+        )
 
     @property
     def is_named_version(self):
@@ -181,9 +183,7 @@ class Change:
         return self.metadata.is_released
 
     def to_dict(self) -> dict:
-        out = {
-            "metadata": self.metadata.to_dict()
-        }
+        out = {"metadata": self.metadata.to_dict()}
         for f in fields(self):
             if f.type is Category:
                 category = getattr(self, f.name)
@@ -219,8 +219,12 @@ class Changelog:
                 temp_changes[key] = Change(**change)
         self.changes = temp_changes
 
-    def to_dict(self, *, show_unreleased:bool=False):
-        return {version.lower(): change.to_dict() for version, change in self.changes.items() if change.is_released or show_unreleased}
+    def to_dict(self, *, show_unreleased: bool = False):
+        return {
+            version.lower(): change.to_dict()
+            for version, change in self.changes.items()
+            if change.is_released or show_unreleased
+        }
 
     def streamline(self, line: str):
         link_match = matches_link(line)
