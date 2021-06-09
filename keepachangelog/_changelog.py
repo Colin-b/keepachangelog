@@ -1,15 +1,9 @@
-import datetime
 import pathlib
 import re
-from typing import Dict, Optional, Iterable, Union, Tuple
+from typing import Dict, Optional, Iterable, Union, Tuple, Callable, Any
 
-from keepachangelog._changelog_dataclasses import Changelog
-from keepachangelog._versioning import (
-    actual_version,
-    guess_unreleased_version,
-    to_semantic,
-    InvalidSemanticVersion,
-)
+from keepachangelog._changelog_dataclasses import Changelog, SemanticVersion
+from keepachangelog._versioning import to_semantic, InvalidSemanticVersion
 
 
 def is_release(line: str) -> bool:
@@ -77,35 +71,36 @@ def to_dict(
     :param show_unreleased: Add unreleased section (if any) to the resulting dictionary.
     :return python dict containing version as key and related changes as value.
     """
-    return _to_dict_proxy(changelog_path, show_unreleased=show_unreleased, raw=False)
+    return _callback_proxy(
+        _to_dict, changelog_path, show_unreleased=show_unreleased, raw=False
+    )
 
 
 def to_raw_dict(changelog_path: str, *, show_unreleased=False) -> Dict[str, dict]:
-    return _to_dict_proxy(changelog_path, show_unreleased=show_unreleased, raw=True)
+    return _callback_proxy(
+        _to_dict, changelog_path, show_unreleased=show_unreleased, raw=True
+    )
 
 
-def _to_dict_proxy(
+def _callback_proxy(
+    callback: Callable[[Iterable[str], ...], Any],
     changelog_path: Union[str, Iterable[str]],
-    *,
-    show_unreleased: bool = False,
-    raw: bool = False,
-) -> Dict[str, dict]:
+    *args,
+    **kwargs,
+) -> Any:
     # Allow for changelog as a file path or as a context manager providing content
     if "\n" in changelog_path:
-        return _to_dict(changelog_path, show_unreleased=show_unreleased, raw=raw)
+        return callback(changelog_path, *args, **kwargs)
     path = pathlib.Path(changelog_path)
     with open(path) as change_log:
-        return _to_dict(change_log, show_unreleased=show_unreleased, raw=raw)
+        return callback(change_log, *args, **kwargs)
 
 
 def _to_dict(
     change_log: Iterable[str], *, show_unreleased: bool, raw: bool
 ) -> Dict[str, dict]:
     changelog: Changelog = Changelog()
-    for line in change_log:
-        line = line.strip(" \n")
-        changelog.streamline(line)
-
+    changelog.streamlines(change_log)
     changes = changelog.to_dict(show_unreleased=show_unreleased, raw=raw)
     return changes
 
@@ -129,52 +124,20 @@ def release(changelog_path: str, new_version: str = None) -> Optional[str]:
     :param new_version: The new version to use instead of trying to guess one.
     :return: The new version, None if there was no change to release.
     """
-    changelog = to_dict(changelog_path, show_unreleased=True)
-    current_version, current_semantic_version = actual_version(changelog)
-    if not new_version:
-        new_version = guess_unreleased_version(changelog, current_semantic_version)
-    if new_version:
-        release_version(changelog_path, current_version, new_version)
-    return new_version
+    changelog: Changelog = Changelog()
+    _callback_proxy(changelog.streamlines, changelog_path)
+    success = _release_version(changelog_path, changelog, new_version)
+    if success:
+        return changelog.current_version_string
 
 
-def release_version(
-    changelog_path: str, current_version: Optional[str], new_version: str
-):
-    unreleased_link_pattern = re.compile(r"^\[Unreleased\]: (.*)$", re.DOTALL)
-    lines = []
-    with open(changelog_path) as change_log:
-        for line in change_log.readlines():
-            # Move Unreleased section to new version
-            if re.fullmatch(r"^## \[Unreleased\].*$", line, re.DOTALL):
-                lines.append(line)
-                lines.append("\n")
-                lines.append(
-                    f"## [{new_version}] - {datetime.date.today().isoformat()}\n"
-                )
-            # Add new version link and update Unreleased link
-            elif unreleased_link_pattern.fullmatch(line):
-                unreleased_compare_pattern = re.fullmatch(
-                    r"^.*/(.*)\.\.\.(\w*).*$", line, re.DOTALL
-                )
-                # Unreleased link compare previous version to HEAD (unreleased tag)
-                if unreleased_compare_pattern:
-                    new_unreleased_link = line.replace(current_version, new_version)
-                    lines.append(new_unreleased_link)
-                    current_tag = unreleased_compare_pattern.group(1)
-                    unreleased_tag = unreleased_compare_pattern.group(2)
-                    new_tag = current_tag.replace(current_version, new_version)
-                    lines.append(
-                        line.replace(new_version, current_version)
-                        .replace(unreleased_tag, new_tag)
-                        .replace("Unreleased", new_version)
-                    )
-                # Consider that there is no way to know how to create a link to compare versions
-                else:
-                    lines.append(line)
-                    lines.append(line.replace("Unreleased", new_version))
-            else:
-                lines.append(line)
-
-    with open(changelog_path, "wt") as change_log:
-        change_log.writelines(lines)
+def _release_version(
+    changelog_path: str,
+    changelog: Changelog,
+    new_version: Optional[SemanticVersion] = None,
+) -> bool:
+    success = changelog.release(new_version)
+    if success:
+        with open(changelog_path, "wt") as change_log:
+            change_log.writelines(changelog.to_markdown(raw=True))
+    return success

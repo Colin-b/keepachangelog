@@ -1,9 +1,18 @@
-import dataclasses
 import re
 import string
 from dataclasses import dataclass, field, fields
 from datetime import date, datetime
-from typing import List, Optional, Tuple, Any, Dict, Callable, Generator
+from typing import (
+    List,
+    Optional,
+    Tuple,
+    Any,
+    Dict,
+    Callable,
+    Generator,
+    Iterable,
+    Union,
+)
 
 from keepachangelog._versioning import (
     to_semantic,
@@ -14,6 +23,10 @@ from keepachangelog._versioning import (
 DictFactoryCallable = Callable[[List[Tuple[str, Any]]], Dict[str, Any]]
 UNRELEASED = "unreleased"
 
+RE_URL = re.compile(r"^.*/(?P<current_tag>.*)\.\.\.(?P<un_tag>\w*).*$", re.DOTALL)
+# Link pattern should match lines like: "[1.2.3]: https://github.com/user/project/releases/tag/v0.0.1"
+RE_LINK_LINE = re.compile(r"^\[(?P<version>.*)\]: (?P<url>.*)$")
+
 
 def is_release(line: str) -> bool:
     return line.startswith("## ")
@@ -23,39 +36,89 @@ def is_category(line: str) -> bool:
     return line.startswith("### ")
 
 
-# Link pattern should match lines like: "[1.2.3]: https://github.com/user/project/releases/tag/v0.0.1"
-link_pattern = re.compile(r"^\[(?P<version>.*)\]: (?P<url>.*)$")
-
-
 def matches_link(line: str) -> re.Match:
-    return link_pattern.fullmatch(line)
+    return RE_LINK_LINE.fullmatch(line)
 
 
-@dataclass
+@dataclass(eq=True, order=True)
 class SemanticVersion:
-    major: int
-    minor: int
-    patch: int
-    prerelease: Optional[str] = None
-    buildmetadata: Optional[str] = None
+    major: int = field(compare=True)
+    minor: int = field(compare=True)
+    patch: int = field(compare=True)
+    __prerelease: Optional[str] = field(default=None, compare=False)
+    __prerelease_cmp: str = field(default="1", compare=True)
+    buildmetadata: Optional[str] = field(default=None, compare=False)
+
+    @property
+    def prerelease(self):
+        return self.__prerelease
+
+    @prerelease.setter
+    def prerelease(self, value):
+        self.__prerelease = value
+        self.__prerelease_cmp = "1" if value is None else f"0{self.__prerelease}"
+
+    @classmethod
+    def initial_version(cls):
+        return cls.from_version_string("0.0.0")
 
     @classmethod
     def from_version_string(cls, version_string: str) -> "SemanticVersion":
-        return cls(**to_semantic(version_string))
+        semver = to_semantic(version_string)
+        return cls.from_dict(semver)
+
+    @classmethod
+    def from_dict(cls, data: dict):
+        prerelease = data.pop("prerelease")
+        obj = cls(**data)
+        obj.prerelease = prerelease
+        return obj
+
+    def bump_major(self):
+        return self.__class__.from_dict(
+            self.to_dict(force=True)
+            | SemanticVersion(self.major + 1, 0, 0).to_dict(force=True)
+        )
+
+    def bump_minor(self):
+        return self.__class__.from_dict(
+            self.to_dict(force=True)
+            | SemanticVersion(self.major, self.minor + 1, 0).to_dict(force=True)
+        )
+
+    def bump_patch(self):
+        return self.__class__.from_dict(
+            self.to_dict(force=True)
+            | SemanticVersion(self.major, self.minor, self.patch + 1).to_dict(
+                force=True
+            )
+        )
+
+    def release_version(self):
+        return self.__class__.from_dict(
+            self.to_dict(force=True)
+            | SemanticVersion(self.major, self.minor, self.patch).to_dict(force=True)
+        )
 
     def to_tuple(self) -> Tuple[int, int, int, Optional[str], Optional[str]]:
         return self.major, self.minor, self.patch, self.prerelease, self.buildmetadata
 
-    def to_dict(self) -> Optional[Dict]:
-        if self.to_tuple() == (0, 0, 0, None, None):
+    def to_dict(self, *, force=False) -> Optional[Dict]:
+        if self.to_tuple() == (0, 0, 0, None, None) and not force:
             return
-        return dataclasses.asdict(self)
+        return {
+            "major": self.major,
+            "minor": self.minor,
+            "patch": self.patch,
+            "prerelease": self.prerelease,
+            "buildmetadata": self.buildmetadata,
+        }
 
     def __str__(self):
         return (
             f"{self.major}.{self.minor}.{self.patch}"
-            f"{'-' if self.prerelease is not None else ''}{self.prerelease}"
-            f"{'+' if self.buildmetadata is not None else ''}{self.buildmetadata}"
+            f"{f'-{self.prerelease}' if self.prerelease is not None else ''}"
+            f"{f'+{self.buildmetadata}' if self.buildmetadata is not None else ''}"
         )
 
 
@@ -85,6 +148,13 @@ class Metadata:
             return SemanticVersion.from_version_string(self.version)
         except InvalidSemanticVersion:
             return None
+
+    @property
+    def semantic_version_strict(self) -> SemanticVersion:
+        try:
+            return SemanticVersion.from_version_string(self.version)
+        except InvalidSemanticVersion:
+            return SemanticVersion(0, 0, -1)
 
     def to_dict(self, *, raw: bool = False) -> dict:
         out = {
@@ -194,7 +264,7 @@ class Change:
         self.__active_category: Optional[Category] = self.uncategorized
         if isinstance(self.metadata, dict):
             if "semantic_version" in self.metadata:
-                semver = SemanticVersion(**self.metadata["semantic_version"])
+                semver = SemanticVersion.from_dict(self.metadata["semantic_version"])
                 if "version" in self.metadata:
                     semver2 = SemanticVersion.from_version_string(
                         self.metadata["version"]
@@ -217,7 +287,41 @@ class Change:
     def is_released(self):
         return self.metadata.is_released
 
-    def to_markdown(self) -> str:
+    @property
+    def contains_breaking_changes(self) -> bool:
+        return bool(self.removed) or bool(self.changed)
+
+    @property
+    def contains_only_bug_fixes(self):
+        return all(
+            [
+                self.fixed,
+                not self.uncategorized,
+                not self.changed,
+                not self.added,
+                not self.security,
+                not self.deprecated,
+                not self.removed,
+            ]
+        )
+
+    @property
+    def is_empty(self):
+        return all(
+            [
+                not self.fixed,
+                not self.uncategorized,
+                not self.changed,
+                not self.added,
+                not self.security,
+                not self.deprecated,
+                not self.removed,
+            ]
+        )
+
+    def to_markdown(self, *, raw=False) -> str:
+        if raw:
+            return "\n".join(self.__lines)
         out = []
         if self.uncategorized:
             out.append(self.uncategorized.to_markdown(bullet="*"))
@@ -267,6 +371,133 @@ class Changelog:
     header: List[str] = field(default_factory=list)
     changes: Dict[str, Change] = field(default_factory=dict)
 
+    @property
+    def current_version(self) -> Union[SemanticVersion, str]:
+        maxver = self.__latest_version()
+        return (
+            (maxver["semver"] or maxver["version"])
+            if maxver["is_released"]
+            else maxver["semver_s"]
+        )
+
+    @property
+    def current_version_string(self) -> str:
+        maxver = self.__latest_version()
+        return maxver["version"]
+
+    def __latest_version(self) -> dict:
+        return max(
+            (
+                {
+                    "semver": change.metadata.semantic_version,
+                    "semver_s": change.metadata.semantic_version_strict,
+                    "version": change.metadata.version,
+                    "is_released": change.is_released,
+                }
+                for change in self.changes.values()
+            ),
+            key=lambda version: (version["is_released"], version["semver_s"]),
+        )
+
+    @property
+    def next_version(self) -> SemanticVersion:
+        current = self.current_version
+        if current is None:
+            current = SemanticVersion.initial_version()
+        if current.prerelease is not None:
+            return current.release_version()
+        unreleased_change = self.unreleased_unique
+        if (
+            len(self.changes) == 1
+            and unreleased_change is list(self.changes.values())[0]
+        ):
+            current = SemanticVersion.initial_version()
+        if unreleased_change.contains_breaking_changes:
+            return current.bump_major()
+        if unreleased_change.contains_only_bug_fixes:
+            return current.bump_patch()
+        return current.bump_minor()
+
+    @property
+    def unreleased(self) -> List[Change]:
+        unreleased_changes = []
+        for change in self.changes.values():
+            if not change.is_released:
+                unreleased_changes.append(change)
+        return unreleased_changes
+
+    @property
+    def unreleased_unique(self) -> Change:
+        unreleased_changes = self.unreleased
+        if len(unreleased_changes) > 1:
+            raise AttributeError("There are several unreleased sections!")
+        return unreleased_changes.pop() if unreleased_changes else Change()
+
+    @property
+    def sorted_changes(self) -> Generator[Tuple[str, Change], None, None]:
+        for version, change in self.changes.items():
+            if not change.is_released:
+                yield version, change
+        released = ((v, c) for v, c in self.changes.items() if c.is_released)
+        yield from sorted(
+            released, key=lambda k: k[1].metadata.semantic_version_strict, reverse=True
+        )
+
+    def release(self, new_version: Optional[SemanticVersion] = None) -> bool:
+        unreleased_change = self.unreleased_unique
+        if unreleased_change.is_empty:
+            return False
+        current_version = self.current_version
+        if isinstance(current_version, str):
+            raise InvalidSemanticVersion(current_version)
+        if new_version is None:
+            new_version = self.next_version
+        return self.__release_unreleased_change(
+            unreleased_change, current_version, new_version
+        )
+
+    def __release_unreleased_change(
+        self,
+        unreleased: Change,
+        current_version: SemanticVersion,
+        new_version: SemanticVersion,
+    ) -> bool:
+        self.wipe_unreleased_references()
+        un_metadata = unreleased.metadata
+        un_metadata.version = str(new_version)
+        un_metadata.release_date = date.today()
+        old_url = un_metadata.url
+        self.__update_url(unreleased, current_version, new_version)
+        self.changes[str(new_version)] = unreleased
+
+        if old_url is not None:
+            self.unreleased_unique.metadata.url = old_url.replace(
+                str(current_version), str(new_version)
+            )
+        return True
+
+    @staticmethod
+    def __update_url(
+        change: Change,
+        current_version: SemanticVersion,
+        new_version: SemanticVersion,
+    ) -> None:
+        old_url = change.metadata.url
+        if old_url is not None:
+            match_old_url = RE_URL.fullmatch(old_url)
+            if match_old_url is not None:
+                groups = match_old_url.groupdict()
+                current_tag = groups["current_tag"]
+                new_tag = current_tag.replace(str(current_version), str(new_version))
+                released_url = old_url.replace(groups["un_tag"], new_tag)
+                change.metadata.url = released_url
+
+    def wipe_unreleased_references(self) -> None:
+        """Wipe all information from unreleased versions."""
+        for version in self.changes.keys():
+            if not self.changes[version].is_released:
+                self.changes[version] = Change(metadata=Metadata(version=version))
+
     def __post_init__(self):
         self.__active_change: Optional[Change] = None
         temp_changes = {}
@@ -276,20 +507,22 @@ class Changelog:
         self.changes = temp_changes
 
     def links(self) -> Generator[List[Tuple[str, str]], None, None]:
-        for version, change in self.changes.items():
+        for version, change in self.sorted_changes:
             yield version, change.metadata.url
 
-    def to_markdown(self) -> str:
-        out = self.header[:] + [""]
-        for version, change in self.changes.items():
+    def to_markdown(self, *, raw=False) -> str:
+        out = self.header[:]
+        if not raw:
+            out.append("")
+        for version, change in self.sorted_changes:
             if change.metadata.release_date is not None:
                 out.append(
                     f"## [{version.capitalize()}] - {change.metadata.release_date}"
                 )
             else:
                 out.append(f"## [{version.capitalize()}]")
-            change_md = change.to_markdown()
-            if change_md:
+            change_md = change.to_markdown(raw=raw)
+            if change_md or not change.is_released:
                 out.append(change_md)
         out += [
             f"[{v.capitalize()}]: {link}"
@@ -305,6 +538,11 @@ class Changelog:
             for version, change in self.changes.items()
             if change.is_released or show_unreleased
         }
+
+    def streamlines(self, lines: Iterable[str]):
+        for line in lines:
+            line = line.strip("\n")
+            self.streamline(line)
 
     def streamline(self, line: str):
         link_match = matches_link(line)
