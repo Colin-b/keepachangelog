@@ -1,64 +1,7 @@
 import pathlib
-import re
-from typing import Dict, Optional, Iterable, Union, Tuple, Callable, Any
+from typing import Dict, Optional, Iterable, Union, Callable, Any
 
 from keepachangelog._changelog_dataclasses import Changelog, SemanticVersion
-from keepachangelog._versioning import to_semantic, InvalidSemanticVersion
-
-
-def is_release(line: str) -> bool:
-    return line.startswith("## ")
-
-
-def extract_release(line: str) -> Tuple[str, dict]:
-    release_line = line[3:].lower().strip(" ")
-    # A release is separated by a space between version and release date
-    # Release pattern should match lines like: "[0.0.1] - 2020-12-31" or [Unreleased]
-    version, release_date = (
-        release_line.split(" ", maxsplit=1)
-        if " " in release_line
-        else (release_line, None)
-    )
-    version = strip_link(version)
-
-    metadata = {"version": version, "release_date": extract_date(release_date)}
-    try:
-        metadata["semantic_version"] = to_semantic(version)
-    except InvalidSemanticVersion:
-        pass
-
-    return version, metadata
-
-
-def strip_link(value: str) -> str:
-    return value.lstrip("[").rstrip("]")
-
-
-def extract_date(date: str) -> str:
-    if not date:
-        return date
-
-    return date.lstrip(" -(").rstrip(" )")
-
-
-def is_category(line: str) -> bool:
-    return line.startswith("### ")
-
-
-def extract_category(line: str) -> str:
-    return line[4:].lower().strip(" ")
-
-
-# Link pattern should match lines like: "[1.2.3]: https://github.com/user/project/releases/tag/v0.0.1"
-link_pattern = re.compile(r"^\[(.*)\]: (.*)$")
-
-
-def is_link(line: str) -> bool:
-    return link_pattern.fullmatch(line) is not None
-
-
-def extract_information(line: str) -> str:
-    return line.lstrip(" *-").rstrip(" -")
 
 
 def to_dict(
