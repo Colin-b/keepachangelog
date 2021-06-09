@@ -193,22 +193,27 @@ def test_raw_changelog_with_versions_and_all_categories(changelog):
             "raw": """### Changed
 - Release note 1.
 - Release note 2.
+
 ### Added
 - Enhancement 1
 - sub enhancement 1
 - sub enhancement 2
 - Enhancement 2
+
 ### Fixed
 - Bug fix 1
 - sub bug 1
 - sub bug 2
 - Bug fix 2
+
 ### Security
 - Known issue 1
 - Known issue 2
+
 ### Deprecated
 - Deprecated feature 1
 - Future removal 2
+
 ### Removed
 - Deprecated feature 2
 - Future removal 1
@@ -248,6 +253,13 @@ def test_raw_changelog_with_versions_and_all_categories(changelog):
         "1.0.2": {
             "metadata": {
                 "version": "1.0.2",
+                "semantic_version": {
+                    "buildmetadata": None,
+                    "major": 1,
+                    "minor": 0,
+                    "patch": 2,
+                    "prerelease": None,
+                },
                 "url": "https://github.test_url/test_project/compare/v1.0.1...v1.0.2",
             },
         },

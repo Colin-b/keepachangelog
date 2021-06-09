@@ -51,10 +51,11 @@ class SemanticVersion:
 @dataclass
 class Metadata:
     __RE_RELEASE = re.compile(
-        r"^## (?:\[(?P<name>.*)]|\[(?P<version>.*)] - (?P<year>\d{4})-(?P<month>\d{2})-(?P<day>\d{2}))\s*$"
+        r"^## (?:\[(?P<name>.*)]|\[(?P<version>.*)] - (?P<raw_date>(?P<year>\d{4})-(?P<month>\d{2})-(?P<day>\d{2})))\s*$"
     )
     version: str = UNRELEASED
     release_date: Optional[date] = None
+    raw_release_date: Optional[str] = None
     url: Optional[str] = None
 
     @property
@@ -74,12 +75,14 @@ class Metadata:
         except InvalidSemanticVersion:
             return None
 
-    def to_dict(self) -> dict:
+    def to_dict(self, *, raw: bool = False) -> dict:
         out = {
             "version": self.version.lower(),
         }
         if self.is_released:
-            if self.release_date is not None:
+            if raw and self.raw_release_date is not None:
+                out["release_date"] = self.raw_release_date
+            elif self.release_date is not None:
                 out["release_date"] = self.release_date.strftime("%Y-%m-%d")
         if self.is_named_version:
             out["release_date"] = None
@@ -107,16 +110,20 @@ class Metadata:
         version, *datelist = line[3:].strip().split(maxsplit=1)
         self.version = version.strip(string.punctuation + string.whitespace)
         if datelist:
-            datestring = datelist.pop().strip(string.punctuation + string.whitespace)
+            self.raw_release_date = datelist.pop().strip(
+                string.punctuation + string.whitespace
+            )
             for accepted_format in accepted_formats:
                 try:
-                    release_date = datetime.strptime(datestring, accepted_format).date()
+                    release_date = datetime.strptime(
+                        self.raw_release_date, accepted_format
+                    ).date()
                 except ValueError:
                     pass
                 else:
                     break
             else:
-                release_date = datestring
+                release_date = self.raw_release_date
         else:
             release_date = None
         self.release_date = release_date
@@ -132,6 +139,7 @@ class Metadata:
             self.release_date = date(
                 int(groups["year"]), int(groups["month"]), int(groups["day"])
             )
+            self.raw_release_date = groups["raw_date"]
         else:
             self.version = groups["name"]
 
@@ -182,13 +190,19 @@ class Change:
     def is_released(self):
         return self.metadata.is_released
 
-    def to_dict(self) -> dict:
-        out = {"metadata": self.metadata.to_dict()}
-        for f in fields(self):
-            if f.type is Category:
-                category = getattr(self, f.name)
-                if category:
-                    out[f.name] = getattr(self, f.name)
+    def to_dict(self, *, raw=False) -> dict:
+        out = {"metadata": self.metadata.to_dict(raw=raw)}
+        if raw:
+            if self.__lines:
+                out["raw"] = "\n".join(self.__lines)
+                if not out["raw"].endswith("\n"):
+                    out["raw"] += "\n"
+        else:
+            for f in fields(self):
+                if f.type is Category:
+                    category = getattr(self, f.name)
+                    if category:
+                        out[f.name] = getattr(self, f.name)
         return out
 
     def parse_category_line(self, line: str):
@@ -197,10 +211,11 @@ class Change:
             self.__active_category = getattr(self, category)
 
     def streamline(self, line: str):
-        self.__lines.append(line)
         if is_release(line):
             self.metadata.parse_release_line(line)
-        elif is_category(line):
+            return
+        self.__lines.append(line)
+        if is_category(line):
             self.parse_category_line(line)
         else:
             self.__active_category.streamline(line)
@@ -219,9 +234,9 @@ class Changelog:
                 temp_changes[key] = Change(**change)
         self.changes = temp_changes
 
-    def to_dict(self, *, show_unreleased: bool = False):
+    def to_dict(self, *, show_unreleased: bool = False, raw: bool = False):
         return {
-            version.lower(): change.to_dict()
+            version.lower(): change.to_dict(raw=raw)
             for version, change in self.changes.items()
             if change.is_released or show_unreleased
         }
@@ -238,7 +253,7 @@ class Changelog:
             self.__active_change = Change()
             self.__active_change.streamline(line)
             self.changes[self.__active_change.metadata.version] = self.__active_change
-        if self.__active_change is not None:
+        elif self.__active_change is not None:
             self.__active_change.streamline(line)
         else:
             self.header.append(line)

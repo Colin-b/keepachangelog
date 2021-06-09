@@ -77,21 +77,32 @@ def to_dict(
     :param show_unreleased: Add unreleased section (if any) to the resulting dictionary.
     :return python dict containing version as key and related changes as value.
     """
+    return _to_dict_proxy(changelog_path, show_unreleased=show_unreleased, raw=False)
+
+
+def _to_dict_proxy(
+    changelog_path: Union[str, Iterable[str]],
+    *,
+    show_unreleased: bool = False,
+    raw: bool = False,
+) -> Dict[str, dict]:
     # Allow for changelog as a file path or as a context manager providing content
     if "\n" in changelog_path:
-        return _to_dict(changelog_path, show_unreleased)
+        return _to_dict(changelog_path, show_unreleased=show_unreleased, raw=raw)
     path = pathlib.Path(changelog_path)
     with open(path) as change_log:
-        return _to_dict(change_log, show_unreleased)
+        return _to_dict(change_log, show_unreleased=show_unreleased, raw=raw)
 
 
-def _to_dict(change_log: Iterable[str], show_unreleased: bool) -> Dict[str, dict]:
+def _to_dict(
+    change_log: Iterable[str], *, show_unreleased: bool, raw: bool
+) -> Dict[str, dict]:
     changelog: Changelog = Changelog()
     for line in change_log:
         line = line.strip(" \n")
         changelog.streamline(line)
 
-    changes = changelog.to_dict(show_unreleased=show_unreleased)
+    changes = changelog.to_dict(show_unreleased=show_unreleased, raw=raw)
     return changes
 
 
@@ -138,40 +149,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
     return content
 
 
-def to_raw_dict(changelog_path: str) -> Dict[str, dict]:
-    changes = {}
-    # As URLs can be defined before actual usage, maintain a separate dict
-    urls = {}
-    with open(changelog_path) as change_log:
-        current_release = {}
-        for line in change_log:
-            clean_line = line.strip(" \n")
-
-            if is_release(clean_line):
-                version, metadata = extract_release(clean_line)
-                current_release = changes.setdefault(version, {"metadata": metadata})
-            elif is_link(clean_line):
-                link_match = link_pattern.fullmatch(clean_line)
-                urls[link_match.group(1).lower()] = link_match.group(2)
-            elif clean_line:
-                current_release["raw"] = current_release.get("raw", "") + line
-
-    # Add url for each version (create version if not existing)
-    for version, url in urls.items():
-        changes.setdefault(version, {"metadata": {"version": version}})["metadata"][
-            "url"
-        ] = url
-
-    unreleased_version = None
-    for version, current_release in changes.items():
-        metadata = current_release["metadata"]
-        # If there is an empty release date, it identify the unreleased section
-        if ("release_date" in metadata) and not metadata["release_date"]:
-            unreleased_version = version
-
-    changes.pop(unreleased_version, None)
-
-    return changes
+def to_raw_dict(changelog_path: str, *, show_unreleased=False) -> Dict[str, dict]:
+    return _to_dict_proxy(changelog_path, show_unreleased=show_unreleased, raw=True)
 
 
 def release(changelog_path: str, new_version: str = None) -> Optional[str]:
