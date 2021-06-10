@@ -29,6 +29,7 @@ RE_SEMVER = re.compile(
     r"^(?P<major>0|[1-9]\d*)\.(?P<minor>0|[1-9]\d*)\.(?P<patch>0|[1-9]\d*)(?:[-\.]?(?P<prerelease>(?:0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*)(?:\.(?:0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*))*))?(?:\+(?P<buildmetadata>[0-9a-zA-Z-]+(?:\.[0-9a-zA-Z-]+)*))?$"
 )
 
+
 def is_release(line: str) -> bool:
     return line.startswith("## ")
 
@@ -60,9 +61,9 @@ class SemanticVersion:
         self.__prerelease_cmp = "1" if value is None else f"0{self.__prerelease}"
 
     @classmethod
-    def to_semantic(cls, version: Optional[str]) -> dict:
+    def to_semantic(cls, version: Optional[str] = "") -> dict:
         if not version:
-            return cls.initial_version().to_dict()
+            return cls.initial_version().to_dict(force=True)
         match = RE_SEMVER.fullmatch(version)
         if match:
             return {
@@ -146,6 +147,13 @@ class Metadata:
     raw_release_date: Optional[str] = None
     url: Optional[str] = None
 
+    def __post_init__(self):
+        if isinstance(self.release_date, str):
+            self.raw_release_date = self.release_date
+            self.release_date = None
+        if self.raw_release_date is not None and self.release_date is None:
+            self.release_date = self.parse_date(self.raw_release_date)
+
     @property
     def is_released(self):
         return not self.version.lower() == UNRELEASED and (
@@ -187,11 +195,8 @@ class Metadata:
             out["url"] = self.url
         return out
 
-    def parse_release_line_best_effort(self, line: str) -> None:
-        """
-        ## [1.0.1] - May 01, 2018
-        ## 1.0.0 (2017-01-01)
-        """
+    @staticmethod
+    def parse_date(datestring: str) -> date:
         accepted_formats = [
             "%Y-%m-%d",  # 2020-10-09
             "%d-%m-%Y",  # 09-10-2020
@@ -202,23 +207,29 @@ class Metadata:
             "%b %d %Y",  # Oct 9 2020
             "%B %d %Y",  # October 9 2020
         ]
+        for accepted_format in accepted_formats:
+            try:
+                dateobj = datetime.strptime(datestring, accepted_format).date()
+            except ValueError:
+                pass
+            else:
+                break
+        else:
+            dateobj = datestring
+        return dateobj
+
+    def parse_release_line_best_effort(self, line: str) -> None:
+        """
+        ## [1.0.1] - May 01, 2018
+        ## 1.0.0 (2017-01-01)
+        """
         version, *datelist = line[3:].strip().split(maxsplit=1)
         self.version = version.strip(string.punctuation + string.whitespace)
         if datelist:
             self.raw_release_date = datelist.pop().strip(
                 string.punctuation + string.whitespace
             )
-            for accepted_format in accepted_formats:
-                try:
-                    release_date = datetime.strptime(
-                        self.raw_release_date, accepted_format
-                    ).date()
-                except ValueError:
-                    pass
-                else:
-                    break
-            else:
-                release_date = self.raw_release_date
+            release_date = self.parse_date(self.raw_release_date)
         else:
             release_date = None
         self.release_date = release_date
@@ -283,7 +294,8 @@ class Change:
                     semver2 = SemanticVersion.from_version_string(
                         self.metadata["version"]
                     )
-                    if semver != semver2:
+                    # to_tuple() because we want them to be exactly equal, even buildmetadata
+                    if semver.to_tuple() != semver2.to_tuple():
                         raise UnmatchingSemanticVersion(
                             self.metadata["version"], self.metadata["semantic_version"]
                         )
@@ -294,8 +306,9 @@ class Change:
         for f in fields(self):
             if f.type is not Category:
                 continue
-            if isinstance(getattr(self, f.name), dict):
-                setattr(self, f.name, Category(**getattr(self, f.name)))
+            category = getattr(self, f.name)
+            if isinstance(category, list) and not isinstance(category, Category):
+                setattr(self, f.name, Category(category))
 
     @property
     def is_released(self):
