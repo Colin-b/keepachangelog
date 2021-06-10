@@ -429,8 +429,6 @@ class Changelog:
     @property
     def next_version(self) -> SemanticVersion:
         current = self.current_version
-        if current is None:
-            current = SemanticVersion.initial_version()
         if current.prerelease is not None:
             return current.release_version()
         unreleased_change = self.unreleased_unique
