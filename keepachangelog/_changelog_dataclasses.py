@@ -14,6 +14,7 @@ from typing import (
     Union,
 )
 
+from keepachangelog._tree import BulletTree, TextNode
 from keepachangelog._versioning import (
     InvalidSemanticVersion,
     UnmatchingSemanticVersion,
@@ -28,6 +29,7 @@ RE_LINK_LINE = re.compile(r"^\[(?P<version>.*)\]: (?P<url>.*)$")
 RE_SEMVER = re.compile(
     r"^(?P<major>0|[1-9]\d*)\.(?P<minor>0|[1-9]\d*)\.(?P<patch>0|[1-9]\d*)(?:[-\.]?(?P<prerelease>(?:0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*)(?:\.(?:0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*))*))?(?:\+(?P<buildmetadata>[0-9a-zA-Z-]+(?:\.[0-9a-zA-Z-]+)*))?$"
 )
+RE_NOTE_LINE = re.compile(r"^(?P<indentation>\s*(?P<bullet>[-*]?)\s*)(?P<data>.*)\s*$")
 
 
 def is_release(line: str) -> bool:
@@ -256,21 +258,75 @@ class Metadata:
         return obj
 
 
-Note = str
+class Category:
+    def __init__(self, seq: list = None):
+        self.root: BulletTree = BulletTree.treeify(seq if seq is not None else [])
 
+    def __iter__(self):
+        yield from self.root
 
-class Category(List[Note]):
+    @property
+    def is_empty(self) -> bool:
+        return not self.root
+
     @staticmethod
-    def extract_information(line: str) -> str:
-        return line.lstrip(" *-").rstrip(" -")
+    def extract_information(line: str) -> Tuple[str, str, str]:
+        match = RE_NOTE_LINE.match(line)
+        if match is None:  # pragma: no cover
+            raise ValueError(
+                "Looks like an implementation error. Could not parse: %s", line
+            )
+        groups = match.groupdict()
+        return groups["indentation"], groups["bullet"], groups["data"]
 
     def streamline(self, line: str):
-        note: Note = Note(self.extract_information(line))
-        if note:
-            self.append(note)
+        """
+        * note 1 l1
+          note 1 l2
 
-    def to_markdown(self, *, bullet: str = "-") -> str:
-        return "\n".join(f"{bullet} {note}" for note in self)
+          note 1 l4
+          - note 1.1 l1
+          - note 1.2 l1
+            note 1.2 l2
+        - note 2
+        * note 3
+        """
+        indentation, bullet, data = self.extract_information(line)
+        if bullet:
+            if self.is_empty:
+                self.root.new_child_node(
+                    BulletTree(
+                        [TextNode([data])], bullet=bullet, indent=len(indentation)
+                    )
+                )
+            else:
+                last: BulletTree = self.root.last_non_textnode
+                last_indent: int = last.indent
+                if len(indentation) > last_indent:
+                    last.new_child_node(
+                        BulletTree(
+                            [TextNode([data])], bullet=bullet, indent=len(indentation)
+                        )
+                    )
+                else:
+                    node = last
+                    while node.indent != len(indentation):
+                        node = node.parent
+
+                    node.parent.new_child_node(
+                        BulletTree(
+                            [TextNode([data])], bullet=bullet, indent=len(indentation)
+                        )
+                    )
+        elif self.is_empty:
+            if line.strip():
+                raise ValueError("Initial line should start with a bullet point!", line)
+        else:
+            text_node: TextNode = self.root.last
+            text_node.append(data)
+
+    def to_markdown(self, *, bullet: Optional[str] = None) -> str:
+        return self.root.print(bullet=bullet)
 
 
 @dataclass
@@ -308,7 +364,7 @@ class Change:
                 continue
             category = getattr(self, f.name)
             if isinstance(category, list) and not isinstance(category, Category):
-                setattr(self, f.name, Category(category))
+                setattr(self, f.name, Category([category]))
 
     @property
     def is_released(self):
@@ -316,19 +372,19 @@ class Change:
 
     @property
     def contains_breaking_changes(self) -> bool:
-        return bool(self.removed) or bool(self.changed)
+        return not self.removed.is_empty or not self.changed.is_empty
 
     @property
     def contains_only_bug_fixes(self):
         return all(
             [
-                self.fixed,
-                not self.uncategorized,
-                not self.changed,
-                not self.added,
-                not self.security,
-                not self.deprecated,
-                not self.removed,
+                not self.fixed.is_empty,
+                self.uncategorized.is_empty,
+                self.changed.is_empty,
+                self.added.is_empty,
+                self.security.is_empty,
+                self.deprecated.is_empty,
+                self.removed.is_empty,
             ]
         )
 
@@ -336,13 +392,13 @@ class Change:
     def is_empty(self):
         return all(
             [
-                not self.fixed,
-                not self.uncategorized,
-                not self.changed,
-                not self.added,
-                not self.security,
-                not self.deprecated,
-                not self.removed,
+                self.fixed.is_empty,
+                self.uncategorized.is_empty,
+                self.changed.is_empty,
+                self.added.is_empty,
+                self.security.is_empty,
+                self.deprecated.is_empty,
+                self.removed.is_empty,
             ]
         )
 
@@ -350,13 +406,13 @@ class Change:
         if raw:
             return "\n".join(self.__lines)
         out = []
-        if self.uncategorized:
-            out.append(self.uncategorized.to_markdown(bullet="*"))
+        if not self.uncategorized.is_empty:
+            out.append(self.uncategorized.to_markdown())
             out.append("")
         for f in fields(self):
             if f.type is Category and f.name != "uncategorized":
                 category: Category = getattr(self, f.name)
-                if category:
+                if not category.is_empty:
                     out.append(f"### {f.name.capitalize()}")
                     out.append(category.to_markdown())
                     out.append("")
@@ -373,8 +429,8 @@ class Change:
             for f in fields(self):
                 if f.type is Category:
                     category = getattr(self, f.name)
-                    if category:
-                        out[f.name] = category
+                    if not category.is_empty:
+                        out[f.name] = list(category)
         return out
 
     def parse_category_line(self, line: str):

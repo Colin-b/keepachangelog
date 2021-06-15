@@ -64,6 +64,6 @@ class TestChange:
             changed=["line3", "line4"],
         )
         assert isinstance(change.uncategorized, Category)
-        assert change.uncategorized == ["line1", "line2"]
+        assert list(change.uncategorized) == ["line1", "line2"]
         assert isinstance(change.changed, Category)
-        assert change.changed == ["line3", "line4"]
+        assert list(change.changed) == ["line3", "line4"]
