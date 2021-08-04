@@ -417,6 +417,87 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
     return changelog_file_path
 
 
+@pytest.fixture
+def major_digit_changelog(tmpdir):
+    changelog_file_path = os.path.join(tmpdir, "MAJOR_DIGIT_CHANGELOG.md")
+    with open(changelog_file_path, "wt") as file:
+        file.write(
+            """# Changelog
+All notable changes to this project will be documented in this file.
+
+The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
+and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
+
+## [Unreleased]
+### Changed
+- Enhancement
+
+## [10.9.90] - 2018-05-31
+### Changed
+- Enhancement
+
+## [9.10.100] - 2018-05-31
+### Changed
+- Enhancement
+"""
+        )
+    return changelog_file_path
+
+
+@pytest.fixture
+def minor_digit_changelog(tmpdir):
+    changelog_file_path = os.path.join(tmpdir, "MINOR_DIGIT_CHANGELOG.md")
+    with open(changelog_file_path, "wt") as file:
+        file.write(
+            """# Changelog
+All notable changes to this project will be documented in this file.
+
+The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
+and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
+
+## [Unreleased]
+### Added
+- Enhancement
+
+## [9.9.100] - 2018-05-31
+### Added
+- Enhancement
+
+## [9.10.90] - 2018-05-31
+### Added
+- Enhancement
+"""
+        )
+    return changelog_file_path
+
+
+@pytest.fixture
+def patch_digit_changelog(tmpdir):
+    changelog_file_path = os.path.join(tmpdir, "PATCH_DIGIT_CHANGELOG.md")
+    with open(changelog_file_path, "wt") as file:
+        file.write(
+            """# Changelog
+All notable changes to this project will be documented in this file.
+
+The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
+and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
+
+## [Unreleased]
+### Fixed
+- Enhancement
+
+## [9.9.10] - 2018-05-31
+### Fixed
+- Enhancement
+
+## [9.9.9] - 2018-05-31
+### Fixed
+- Enhancement
+"""
+        )
+    return changelog_file_path
+
+
 def test_major_release(major_changelog, mock_date):
     assert keepachangelog.release(major_changelog) == "2.0.0"
     with open(major_changelog) as file:
@@ -561,6 +642,171 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 [1.0.0]: https://github.test_url/test_project/releases/tag/v1.0.0
 """
         )
+
+
+def test_major_digit_release(major_digit_changelog, mock_date):
+    assert keepachangelog.release(major_digit_changelog) == "11.0.0"
+    with open(major_digit_changelog) as file:
+        assert (
+            file.read()
+            == """# Changelog
+All notable changes to this project will be documented in this file.
+
+The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
+and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
+
+## [Unreleased]
+
+## [11.0.0] - 2021-03-19
+### Changed
+- Enhancement
+
+## [10.9.90] - 2018-05-31
+### Changed
+- Enhancement
+
+## [9.10.100] - 2018-05-31
+### Changed
+- Enhancement
+"""
+        )
+
+
+def test_minor_digit_release(minor_digit_changelog, mock_date):
+    assert keepachangelog.release(minor_digit_changelog) == "9.11.0"
+    with open(minor_digit_changelog) as file:
+        assert (
+            file.read()
+            == """# Changelog
+All notable changes to this project will be documented in this file.
+
+The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
+and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
+
+## [Unreleased]
+
+## [9.11.0] - 2021-03-19
+### Added
+- Enhancement
+
+## [9.9.100] - 2018-05-31
+### Added
+- Enhancement
+
+## [9.10.90] - 2018-05-31
+### Added
+- Enhancement
+"""
+        )
+
+
+def test_patch_digit_release(patch_digit_changelog, mock_date):
+    assert keepachangelog.release(patch_digit_changelog) == "9.9.11"
+    with open(patch_digit_changelog) as file:
+        assert (
+            file.read()
+            == """# Changelog
+All notable changes to this project will be documented in this file.
+
+The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
+and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
+
+## [Unreleased]
+
+## [9.9.11] - 2021-03-19
+### Fixed
+- Enhancement
+
+## [9.9.10] - 2018-05-31
+### Fixed
+- Enhancement
+
+## [9.9.9] - 2018-05-31
+### Fixed
+- Enhancement
+"""
+        )
+
+
+def test_sorted_major_digit_semantic_release(major_digit_changelog, mock_date):
+    assert keepachangelog.to_sorted_semantic(
+        keepachangelog.to_raw_dict(major_digit_changelog)
+    ) == [
+        (
+            "9.10.100",
+            {
+                "buildmetadata": None,
+                "major": 9,
+                "minor": 10,
+                "patch": 100,
+                "prerelease": None,
+            },
+        ),
+        (
+            "10.9.90",
+            {
+                "buildmetadata": None,
+                "major": 10,
+                "minor": 9,
+                "patch": 90,
+                "prerelease": None,
+            },
+        ),
+    ]
+
+
+def test_sorted_minor_digit_semantic_release(minor_digit_changelog, mock_date):
+    assert keepachangelog.to_sorted_semantic(
+        keepachangelog.to_raw_dict(minor_digit_changelog)
+    ) == [
+        (
+            "9.9.100",
+            {
+                "buildmetadata": None,
+                "major": 9,
+                "minor": 9,
+                "patch": 100,
+                "prerelease": None,
+            },
+        ),
+        (
+            "9.10.90",
+            {
+                "buildmetadata": None,
+                "major": 9,
+                "minor": 10,
+                "patch": 90,
+                "prerelease": None,
+            },
+        ),
+    ]
+
+
+def test_sorted_patch_digit_semantic_release(patch_digit_changelog, mock_date):
+    assert keepachangelog.to_sorted_semantic(
+        keepachangelog.to_raw_dict(patch_digit_changelog)
+    ) == [
+        (
+            "9.9.9",
+            {
+                "buildmetadata": None,
+                "major": 9,
+                "minor": 9,
+                "patch": 9,
+                "prerelease": None,
+            },
+        ),
+        (
+            "9.9.10",
+            {
+                "buildmetadata": None,
+                "major": 9,
+                "minor": 9,
+                "patch": 10,
+                "prerelease": None,
+            },
+        ),
+    ]
 
 
 def test_patch_release(patch_changelog, mock_date):

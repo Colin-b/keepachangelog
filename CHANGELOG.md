@@ -6,6 +6,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [2.0.0.dev2] - 2021-08-04
+### Fixed
+- `keepachangelog.release` will now properly bump version in case the number of digit to compare was previously increased (such as if version 9 and 10 existed).
+
+### Added
+- `keepachangelog.to_sorted_semantic` to be able to sort semantic versions.
+
 ## [2.0.0.dev1] - 2021-05-27
 ### Changed
 - `keepachangelog.release` will now return `None` instead of throwing an exception if there is no Unreleased content.
@@ -77,7 +84,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 - Initial release.
 
-[Unreleased]: https://github.com/Colin-b/keepachangelog/compare/v2.0.0.dev1...HEAD
+[Unreleased]: https://github.com/Colin-b/keepachangelog/compare/v2.0.0.dev2...HEAD
+[2.0.0.dev2]: https://github.com/Colin-b/keepachangelog/compare/v2.0.0.dev1...v2.0.0.dev2
 [2.0.0.dev1]: https://github.com/Colin-b/keepachangelog/compare/v2.0.0.dev0...v2.0.0.dev1
 [2.0.0.dev0]: https://github.com/Colin-b/keepachangelog/compare/v1.0.0...v2.0.0.dev0
 [1.0.0]: https://github.com/Colin-b/keepachangelog/compare/v0.5.0...v1.0.0
