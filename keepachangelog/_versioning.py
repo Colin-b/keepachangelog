@@ -1,6 +1,6 @@
 import re
-from typing import Tuple, Optional
-
+from functools import cmp_to_key
+from typing import Tuple, Optional, Iterable, List
 
 initial_semantic_version = {
     "major": 0,
@@ -60,25 +60,76 @@ def bump(unreleased: dict, semantic_version: dict) -> dict:
     return semantic_version
 
 
-def semantic_order(version: Tuple[str, dict]) -> str:
-    _, semantic_version = version
-    # Ensure release is "bigger than" pre-release
-    pre_release_order = (
-        f"0{semantic_version['prerelease']}" if semantic_version["prerelease"] else "1"
+def _compare(first_version: str, second_version: str) -> int:
+    if first_version > second_version:
+        return 1
+
+    if first_version < second_version:
+        return -1
+
+    return 0
+
+
+def semantic_order(
+    first_version: Tuple[str, dict], second_version: Tuple[str, dict]
+) -> int:
+    _, semantic_first_version = first_version
+    _, semantic_second_version = second_version
+
+    major_difference = _compare(
+        semantic_first_version["major"], semantic_second_version["major"]
     )
-    return f"{semantic_version['major']}.{semantic_version['minor']}.{semantic_version['patch']}.{pre_release_order}"
+    if major_difference:
+        return major_difference
+
+    minor_difference = _compare(
+        semantic_first_version["minor"], semantic_second_version["minor"]
+    )
+    if minor_difference:
+        return minor_difference
+
+    patch_difference = _compare(
+        semantic_first_version["patch"], semantic_second_version["patch"]
+    )
+    if patch_difference:
+        return patch_difference
+
+    # Ensure release is "bigger than" pre-release
+    pre_release_difference = _compare(
+        f"0{semantic_first_version['prerelease']}"
+        if semantic_first_version["prerelease"]
+        else "1",
+        f"0{semantic_second_version['prerelease']}"
+        if semantic_second_version["prerelease"]
+        else "1",
+    )
+
+    return pre_release_difference
 
 
 def actual_version(changelog: dict) -> Tuple[Optional[str], dict]:
-    versions = sorted(
+    versions = to_sorted_semantic(changelog.keys())
+    return versions.pop() if versions else (None, initial_semantic_version.copy())
+
+
+def to_sorted_semantic(versions: Iterable[str]) -> List[Tuple[str, dict]]:
+    """
+    Convert a list of string semantic versions to a sorted list of semantic versions.
+    Note: unreleased is not considered as a semantic version and will thus be removed from the resulting versions.
+
+    :param versions: un-ordered list of semantic versions (as string). Can contains unreleased.
+    :return: An ordered (first element is the oldest version, last element is the newest (highest)) list of versions.
+    Each version is represented as a 2-tuple: first one is the string version, second one is a dictionary containing:
+    'major', 'minor', 'patch', 'prerelease', 'buildmetadata' keys.
+    """
+    return sorted(
         [
             (version, to_semantic(version))
-            for version in changelog.keys()
+            for version in versions
             if version != "unreleased"
         ],
-        key=semantic_order,
+        key=cmp_to_key(semantic_order),
     )
-    return versions.pop() if versions else (None, initial_semantic_version.copy())
 
 
 def guess_unreleased_version(
