@@ -1,7 +1,7 @@
 import pathlib
-from typing import Dict, Optional, Iterable, Union, Callable, Any
+from typing import Dict, Optional, Iterable, Union, List, Tuple, Any
 
-from keepachangelog._changelog_dataclasses import Changelog, SemanticVersion
+from keepachangelog._changelog_dataclasses import Changelog, SemanticVersion, StreamlinesProtocol
 
 
 def to_dict(
@@ -22,6 +22,22 @@ def to_dict(
 def to_raw_dict(changelog_path: str, *, show_unreleased=False) -> Dict[str, dict]:
     return _callback_proxy(
         _to_dict, changelog_path, show_unreleased=show_unreleased, raw=True
+    )
+
+
+def to_list(
+    changelog_path: Union[str, Iterable[str]], *, show_unreleased: bool = False, reverse: bool = True
+) -> List[Tuple[str, dict]]:
+    """
+    Convert changelog markdown file following keep a changelog format into python list.
+
+    :param changelog_path: Path to the changelog file, or context manager providing iteration on lines.
+    :param show_unreleased: Add unreleased section (if any) to the resulting dictionary.
+    :param reverse: None: no sort. True: ascending order. False: descending order.
+    :return python list of tuples containing version and related changes.
+    """
+    return _callback_proxy(
+        _to_list, changelog_path, show_unreleased=show_unreleased, raw=True, reverse=reverse
     )
 
 
@@ -52,17 +68,16 @@ def release(changelog_path: str, new_version: str = None) -> Optional[str]:
 
 
 def _callback_proxy(
-    callback: Callable[[Iterable[str], ...], Any],
+    callback: StreamlinesProtocol,
     changelog_path: Union[str, Iterable[str]],
-    *args,
     **kwargs,
 ) -> Any:
     # Allow for changelog as a file path or as a context manager providing content
     if "\n" in changelog_path:
-        return callback(changelog_path, *args, **kwargs)
+        return callback(changelog_path, **kwargs)
     path = pathlib.Path(changelog_path)
     with open(path) as change_log:
-        return callback(change_log, *args, **kwargs)
+        return callback(change_log, **kwargs)
 
 
 def _to_dict(
@@ -71,6 +86,15 @@ def _to_dict(
     changelog: Changelog = Changelog()
     changelog.streamlines(change_log)
     changes = changelog.to_dict(show_unreleased=show_unreleased, raw=raw)
+    return changes
+
+
+def _to_list(
+    change_log: Iterable[str], *, show_unreleased: bool, raw: bool, reverse: bool
+) -> List[Tuple[str, dict]]:
+    changelog: Changelog = Changelog()
+    changelog.streamlines(change_log)
+    changes = changelog.to_list(show_unreleased=show_unreleased, raw=raw, reverse=reverse)
     return changes
 
 

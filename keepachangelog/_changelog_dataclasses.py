@@ -14,6 +14,11 @@ from typing import (
     Union,
 )
 
+try:
+    from typing import Protocol
+except ImportError:
+    from typing_extensions import Protocol  # if Python > 3.8
+
 from keepachangelog._tree import BulletTree, TextNode
 from keepachangelog._versioning import (
     InvalidSemanticVersion,
@@ -42,6 +47,14 @@ def is_category(line: str) -> bool:
 
 def matches_link(line: str) -> re.Match:
     return RE_LINK_LINE.fullmatch(line)
+
+
+class StreamlineProtocol(Protocol):
+    def __call__(self, line: str) -> None: ...
+
+
+class StreamlinesProtocol(Protocol):
+    def __call__(self, lines: Iterable[str], **kwargs) -> None: ...
 
 
 @dataclass(eq=True, order=True)
@@ -93,28 +106,22 @@ class SemanticVersion:
 
     def bump_major(self):
         return self.__class__.from_dict(
-            self.to_dict(force=True)
-            | SemanticVersion(self.major + 1, 0, 0).to_dict(force=True)
+            dict(self.to_dict(force=True), **SemanticVersion(self.major + 1, 0, 0).to_dict(force=True))
         )
 
     def bump_minor(self):
         return self.__class__.from_dict(
-            self.to_dict(force=True)
-            | SemanticVersion(self.major, self.minor + 1, 0).to_dict(force=True)
+            dict(self.to_dict(force=True), **SemanticVersion(self.major, self.minor + 1, 0).to_dict(force=True))
         )
 
     def bump_patch(self):
         return self.__class__.from_dict(
-            self.to_dict(force=True)
-            | SemanticVersion(self.major, self.minor, self.patch + 1).to_dict(
-                force=True
-            )
+            dict(self.to_dict(force=True), **SemanticVersion(self.major, self.minor, self.patch + 1).to_dict(force=True))
         )
 
     def release_version(self):
         return self.__class__.from_dict(
-            self.to_dict(force=True)
-            | SemanticVersion(self.major, self.minor, self.patch).to_dict(force=True)
+            dict(self.to_dict(force=True), **SemanticVersion(self.major, self.minor, self.patch).to_dict(force=True))
         )
 
     def to_tuple(self) -> Tuple[int, int, int, Optional[str], Optional[str]]:
@@ -516,12 +523,19 @@ class Changelog:
 
     @property
     def sorted_changes(self) -> Generator[Tuple[str, Change], None, None]:
+        yield from self._sorted_changes(reverse=False)
+
+    @property
+    def sorted_reversed_changes(self) -> Generator[Tuple[str, Change], None, None]:
+        yield from self._sorted_changes(reverse=True)
+
+    def _sorted_changes(self, reverse: bool) -> Generator[Tuple[str, Change], None, None]:
         for version, change in self.changes.items():
             if not change.is_released:
                 yield version, change
         released = ((v, c) for v, c in self.changes.items() if c.is_released)
         yield from sorted(
-            released, key=lambda k: k[1].metadata.semantic_version_strict, reverse=True
+            released, key=lambda k: k[1].metadata.semantic_version_strict, reverse=reverse
         )
 
     def release(self, new_version: Optional[SemanticVersion] = None) -> bool:
@@ -588,14 +602,14 @@ class Changelog:
         self.changes = temp_changes
 
     def links(self) -> Generator[List[Tuple[str, str]], None, None]:
-        for version, change in self.sorted_changes:
+        for version, change in self.sorted_reversed_changes:
             yield version, change.metadata.url
 
     def to_markdown(self, *, raw=False) -> str:
         out = self.header[:]
         if not raw:
             out.append("")
-        for version, change in self.sorted_changes:
+        for version, change in self.sorted_reversed_changes:
             if change.metadata.release_date is not None:
                 out.append(
                     f"## [{version.capitalize()}] - {change.metadata.release_date}"
@@ -614,11 +628,17 @@ class Changelog:
         return "\n".join(out)
 
     def to_dict(self, *, show_unreleased: bool = False, raw: bool = False):
-        return {
-            version.lower(): change.to_dict(raw=raw)
-            for version, change in self.changes.items()
-            if change.is_released or show_unreleased
-        }
+        return dict(self.iter_changes(show_unreleased=show_unreleased, raw=raw))
+
+    def to_list(self, *, show_unreleased: bool = False, raw: bool = False, reverse: bool = None):
+        return list(self.iter_changes(show_unreleased=show_unreleased, raw=raw, reverse=reverse))
+
+    def iter_changes(self, *, show_unreleased: bool = False, raw: bool = False, reverse: bool = None):
+        changes = self.changes.items() if reverse is None else self.sorted_reversed_changes if reverse else self.sorted_changes
+
+        for version, change in changes:
+            if change.is_released or show_unreleased:
+                yield version.lower(), change.to_dict(raw=raw)
 
     def streamlines(self, lines: Iterable[str]):
         for line in lines:

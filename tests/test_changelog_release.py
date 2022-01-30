@@ -438,11 +438,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 - Enhancement
 
-## [9.9.100] - 2018-05-31
+## [9.10.90] - 2018-05-31
 ### Added
 - Enhancement
 
-## [9.10.90] - 2018-05-31
+## [9.9.100] - 2018-05-31
 ### Added
 - Enhancement
 """
@@ -671,11 +671,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 - Enhancement
 
-## [9.9.100] - 2018-05-31
+## [9.10.90] - 2018-05-31
 ### Added
 - Enhancement
 
-## [9.10.90] - 2018-05-31
+## [9.9.100] - 2018-05-31
 ### Added
 - Enhancement
 """

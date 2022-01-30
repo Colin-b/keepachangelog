@@ -36,7 +36,9 @@ setup(
     ],
     keywords=["changelog", "CHANGELOG.md", "markdown"],
     packages=find_packages(exclude=["tests*"]),
-    install_requires=[],
+    install_requires=[
+        'typing-extensions == 4.0.1; python_version < "3.8.0"',
+    ],
     extras_require={
         "testing": [
             # Used to check starlette endpoint
