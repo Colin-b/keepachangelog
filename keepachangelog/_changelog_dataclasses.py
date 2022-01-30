@@ -12,11 +12,12 @@ from typing import (
     Generator,
     Iterable,
     Union,
+    Match,
 )
 
-try:
+try:  # pragma: no cover
     from typing import Protocol
-except ImportError:
+except ImportError:  # pragma: no cover
     from typing_extensions import Protocol  # if Python > 3.8
 
 from keepachangelog._tree import BulletTree, TextNode
@@ -45,7 +46,7 @@ def is_category(line: str) -> bool:
     return line.startswith("### ")
 
 
-def matches_link(line: str) -> re.Match:
+def matches_link(line: str) -> Match:
     return RE_LINK_LINE.fullmatch(line)
 
 

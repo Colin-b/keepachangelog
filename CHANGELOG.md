@@ -6,6 +6,31 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [2.0.0.dev3] - 2022-01-30
+### Added
+- The parsing engine is now Object-oriented and more flexible.
+- Three new features:
+  - **Multiline:** Items ( <-- such as this one) can now
+    be written on several lines.
+  - **Sub-items:** Items can now have sub-items.
+    - Of any (reasonable) depth.
+  - **To list:** Using `to_list` instead of `to_dict` makes it possible to sort it easily.
+
+### Changed
+- Release dates are parsed (several formats are supported). 
+  When `to_dict()`, a unique format is chosen.
+- When `to_raw_dict()`, release dates are kept "as-is" 
+  (and `.lower()` is no longer applied)
+
+### Fixed
+- Change ordering is now deterministic
+- When `to_raw_dict()`, empty lines are preserved.
+- When semantic version exists, it is produced. Before, if 
+  depended on some bugs (it was produced sometimes and not 
+  other times, such as when the change was empty or if there 
+  was only the link, something like that...). 
+  This is now more consistent.
+
 ## [2.0.0.dev2] - 2021-08-04
 ### Fixed
 - `keepachangelog.release` will now properly bump version in case the number of digit to compare was previously increased (such as if version 9 and 10 existed).
@@ -84,7 +109,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 - Initial release.
 
-[Unreleased]: https://github.com/Colin-b/keepachangelog/compare/v2.0.0.dev2...HEAD
+[Unreleased]: https://github.com/Colin-b/keepachangelog/compare/v2.0.0.dev3...HEAD
+[2.0.0.dev3]: https://github.com/Colin-b/keepachangelog/compare/v2.0.0.dev2...v2.0.0.dev3
 [2.0.0.dev2]: https://github.com/Colin-b/keepachangelog/compare/v2.0.0.dev1...v2.0.0.dev2
 [2.0.0.dev1]: https://github.com/Colin-b/keepachangelog/compare/v2.0.0.dev0...v2.0.0.dev1
 [2.0.0.dev0]: https://github.com/Colin-b/keepachangelog/compare/v1.0.0...v2.0.0.dev0
