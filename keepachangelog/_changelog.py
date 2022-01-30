@@ -67,6 +67,26 @@ def release(changelog_path: str, new_version: str = None) -> Optional[str]:
         return changelog.current_version_string
 
 
+def to_sorted_semantic(
+    changelog_path: Union[str, Iterable[str]], *, reverse: bool = True
+) -> List[Tuple[str, dict]]:
+    """
+    Convert changelog markdown file following keep a changelog format into a sorted list of semantic versions.
+    Note: unreleased is not considered as a semantic version and will thus be removed from the resulting versions.
+
+    :param changelog_path: Path to the changelog file, or context manager providing iteration on lines.
+    :param reverse: None: no sort. True: ascending order. False: descending order.
+    :return: An ordered (first element is the oldest version, last element is the newest (highest)) list of versions.
+    Each version is represented as a 2-tuple: first one is the string version, second one is a dictionary containing:
+    'major', 'minor', 'patch', 'prerelease', 'buildmetadata' keys.
+    """
+    changelog = to_list(changelog_path, show_unreleased=False, reverse=reverse)
+    return [
+        (version, changelog_dict['metadata']['semantic_version'])
+        for version, changelog_dict in changelog
+    ]
+
+
 def _callback_proxy(
     callback: StreamlinesProtocol,
     changelog_path: Union[str, Iterable[str]],

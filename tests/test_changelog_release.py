@@ -713,9 +713,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 @freeze_time(_date_time_for_tests)
 def test_sorted_major_digit_semantic_release(major_digit_changelog):
-    assert keepachangelog.to_sorted_semantic(
-        keepachangelog.to_raw_dict(major_digit_changelog)
-    ) == [
+    assert keepachangelog.to_sorted_semantic(major_digit_changelog, reverse=False) == [
         (
             "9.10.100",
             {
@@ -741,9 +739,7 @@ def test_sorted_major_digit_semantic_release(major_digit_changelog):
 
 @freeze_time(_date_time_for_tests)
 def test_sorted_minor_digit_semantic_release(minor_digit_changelog):
-    assert keepachangelog.to_sorted_semantic(
-        keepachangelog.to_raw_dict(minor_digit_changelog)
-    ) == [
+    assert keepachangelog.to_sorted_semantic(minor_digit_changelog, reverse=False) == [
         (
             "9.9.100",
             {
@@ -769,9 +765,7 @@ def test_sorted_minor_digit_semantic_release(minor_digit_changelog):
 
 @freeze_time(_date_time_for_tests)
 def test_sorted_patch_digit_semantic_release(patch_digit_changelog):
-    assert keepachangelog.to_sorted_semantic(
-        keepachangelog.to_raw_dict(patch_digit_changelog)
-    ) == [
+    assert keepachangelog.to_sorted_semantic(patch_digit_changelog, reverse=False) == [
         (
             "9.9.9",
             {
