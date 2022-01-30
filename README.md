@@ -2,10 +2,10 @@
 
 <p align="center">
 <a href="https://pypi.org/project/keepachangelog/"><img alt="pypi version" src="https://img.shields.io/pypi/v/keepachangelog"></a>
-<a href="https://travis-ci.com/Colin-b/keepachangelog"><img alt="Build status" src="https://api.travis-ci.com/Colin-b/keepachangelog.svg?branch=master"></a>
-<a href="https://travis-ci.com/Colin-b/keepachangelog"><img alt="Coverage" src="https://img.shields.io/badge/coverage-100%25-brightgreen"></a>
+<a href="https://github.com/Colin-b/keepachangelog/actions"><img alt="Build status" src="https://github.com/Colin-b/keepachangelog/workflows/Release/badge.svg"></a>
+<a href="https://github.com/Colin-b/keepachangelog/actions"><img alt="Coverage" src="https://img.shields.io/badge/coverage-100%25-brightgreen"></a>
 <a href="https://github.com/psf/black"><img alt="Code style: black" src="https://img.shields.io/badge/code%20style-black-000000.svg"></a>
-<a href="https://travis-ci.com/Colin-b/keepachangelog"><img alt="Number of tests" src="https://img.shields.io/badge/tests-40 passed-blue"></a>
+<a href="https://github.com/Colin-b/keepachangelog/actions"><img alt="Number of tests" src="https://img.shields.io/badge/tests-40 passed-blue"></a>
 <a href="https://pypi.org/project/keepachangelog/"><img alt="Number of downloads" src="https://img.shields.io/pypi/dm/keepachangelog"></a>
 </p>
 
