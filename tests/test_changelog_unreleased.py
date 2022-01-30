@@ -125,6 +125,13 @@ def test_changelog_with_versions_and_all_categories(changelog):
             "metadata": {
                 "url": "https://github.test_url/test_project/compare/v1.0.1...v1.0.2",
                 "version": "1.0.2",
+                "semantic_version": {
+                    "buildmetadata": None,
+                    "major": 1,
+                    "minor": 0,
+                    "patch": 2,
+                    "prerelease": None,
+                },
             },
         },
         "1.0.1": {
@@ -191,7 +198,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
-* Release note 0.
+- Release note 0.
 
 ### Changed
 - Release note 1.
@@ -228,6 +235,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - sub enhancement 2
 - Enhancement 2 (1.1.0)
 
+## [1.0.2]
 ## [1.0.1] - 2018-05-31
 ### Fixed
 - Bug fix 1 (1.0.1)
@@ -244,11 +252,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 - First release
 
-## [1.0.2]
 [Unreleased]: https://github.test_url/test_project/compare/v1.1.0...HEAD
 [1.1.0]: https://github.test_url/test_project/compare/v1.0.2...v1.1.0
+[1.0.2]: https://github.test_url/test_project/compare/v1.0.1...v1.0.2
 [1.0.1]: https://github.test_url/test_project/compare/v1.0.0...v1.0.1
 [1.0.0]: https://github.test_url/test_project/releases/tag/v1.0.0
-[1.0.2]: https://github.test_url/test_project/compare/v1.0.1...v1.0.2
 """
     )
