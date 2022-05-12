@@ -55,7 +55,7 @@ setup(
         "Issues": "https://github.com/Colin-b/keepachangelog/issues",
     },
     platforms=["Windows", "Linux"],
-    entry_points = {
-        'console_scripts': ['keepachangelog=keepachangelog.__main__:main'],
+    entry_points={
+        "console_scripts": ["keepachangelog=keepachangelog.__main__:main"],
     },
 )
