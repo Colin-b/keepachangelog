@@ -43,7 +43,7 @@ def _command_release(args):
         print(new_version)
 
 
-def _parse_args():
+def _parse_args(cmdline: List[str]):
     class CustomFormatter(
         argparse.ArgumentDefaultsHelpFormatter, argparse.RawDescriptionHelpFormatter
     ):
@@ -70,7 +70,9 @@ Examples:
 
     # keepachangelog show
     parser_show_help = "Show the content of a release from the changelog"
-    parser_show: argparse.ArgumentParser = subparser.add_parser("show", description=parser_show_help, help=parser_show_help)
+    parser_show: argparse.ArgumentParser = subparser.add_parser(
+        "show", description=parser_show_help, help=parser_show_help
+    )
     parser_show.formatter_class = CustomFormatter
 
     parser_show.add_argument(
@@ -91,7 +93,9 @@ Examples:
 
     # keepachangelog release
     parser_release_help = "Create a new release in the changelog"
-    parser_release: argparse.ArgumentParser = subparser.add_parser("release", description=parser_release_help, help=parser_release_help)
+    parser_release: argparse.ArgumentParser = subparser.add_parser(
+        "release", description=parser_release_help, help=parser_release_help
+    )
     parser_release.formatter_class = CustomFormatter
 
     parser_release.add_argument(
@@ -112,14 +116,14 @@ Examples:
     parser_release.set_defaults(func=_command_release)
 
     parser.add_argument(
-        "--version", action="version", version=f"%(prog)s {__version__}"
+        "-v", "--version", action="version", version=f"%(prog)s {__version__}"
     )
 
-    return parser.parse_args()
+    return parser.parse_args(cmdline)
 
 
-def main(args=None):
-    args = _parse_args()
+def main(cmdline=None):
+    args = _parse_args(cmdline)
     args.func(args)
 
 
