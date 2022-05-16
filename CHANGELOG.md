@@ -6,7 +6,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 ### Added
-- Add a CLI
+- Add a CLI to interact with `keepachangelog` API
 
 ## [2.0.0.dev2] - 2021-08-04
 ### Fixed
@@ -46,7 +46,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - `keepachangelog.release` is now allowing to provide a custom new version thanks to the new `new_version` parameter.
 
 ### Fixed
-- `keepachangelog.release` now allows `pre-release` and `build metadata` information as part of valid semantic version. As per [semantic versioning specifications](https://semver.org). 
+- `keepachangelog.release` now allows `pre-release` and `build metadata` information as part of valid semantic version. As per [semantic versioning specifications](https://semver.org).
   To ensure compatibility with some python specific versioning, `pre-release` is also handled as not being prefixed with `-`, or prefixed with `.`.
 - `keepachangelog.release` will now bump a pre-release version to a stable version. It was previously failing.
 
