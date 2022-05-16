@@ -299,3 +299,14 @@ Note: [flask-restx](https://pypi.python.org/pypi/flask-restx) module must be ins
 ```sh
 python -m pip install keepachangelog
 ```
+
+## Usage from command line
+
+`keepachangelog` can be used directly via command line:
+
+```sh
+# Run it as a Python module
+python -m keepachangelog --help
+# or as a shell command
+keepachangelog --help
+```
