@@ -77,7 +77,7 @@ def test_print_help(changelog: str, capsys: pytest.CaptureFixture):
 
     captured = capsys.readouterr()
 
-    assert captured.err is ""
+    assert captured.err == ""
     assert "usage: keepachangelog [-h] [-v] {show,release} ..." in captured.out
 
 
@@ -89,7 +89,7 @@ def test_print_version(changelog: str, capsys: pytest.CaptureFixture):
 
     captured = capsys.readouterr()
 
-    assert captured.err is ""
+    assert captured.err == ""
     assert captured.out.strip() == f"keepachangelog {__version__}"
 
 
@@ -98,7 +98,7 @@ def test_show_release_pretty(changelog: str, capsys: pytest.CaptureFixture):
 
     captured = capsys.readouterr()
 
-    assert captured.err is ""
+    assert captured.err == ""
     assert (
         captured.out.strip()
         == "Deprecated\n  - Known issue 1 (1.0.0)\r\n  - Known issue 2 (1.0.0)"
@@ -110,7 +110,7 @@ def test_show_release_raw(changelog: str, capsys: pytest.CaptureFixture):
 
     captured = capsys.readouterr()
 
-    assert captured.err is ""
+    assert captured.err == ""
     assert (
         captured.out.strip()
         == """### Deprecated
@@ -126,7 +126,7 @@ def test_create_release_automatic_version(
 
     captured = capsys.readouterr()
 
-    assert captured.err is ""
+    assert captured.err == ""
     assert captured.out.strip() == "2.0.0"
 
 
@@ -135,5 +135,5 @@ def test_create_release_specific_version(changelog: str, capsys: pytest.CaptureF
 
     captured = capsys.readouterr()
 
-    assert captured.err is ""
+    assert captured.err == ""
     assert captured.out.strip() == "3.2.1"
