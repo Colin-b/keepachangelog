@@ -309,4 +309,27 @@ python -m pip install keepachangelog
 python -m keepachangelog --help
 # or as a shell command
 keepachangelog --help
+
+# usage: keepachangelog [-h] [-v] {show,release} ...
+#
+# Manipulate keep a changelog files
+#
+# options:
+#   -h, --help      show this help message and exit
+#   -v, --version   show program's version number and exit
+#
+# commands:
+#   {show,release}
+#     show          Show the content of a release from the changelog
+#     release       Create a new release in the changelog
+#
+# Examples:
+#
+#     keepachangelog show 1.0.0
+#     keepachangelog show 1.0.0 --raw
+#     keepachangelog show 1.0.0 path/to/CHANGELOG.md
+#
+#     keepachangelog release
+#     keepachangelog release 1.0.1
+#     keepachangelog release 1.0.1 -f path/to/CHANGELOG.md
 ```
