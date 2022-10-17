@@ -122,7 +122,7 @@ Examples:
     return parser.parse_args(cmdline)
 
 
-def main(cmdline=None):
+def main(cmdline: List[str] = None):
     args = _parse_args(cmdline)
     args.func(args)
 
