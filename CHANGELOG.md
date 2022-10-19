@@ -10,6 +10,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 - `keepachangelog.from_dict` now returns a single new line at end of file in case no url could be found. (Thanks [rockstarr-programmerr](https://github.com/rockstarr-programmerr))
 
+### Changed
+- Dropped support for python 3.6
+
 ## [2.0.0.dev2] - 2021-08-04
 ### Fixed
 - `keepachangelog.release` will now properly bump version in case the number of digit to compare was previously increased (such as if version 9 and 10 existed).
