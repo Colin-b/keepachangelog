@@ -41,11 +41,11 @@ setup(
         "testing": [
             # Used to check starlette endpoint
             "requests==2.*",
-            "starlette==0.18.*",
+            "starlette==0.21.*",
             # Used to check flask-restx endpoint
             "flask-restx==0.5.*",
             # Used to check coverage
-            "pytest-cov==3.*",
+            "pytest-cov==4.*",
         ]
     },
     python_requires=">=3.6",
