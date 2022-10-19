@@ -39,7 +39,7 @@ setup(
     extras_require={
         "testing": [
             # Used to check starlette endpoint
-            "requests==2.*",
+            "httpx==0.23.*",
             "starlette==0.21.*",
             # Used to check flask-restx endpoint
             "flask-restx==0.5.*",
