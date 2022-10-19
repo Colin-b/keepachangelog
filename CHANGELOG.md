@@ -6,6 +6,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [2.0.0.dev3] - 2022-10-19
+### Fixed
+- `keepachangelog.from_dict` now returns a single new line at end of file in case no url could be found. (Thanks [rockstarr-programmerr](https://github.com/rockstarr-programmerr))
+
+### Changed
+- Dropped support for python 3.6
+
 ## [2.0.0.dev2] - 2021-08-04
 ### Fixed
 - `keepachangelog.release` will now properly bump version in case the number of digit to compare was previously increased (such as if version 9 and 10 existed).
@@ -84,7 +91,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 - Initial release.
 
-[Unreleased]: https://github.com/Colin-b/keepachangelog/compare/v2.0.0.dev2...HEAD
+[Unreleased]: https://github.com/Colin-b/keepachangelog/compare/v2.0.0.dev3...HEAD
+[2.0.0.dev3]: https://github.com/Colin-b/keepachangelog/compare/v2.0.0.dev2...v2.0.0.dev3
 [2.0.0.dev2]: https://github.com/Colin-b/keepachangelog/compare/v2.0.0.dev1...v2.0.0.dev2
 [2.0.0.dev1]: https://github.com/Colin-b/keepachangelog/compare/v2.0.0.dev0...v2.0.0.dev1
 [2.0.0.dev0]: https://github.com/Colin-b/keepachangelog/compare/v1.0.0...v2.0.0.dev0
