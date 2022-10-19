@@ -41,6 +41,8 @@ setup(
             # Used to check starlette endpoint
             "httpx==0.23.*",
             "starlette==0.21.*",
+            # Flask-Restx is buggy for now
+            "werkzeug==2.1.2",
             # Used to check flask-restx endpoint
             "flask-restx==0.5.*",
             # Used to check coverage
