@@ -9,6 +9,7 @@
 <a href="https://pypi.org/project/keepachangelog/"><img alt="Number of downloads" src="https://img.shields.io/pypi/dm/keepachangelog"></a>
 </p>
 
+* [Command line utility](#usage-from-command-line)
 * [Convert to dict](#convert-changelog-to-dict)
 * [Convert from dict](#convert-dict-to-changelog)
 * [Release a new version](#release)
@@ -156,6 +157,16 @@ Note that `release_date` metadata will be set to None in such as case.
 
 ### Retrieving the raw content
 
+#### Using CLI
+
+```shell
+keepachangelog show 1.0.0 --raw
+```
+
+For details on what is actually performed, refer to the section below as it is what is used underneath the hood.
+
+#### Using python module
+
 If for some reason you would like to retrieve the raw content of a release you can use `to_raw_dict` instead.
 
 ```python
@@ -239,6 +250,16 @@ content = keepachangelog.from_dict(changes)
 
 ## Release
 
+### Using CLI
+
+```shell
+keepachangelog release
+```
+
+For details on what is actually performed, refer to the section below as it is what is used underneath the hood.
+
+### Using python module
+
 You can create a new release by using `keepachangelog.release` function.
 
 ```python
@@ -256,6 +277,52 @@ This will:
   * Unreleased section content will be moved into a new section.
   * `[Unreleased]` link will be updated.
   * New link will be created corresponding to the new section (based on the format of the Unreleased link).
+
+## Usage from command line
+
+`keepachangelog` can be used directly via command line.
+
+The main usage is within your CI to be able to [Release a new version](#release) and then [Create the appropriate release body](#retrieving-the-raw-content).
+As in the following sample:
+```shell
+NEW_VERSION=$(keepachangelog release)
+GITHUB_RELEASE_BODY=$(keepachangelog show ${GIT_TAG} --raw)
+```
+
+You can use it as a python module:
+```sh
+python -m keepachangelog --help
+```
+
+Or as a shell command:
+```sh
+keepachangelog --help
+```
+
+```sh
+# usage: keepachangelog [-h] [-v] {show,release} ...
+#
+# Manipulate keep a changelog files
+#
+# options:
+#   -h, --help      show this help message and exit
+#   -v, --version   show program's version number and exit
+#
+# commands:
+#   {show,release}
+#     show          Show the content of a release from the changelog
+#     release       Create a new release in the changelog
+#
+# Examples:
+#
+#     keepachangelog show 1.0.0
+#     keepachangelog show 1.0.0 --raw
+#     keepachangelog show 1.0.0 path/to/CHANGELOG.md
+#
+#     keepachangelog release
+#     keepachangelog release 1.0.1
+#     keepachangelog release 1.0.1 -f path/to/CHANGELOG.md
+```
 
 ## Endpoint
 
@@ -298,38 +365,4 @@ Note: [flask-restx](https://pypi.python.org/pypi/flask-restx) module must be ins
 2. Use pip to install module:
 ```sh
 python -m pip install keepachangelog
-```
-
-## Usage from command line
-
-`keepachangelog` can be used directly via command line:
-
-```sh
-# Run it as a Python module
-python -m keepachangelog --help
-# or as a shell command
-keepachangelog --help
-
-# usage: keepachangelog [-h] [-v] {show,release} ...
-#
-# Manipulate keep a changelog files
-#
-# options:
-#   -h, --help      show this help message and exit
-#   -v, --version   show program's version number and exit
-#
-# commands:
-#   {show,release}
-#     show          Show the content of a release from the changelog
-#     release       Create a new release in the changelog
-#
-# Examples:
-#
-#     keepachangelog show 1.0.0
-#     keepachangelog show 1.0.0 --raw
-#     keepachangelog show 1.0.0 path/to/CHANGELOG.md
-#
-#     keepachangelog release
-#     keepachangelog release 1.0.1
-#     keepachangelog release 1.0.1 -f path/to/CHANGELOG.md
 ```
