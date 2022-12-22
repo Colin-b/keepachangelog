@@ -5,6 +5,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+
+## [2.0.0.dev4] - 2022-12-22
 ### Added
 - Add a CLI to interact with `keepachangelog` API. (Thanks [Luca Faggianelli](https://github.com/lucafaggianelli))
 
@@ -97,7 +99,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 - Initial release.
 
-[Unreleased]: https://github.com/Colin-b/keepachangelog/compare/v2.0.0.dev3...HEAD
+[Unreleased]: https://github.com/Colin-b/keepachangelog/compare/v2.0.0.dev4...HEAD
+[2.0.0.dev4]: https://github.com/Colin-b/keepachangelog/compare/v2.0.0.dev3...v2.0.0.dev4
 [2.0.0.dev3]: https://github.com/Colin-b/keepachangelog/compare/v2.0.0.dev2...v2.0.0.dev3
 [2.0.0.dev2]: https://github.com/Colin-b/keepachangelog/compare/v2.0.0.dev1...v2.0.0.dev2
 [2.0.0.dev1]: https://github.com/Colin-b/keepachangelog/compare/v2.0.0.dev0...v2.0.0.dev1
