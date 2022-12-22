@@ -10,7 +10,7 @@ import keepachangelog
 @pytest.fixture
 def changelog(tmpdir):
     changelog_file_path = os.path.join(tmpdir, "CHANGELOG.md")
-    with open(changelog_file_path, "wt") as file:
+    with open(changelog_file_path, mode="wt", encoding="utf-8") as file:
         file.write(
             """# Changelog
 All notable changes to this project will be documented in this file.
@@ -26,7 +26,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Release note 2.
 
 ### Added
-- Enhancement 1
+- Enhancement 1 漢字
 - sub enhancement 1
 - sub enhancement 2
 - Enhancement 2
@@ -81,7 +81,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 changelog_as_dict = {
     "1.2.0": {
         "added": [
-            "Enhancement 1",
+            "Enhancement 1 漢字",
             "sub enhancement 1",
             "sub enhancement 2",
             "Enhancement 2",
@@ -172,7 +172,7 @@ def test_changelog_with_versions_and_all_categories(changelog):
 
 
 def test_changelog_with_versions_and_all_categories_as_file_reader(changelog):
-    with io.StringIO(open(changelog).read()) as file_reader:
+    with io.StringIO(open(changelog, encoding="utf-8").read()) as file_reader:
         assert keepachangelog.to_dict(file_reader) == changelog_as_dict
 
         # Assert that file reader is not closed
@@ -187,7 +187,7 @@ def test_raw_changelog_with_versions_and_all_categories(changelog):
 - Release note 1.
 - Release note 2.
 ### Added
-- Enhancement 1
+- Enhancement 1 漢字
 - sub enhancement 1
 - sub enhancement 2
 - Enhancement 2

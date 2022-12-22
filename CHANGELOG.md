@@ -6,6 +6,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [2.0.0.dev4] - 2022-12-22
+### Added
+- Add a CLI to interact with `keepachangelog` API. (Thanks [Luca Faggianelli](https://github.com/lucafaggianelli))
+
+### Changed
+- Changelog file is now expected to be `utf-8` encoded when read. (Thanks [0x55aa](https://github.com/665465))
+- Changelog file is now `utf-8` encoded when written.
+
 ## [2.0.0.dev3] - 2022-10-19
 ### Fixed
 - `keepachangelog.from_dict` now returns a single new line at end of file in case no url could be found. (Thanks [rockstarr-programmerr](https://github.com/rockstarr-programmerr))
@@ -51,7 +59,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - `keepachangelog.release` is now allowing to provide a custom new version thanks to the new `new_version` parameter.
 
 ### Fixed
-- `keepachangelog.release` now allows `pre-release` and `build metadata` information as part of valid semantic version. As per [semantic versioning specifications](https://semver.org). 
+- `keepachangelog.release` now allows `pre-release` and `build metadata` information as part of valid semantic version. As per [semantic versioning specifications](https://semver.org).
   To ensure compatibility with some python specific versioning, `pre-release` is also handled as not being prefixed with `-`, or prefixed with `.`.
 - `keepachangelog.release` will now bump a pre-release version to a stable version. It was previously failing.
 
@@ -91,7 +99,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 - Initial release.
 
-[Unreleased]: https://github.com/Colin-b/keepachangelog/compare/v2.0.0.dev3...HEAD
+[Unreleased]: https://github.com/Colin-b/keepachangelog/compare/v2.0.0.dev4...HEAD
+[2.0.0.dev4]: https://github.com/Colin-b/keepachangelog/compare/v2.0.0.dev3...v2.0.0.dev4
 [2.0.0.dev3]: https://github.com/Colin-b/keepachangelog/compare/v2.0.0.dev2...v2.0.0.dev3
 [2.0.0.dev2]: https://github.com/Colin-b/keepachangelog/compare/v2.0.0.dev1...v2.0.0.dev2
 [2.0.0.dev1]: https://github.com/Colin-b/keepachangelog/compare/v2.0.0.dev0...v2.0.0.dev1

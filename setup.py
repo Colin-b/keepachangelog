@@ -31,6 +31,7 @@ setup(
         "Programming Language :: Python :: 3.8",
         "Programming Language :: Python :: 3.9",
         "Programming Language :: Python :: 3.10",
+        "Programming Language :: Python :: 3.11",
         "Topic :: Software Development :: Build Tools",
     ],
     keywords=["changelog", "CHANGELOG.md", "markdown"],
@@ -40,11 +41,9 @@ setup(
         "testing": [
             # Used to check starlette endpoint
             "httpx==0.23.*",
-            "starlette==0.21.*",
-            # Flask-Restx is buggy for now
-            "werkzeug==2.1.2",
+            "starlette==0.23.*",
             # Used to check flask-restx endpoint
-            "flask-restx==0.5.*",
+            "flask-restx==1.*",
             # Used to check coverage
             "pytest-cov==4.*",
         ]
@@ -56,4 +55,7 @@ setup(
         "Issues": "https://github.com/Colin-b/keepachangelog/issues",
     },
     platforms=["Windows", "Linux"],
+    entry_points={
+        "console_scripts": ["keepachangelog=keepachangelog.__main__:main"],
+    },
 )

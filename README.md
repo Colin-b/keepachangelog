@@ -5,7 +5,7 @@
 <a href="https://github.com/Colin-b/keepachangelog/actions"><img alt="Build status" src="https://github.com/Colin-b/keepachangelog/workflows/Release/badge.svg"></a>
 <a href="https://github.com/Colin-b/keepachangelog/actions"><img alt="Coverage" src="https://img.shields.io/badge/coverage-100%25-brightgreen"></a>
 <a href="https://github.com/psf/black"><img alt="Code style: black" src="https://img.shields.io/badge/code%20style-black-000000.svg"></a>
-<a href="https://github.com/Colin-b/keepachangelog/actions"><img alt="Number of tests" src="https://img.shields.io/badge/tests-41 passed-blue"></a>
+<a href="https://github.com/Colin-b/keepachangelog/actions"><img alt="Number of tests" src="https://img.shields.io/badge/tests-47 passed-blue"></a>
 <a href="https://pypi.org/project/keepachangelog/"><img alt="Number of downloads" src="https://img.shields.io/pypi/dm/keepachangelog"></a>
 </p>
 
@@ -298,4 +298,38 @@ Note: [flask-restx](https://pypi.python.org/pypi/flask-restx) module must be ins
 2. Use pip to install module:
 ```sh
 python -m pip install keepachangelog
+```
+
+## Usage from command line
+
+`keepachangelog` can be used directly via command line:
+
+```sh
+# Run it as a Python module
+python -m keepachangelog --help
+# or as a shell command
+keepachangelog --help
+
+# usage: keepachangelog [-h] [-v] {show,release} ...
+#
+# Manipulate keep a changelog files
+#
+# options:
+#   -h, --help      show this help message and exit
+#   -v, --version   show program's version number and exit
+#
+# commands:
+#   {show,release}
+#     show          Show the content of a release from the changelog
+#     release       Create a new release in the changelog
+#
+# Examples:
+#
+#     keepachangelog show 1.0.0
+#     keepachangelog show 1.0.0 --raw
+#     keepachangelog show 1.0.0 path/to/CHANGELOG.md
+#
+#     keepachangelog release
+#     keepachangelog release 1.0.1
+#     keepachangelog release 1.0.1 -f path/to/CHANGELOG.md
 ```

@@ -35,7 +35,7 @@ def mock_date(monkeypatch):
 @pytest.fixture
 def major_changelog(tmpdir):
     changelog_file_path = os.path.join(tmpdir, "MAJOR_CHANGELOG.md")
-    with open(changelog_file_path, "wt") as file:
+    with open(changelog_file_path, mode="wt", encoding="utf-8") as file:
         file.write(
             """# Changelog
 All notable changes to this project will be documented in this file.
@@ -49,7 +49,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 * Release note 2.
 
 ### Added
-- Enhancement 1
+- Enhancement 1 漢字
  - sub enhancement 1 
  * sub enhancement 2
 - Enhancement 2
@@ -500,7 +500,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 def test_major_release(major_changelog, mock_date):
     assert keepachangelog.release(major_changelog) == "2.0.0"
-    with open(major_changelog) as file:
+    with open(major_changelog, encoding="utf-8") as file:
         assert (
             file.read()
             == """# Changelog
@@ -517,7 +517,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 * Release note 2.
 
 ### Added
-- Enhancement 1
+- Enhancement 1 漢字
  - sub enhancement 1 
  * sub enhancement 2
 - Enhancement 2

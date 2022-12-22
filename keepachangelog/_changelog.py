@@ -78,7 +78,7 @@ def to_dict(
     """
     # Allow for changelog as a file path or as a context manager providing content
     try:
-        with open(changelog_path) as change_log:
+        with open(changelog_path, encoding="utf-8") as change_log:
             return _to_dict(change_log, show_unreleased)
     except TypeError:
         return _to_dict(changelog_path, show_unreleased)
@@ -177,7 +177,7 @@ def to_raw_dict(changelog_path: str) -> Dict[str, dict]:
     changes = {}
     # As URLs can be defined before actual usage, maintain a separate dict
     urls = {}
-    with open(changelog_path) as change_log:
+    with open(changelog_path, encoding="utf-8") as change_log:
         current_release = {}
         for line in change_log:
             clean_line = line.strip(" \n")
@@ -230,7 +230,7 @@ def release_version(
 ):
     unreleased_link_pattern = re.compile(r"^\[Unreleased\]: (.*)$", re.DOTALL)
     lines = []
-    with open(changelog_path) as change_log:
+    with open(changelog_path, encoding="utf-8") as change_log:
         for line in change_log.readlines():
             # Move Unreleased section to new version
             if re.fullmatch(r"^## \[Unreleased\].*$", line, re.DOTALL):
@@ -263,5 +263,5 @@ def release_version(
             else:
                 lines.append(line)
 
-    with open(changelog_path, "wt") as change_log:
+    with open(changelog_path, mode="wt", encoding="utf-8") as change_log:
         change_log.writelines(lines)
