@@ -5,16 +5,14 @@ import keepachangelog
 from keepachangelog.version import __version__
 
 
-def _format_change_section(change_type: str, changes: List[str]):
+def _format_change_section(change_type: str, changes: List[str]) -> str:
     body = "".join([f"  - {change}\r\n" for change in changes])
 
     return f"""{change_type.capitalize()}
 {body}"""
 
 
-def _command_show(args):
-    output = None
-
+def _command_show(args: argparse.Namespace) -> None:
     if args.raw:
         changelog = keepachangelog.to_raw_dict(args.file)
     else:
@@ -36,14 +34,14 @@ def _command_show(args):
     print(output)
 
 
-def _command_release(args):
+def _command_release(args: argparse.Namespace) -> None:
     new_version = keepachangelog.release(args.file, args.release)
 
     if new_version:
         print(new_version)
 
 
-def _parse_args(cmdline: List[str]):
+def _parse_args(command_line: List[str]) -> argparse.Namespace:
     class CustomFormatter(
         argparse.ArgumentDefaultsHelpFormatter, argparse.RawDescriptionHelpFormatter
     ):
@@ -119,11 +117,11 @@ Examples:
         "-v", "--version", action="version", version=f"%(prog)s {__version__}"
     )
 
-    return parser.parse_args(cmdline)
+    return parser.parse_args(command_line)
 
 
-def main(cmdline: List[str] = None):
-    args = _parse_args(cmdline)
+def main(command_line: List[str] = None) -> None:
+    args = _parse_args(command_line)
     args.func(args)
 
 
