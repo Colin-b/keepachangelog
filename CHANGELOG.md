@@ -6,7 +6,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 ### Added
-- Add a CLI to interact with `keepachangelog` API
+- Add a CLI to interact with `keepachangelog` API. (Thanks [Luca Faggianelli](https://github.com/lucafaggianelli))
 
 ## [2.0.0.dev3] - 2022-10-19
 ### Fixed
