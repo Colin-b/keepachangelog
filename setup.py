@@ -27,7 +27,6 @@ setup(
         "Natural Language :: English",
         "Programming Language :: Python",
         "Programming Language :: Python :: 3",
-        "Programming Language :: Python :: 3.6",
         "Programming Language :: Python :: 3.7",
         "Programming Language :: Python :: 3.8",
         "Programming Language :: Python :: 3.9",
@@ -40,15 +39,17 @@ setup(
     extras_require={
         "testing": [
             # Used to check starlette endpoint
-            "requests==2.*",
-            "starlette==0.18.*",
+            "httpx==0.23.*",
+            "starlette==0.21.*",
+            # Flask-Restx is buggy for now
+            "werkzeug==2.1.2",
             # Used to check flask-restx endpoint
             "flask-restx==0.5.*",
             # Used to check coverage
-            "pytest-cov==3.*",
+            "pytest-cov==4.*",
         ]
     },
-    python_requires=">=3.6",
+    python_requires=">=3.7",
     project_urls={
         "GitHub": "https://github.com/Colin-b/keepachangelog",
         "Changelog": "https://github.com/Colin-b/keepachangelog/blob/master/CHANGELOG.md",

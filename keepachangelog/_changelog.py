@@ -158,14 +158,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
             content += "\n"
 
-    content += "\n"
-
+    urls_content = []
     for current_release in changes.values():
         metadata = current_release["metadata"]
         if not metadata.get("url"):
             continue
+        urls_content.append(f"[{metadata['version'].capitalize()}]: {metadata['url']}")
 
-        content += f"[{metadata['version'].capitalize()}]: {metadata['url']}\n"
+    if urls_content:
+        content += "\n"
+        content += "\n".join(urls_content)
+        content += "\n"
 
     return content
 
