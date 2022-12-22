@@ -67,7 +67,7 @@ def add_information(category: List[str], line: str):
 
 
 def to_dict(
-    changelog_path: Union[str, Iterable[str]], *, show_unreleased: bool = False
+    changelog_path: Union[str, Iterable[str]], *, show_unreleased: bool = False, encoding = 'utf-8'
 ) -> Dict[str, dict]:
     """
     Convert changelog markdown file following keep a changelog format into python dict.
@@ -78,7 +78,7 @@ def to_dict(
     """
     # Allow for changelog as a file path or as a context manager providing content
     try:
-        with open(changelog_path) as change_log:
+        with open(changelog_path, encoding=encoding) as change_log:
             return _to_dict(change_log, show_unreleased)
     except TypeError:
         return _to_dict(changelog_path, show_unreleased)
