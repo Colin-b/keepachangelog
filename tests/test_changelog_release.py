@@ -500,7 +500,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 def test_major_release(major_changelog, mock_date):
     assert keepachangelog.release(major_changelog) == "2.0.0"
-    with open(major_changelog) as file:
+    with open(major_changelog, encoding="utf-8") as file:
         assert (
             file.read()
             == """# Changelog
