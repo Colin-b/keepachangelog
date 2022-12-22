@@ -8,6 +8,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 - Add a CLI to interact with `keepachangelog` API. (Thanks [Luca Faggianelli](https://github.com/lucafaggianelli))
 
+### Changed
+- Changelog file is now expected to be `utf-8` encoded when read. (Thanks [0x55aa](https://github.com/665465))
+- Changelog file is now `utf-8` encoded when written.
+
 ## [2.0.0.dev3] - 2022-10-19
 ### Fixed
 - `keepachangelog.from_dict` now returns a single new line at end of file in case no url could be found. (Thanks [rockstarr-programmerr](https://github.com/rockstarr-programmerr))

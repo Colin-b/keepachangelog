@@ -9,7 +9,7 @@ from keepachangelog.version import __version__
 @pytest.fixture
 def changelog(tmpdir):
     changelog_file_path = os.path.join(tmpdir, "CHANGELOG.md")
-    with open(changelog_file_path, "wt") as file:
+    with open(changelog_file_path, mode="wt", encoding="utf-8") as file:
         file.write(
             """# Changelog
 All notable changes to this project will be documented in this file.
@@ -62,7 +62,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [1.0.0] - 2017-04-10
 ### Deprecated
-- Known issue 1 (1.0.0)
+- Known issue 1 (1.0.0) 漢字
 - Known issue 2 (1.0.0)
 """
         )
@@ -101,7 +101,7 @@ def test_show_release_pretty(changelog: str, capsys: pytest.CaptureFixture):
     assert captured.err == ""
     assert (
         captured.out.strip()
-        == "Deprecated\n  - Known issue 1 (1.0.0)\r\n  - Known issue 2 (1.0.0)"
+        == "Deprecated\n  - Known issue 1 (1.0.0) 漢字\r\n  - Known issue 2 (1.0.0)"
     )
 
 
@@ -114,7 +114,7 @@ def test_show_release_raw(changelog: str, capsys: pytest.CaptureFixture):
     assert (
         captured.out.strip()
         == """### Deprecated
-- Known issue 1 (1.0.0)
+- Known issue 1 (1.0.0) 漢字
 - Known issue 2 (1.0.0)"""
     )
 
