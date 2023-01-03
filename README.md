@@ -160,7 +160,7 @@ Note that `release_date` metadata will be set to None in such as case.
 #### Using CLI
 
 ```shell
-keepachangelog show 1.0.0 --raw
+keepachangelog show 1.0.0
 ```
 
 For details on what is actually performed, refer to the section below as it is what is used underneath the hood.
@@ -286,7 +286,7 @@ The main usage is within your CI to be able to [Release a new version](#release)
 As in the following sample:
 ```shell
 NEW_VERSION=$(keepachangelog release)
-GITHUB_RELEASE_BODY=$(keepachangelog show ${GIT_TAG} --raw)
+GITHUB_RELEASE_BODY=$(keepachangelog show ${NEW_VERSION})
 ```
 
 You can use it as a python module:
@@ -316,7 +316,6 @@ keepachangelog --help
 # Examples:
 #
 #     keepachangelog show 1.0.0
-#     keepachangelog show 1.0.0 --raw
 #     keepachangelog show 1.0.0 path/to/CHANGELOG.md
 #
 #     keepachangelog release

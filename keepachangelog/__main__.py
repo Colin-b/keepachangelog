@@ -1,3 +1,4 @@
+import sys
 from typing import List
 import argparse
 
@@ -5,40 +6,20 @@ import keepachangelog
 from keepachangelog.version import __version__
 
 
-def _format_change_section(change_type: str, changes: List[str]) -> str:
-    body = "".join([f"  - {change}\r\n" for change in changes])
-
-    return f"""{change_type.capitalize()}
-{body}"""
-
-
 def _command_show(args: argparse.Namespace) -> None:
-    if args.raw:
-        changelog = keepachangelog.to_raw_dict(args.file)
-    else:
-        changelog = keepachangelog.to_dict(args.file)
-
+    changelog = keepachangelog.to_raw_dict(args.file)
     content = changelog.get(args.release)
-
-    if args.raw:
-        output = content["raw"]
-    else:
-        output = "\n".join(
-            [
-                _format_change_section(change_type, changes)
-                for change_type, changes in content.items()
-                if change_type != "metadata"
-            ]
-        )
-
-    print(output)
+    print(content["raw"])
 
 
 def _command_release(args: argparse.Namespace) -> None:
     new_version = keepachangelog.release(args.file, args.release)
 
-    if new_version:
-        print(new_version)
+    if not new_version:
+        sys.stderr.write(f"{args.file} must contains a description of the release content (within Unreleased section).")
+        exit(2)
+
+    print(new_version)
 
 
 def _parse_args(command_line: List[str]) -> argparse.Namespace:
@@ -54,7 +35,6 @@ def _parse_args(command_line: List[str]) -> argparse.Namespace:
 Examples:
 
     keepachangelog show 1.0.0
-    keepachangelog show 1.0.0 --raw
     keepachangelog show 1.0.0 path/to/CHANGELOG.md
 
     keepachangelog release
@@ -82,9 +62,6 @@ Examples:
         nargs="?",
         default="CHANGELOG.md",
         help="The path to the changelog file",
-    )
-    parser_show.add_argument(
-        "-r", "--raw", action="store_true", help="Show the raw markdown body"
     )
 
     parser_show.set_defaults(func=_command_show)

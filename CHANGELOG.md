@@ -6,6 +6,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [2.0.0.dev5] - 2023-01-03
+### Changed
+- `keepachangelog show` does not support `--raw` option anymore. It will always be the raw markdown output.
+- `keepachangelog release` will now fail if there is nothing to release.
+
+### Removed
+- `keepachangelog show` does not support `--raw` option anymore.
+
 ## [2.0.0.dev4] - 2022-12-22
 ### Added
 - Add a CLI to interact with `keepachangelog` API. (Thanks [Luca Faggianelli](https://github.com/lucafaggianelli))
@@ -99,7 +107,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 - Initial release.
 
-[Unreleased]: https://github.com/Colin-b/keepachangelog/compare/v2.0.0.dev4...HEAD
+[Unreleased]: https://github.com/Colin-b/keepachangelog/compare/v2.0.0.dev5...HEAD
+[2.0.0.dev5]: https://github.com/Colin-b/keepachangelog/compare/v2.0.0.dev4...v2.0.0.dev5
 [2.0.0.dev4]: https://github.com/Colin-b/keepachangelog/compare/v2.0.0.dev3...v2.0.0.dev4
 [2.0.0.dev3]: https://github.com/Colin-b/keepachangelog/compare/v2.0.0.dev2...v2.0.0.dev3
 [2.0.0.dev2]: https://github.com/Colin-b/keepachangelog/compare/v2.0.0.dev1...v2.0.0.dev2
