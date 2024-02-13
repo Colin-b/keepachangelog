@@ -1,6 +1,6 @@
 import datetime
 import re
-from typing import Dict, List, Optional, Iterable, Union
+from typing import Optional, Iterable, Union
 
 from keepachangelog._versioning import (
     actual_version,
@@ -14,7 +14,7 @@ def is_release(line: str) -> bool:
     return line.startswith("## ")
 
 
-def add_release(changes: Dict[str, dict], line: str) -> dict:
+def add_release(changes: dict[str, dict], line: str) -> dict:
     release_line = line[3:].lower().strip(" ")
     # A release is separated by a space between version and release date
     # Release pattern should match lines like: "[0.0.1] - 2020-12-31" or [Unreleased]
@@ -49,7 +49,7 @@ def is_category(line: str) -> bool:
     return line.startswith("### ")
 
 
-def add_category(release: dict, line: str) -> List[str]:
+def add_category(release: dict, line: str) -> list[str]:
     category = line[4:].lower().strip(" ")
     return release.setdefault(category, [])
 
@@ -62,13 +62,13 @@ def is_link(line: str) -> bool:
     return link_pattern.fullmatch(line) is not None
 
 
-def add_information(category: List[str], line: str):
+def add_information(category: list[str], line: str):
     category.append(line.lstrip(" *-").rstrip(" -"))
 
 
 def to_dict(
     changelog_path: Union[str, Iterable[str]], *, show_unreleased: bool = False
-) -> Dict[str, dict]:
+) -> dict[str, dict]:
     """
     Convert changelog markdown file following keep a changelog format into python dict.
 
@@ -84,7 +84,7 @@ def to_dict(
         return _to_dict(changelog_path, show_unreleased)
 
 
-def _to_dict(change_log: Iterable[str], show_unreleased: bool) -> Dict[str, dict]:
+def _to_dict(change_log: Iterable[str], show_unreleased: bool) -> dict[str, dict]:
     changes = {}
     # As URLs can be defined before actual usage, maintain a separate dict
     urls = {}
@@ -127,7 +127,7 @@ def _to_dict(change_log: Iterable[str], show_unreleased: bool) -> Dict[str, dict
     return changes
 
 
-def from_dict(changes: Dict[str, dict]):
+def from_dict(changes: dict[str, dict]):
     content = """# Changelog
 All notable changes to this project will be documented in this file.
 
@@ -173,7 +173,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
     return content
 
 
-def to_raw_dict(changelog_path: str) -> Dict[str, dict]:
+def to_raw_dict(changelog_path: str) -> dict[str, dict]:
     changes = {}
     # As URLs can be defined before actual usage, maintain a separate dict
     urls = {}
