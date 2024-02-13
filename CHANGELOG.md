@@ -5,6 +5,9 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+### Fixed
+- Uncategorized change (usually comments) will no longer impact the release version. 
+- Typing is using built-in types for `tuple`, `list` and `dict` consistently.
 
 ## [2.0.0.dev5] - 2023-01-03
 ### Changed

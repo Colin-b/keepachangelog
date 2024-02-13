@@ -1,5 +1,4 @@
 import sys
-from typing import List
 import argparse
 
 import keepachangelog
@@ -22,7 +21,7 @@ def _command_release(args: argparse.Namespace) -> None:
     print(new_version)
 
 
-def _parse_args(command_line: List[str]) -> argparse.Namespace:
+def _parse_args(command_line: list[str]) -> argparse.Namespace:
     class CustomFormatter(
         argparse.ArgumentDefaultsHelpFormatter, argparse.RawDescriptionHelpFormatter
     ):
@@ -97,7 +96,7 @@ Examples:
     return parser.parse_args(command_line)
 
 
-def main(command_line: List[str] = None) -> None:
+def main(command_line: list[str] = None) -> None:
     args = _parse_args(command_line)
     args.func(args)
 
