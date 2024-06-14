@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ## [2.0.0] - 2024-06-14
+### Removed
+- `Python` `3.7` and `3.8` are not supported anymore.
+
+### Added
+- `Python` `3.12` is now explicitly supported.
+
 ### Fixed
 - Uncategorized change (usually comments) will no longer impact the release version. 
 - Typing is using built-in types for `tuple`, `list` and `dict` consistently.
