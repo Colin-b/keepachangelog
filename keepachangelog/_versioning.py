@@ -96,12 +96,16 @@ def semantic_order(
 
     # Ensure release is "bigger than" pre-release
     pre_release_difference = _compare(
-        f"0{semantic_first_version['prerelease']}"
-        if semantic_first_version["prerelease"]
-        else "1",
-        f"0{semantic_second_version['prerelease']}"
-        if semantic_second_version["prerelease"]
-        else "1",
+        (
+            f"0{semantic_first_version['prerelease']}"
+            if semantic_first_version["prerelease"]
+            else "1"
+        ),
+        (
+            f"0{semantic_second_version['prerelease']}"
+            if semantic_second_version["prerelease"]
+            else "1"
+        ),
     )
 
     return pre_release_difference

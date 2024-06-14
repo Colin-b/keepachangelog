@@ -32,6 +32,7 @@ setup(
         "Programming Language :: Python :: 3.9",
         "Programming Language :: Python :: 3.10",
         "Programming Language :: Python :: 3.11",
+        "Programming Language :: Python :: 3.12",
         "Topic :: Software Development :: Build Tools",
     ],
     keywords=["changelog", "CHANGELOG.md", "markdown"],
@@ -40,12 +41,12 @@ setup(
     extras_require={
         "testing": [
             # Used to check starlette endpoint
-            "httpx==0.23.*",
-            "starlette==0.23.*",
+            "httpx==0.27.*",
+            "starlette==0.37.*",
             # Used to check flask-restx endpoint
             "flask-restx==1.*",
             # Used to check coverage
-            "pytest-cov==4.*",
+            "pytest-cov==5.*",
         ]
     },
     python_requires=">=3.7",
