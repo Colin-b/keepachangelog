@@ -1,9 +1,10 @@
 import os
 
 from starlette.applications import Starlette
+from starlette.routing import Route
 from starlette.testclient import TestClient
 
-from keepachangelog.starlette import add_changelog_endpoint
+from keepachangelog.starlette import changelog_endpoint
 
 
 def test_changelog_endpoint_with_file(tmpdir):
@@ -71,8 +72,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 """
         )
 
-    app = Starlette()
-    add_changelog_endpoint(app, changelog_file_path)
+    changelog_route = Route(
+        "/changelog", endpoint=changelog_endpoint(changelog_file_path)
+    )
+    app = Starlette(routes=[changelog_route])
     with TestClient(app) as client:
         response = client.get("/changelog")
         assert response.status_code == 200
@@ -136,8 +139,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 
 def test_changelog_endpoint_without_file():
-    app = Starlette()
-    add_changelog_endpoint(app, "non existing")
+    changelog_route = Route("/changelog", endpoint=changelog_endpoint("non existing"))
+    app = Starlette(routes=[changelog_route])
     with TestClient(app) as client:
         response = client.get("/changelog")
         assert response.status_code == 200

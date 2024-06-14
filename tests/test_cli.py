@@ -149,7 +149,10 @@ def test_create_release_nothing_to_release(
 
     captured = capsys.readouterr()
 
-    assert captured.err == f"{changelog_without_unreleased} must contains a description of the release content (within Unreleased section)."
+    assert (
+        captured.err
+        == f"{changelog_without_unreleased} must contains a description of the release content (within Unreleased section)."
+    )
     assert captured.out == ""
 
 

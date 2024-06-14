@@ -6,6 +6,20 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [2.0.0] - 2024-06-14
+### Removed
+- `Python` `3.7` and `3.8` are not supported anymore.
+
+### Added
+- `Python` `3.12` is now explicitly supported.
+
+### Fixed
+- Uncategorized change (usually comments) will no longer impact the release version. 
+- Typing is using built-in types for `tuple`, `list` and `dict` consistently.
+
+### Changed
+- `keepachangelog.starlette.add_changelog_endpoint` is now `keepachangelog.starlette.changelog_endpoint`. Refer to documentation for more details.
+
 ## [2.0.0.dev5] - 2023-01-03
 ### Changed
 - `keepachangelog show` does not support `--raw` option anymore. It will always be the raw markdown output.
@@ -107,7 +121,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 - Initial release.
 
-[Unreleased]: https://github.com/Colin-b/keepachangelog/compare/v2.0.0.dev5...HEAD
+[Unreleased]: https://github.com/Colin-b/keepachangelog/compare/v2.0.0...HEAD
+[2.0.0]: https://github.com/Colin-b/keepachangelog/compare/v2.0.0.dev5...v2.0.0
 [2.0.0.dev5]: https://github.com/Colin-b/keepachangelog/compare/v2.0.0.dev4...v2.0.0.dev5
 [2.0.0.dev4]: https://github.com/Colin-b/keepachangelog/compare/v2.0.0.dev3...v2.0.0.dev4
 [2.0.0.dev3]: https://github.com/Colin-b/keepachangelog/compare/v2.0.0.dev2...v2.0.0.dev3

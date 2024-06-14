@@ -1,18 +1,18 @@
-from starlette.applications import Starlette
+from typing import Callable
+
 from starlette.responses import JSONResponse
 
 from keepachangelog._changelog import to_dict
 
 
-def add_changelog_endpoint(app: Starlette, changelog_path: str):
+def changelog_endpoint(changelog_path: str) -> Callable:
     """
     Create /changelog: Changelog endpoint parsing https://keepachangelog.com/en/1.0.0/
 
-    :param app: The ASGI application.
     :param changelog_path: Path to CHANGELOG.md.
+    :returns: The endpoint to add as a route.
     """
 
-    @app.route("/changelog")
     async def changelog(request):
         """
         responses:
@@ -29,3 +29,5 @@ def add_changelog_endpoint(app: Starlette, changelog_path: str):
             return JSONResponse(to_dict(changelog_path))
         except FileNotFoundError:
             return JSONResponse({})
+
+    return changelog

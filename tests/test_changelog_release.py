@@ -498,6 +498,34 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
     return changelog_file_path
 
 
+@pytest.fixture
+def patch_digit_changelog_with_extra_info(tmpdir):
+    changelog_file_path = os.path.join(tmpdir, "PATCH_DIGIT_CHANGELOG.md")
+    with open(changelog_file_path, "wt") as file:
+        file.write(
+            """# Changelog
+All notable changes to this project will be documented in this file.
+
+The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
+and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
+
+## [Unreleased]
+A description is worth a thousand patches.
+### Fixed
+- Enhancement
+
+## [9.9.10] - 2018-05-31
+### Fixed
+- Enhancement
+
+## [9.9.9] - 2018-05-31
+### Fixed
+- Enhancement
+"""
+        )
+    return changelog_file_path
+
+
 def test_major_release(major_changelog, mock_date):
     assert keepachangelog.release(major_changelog) == "2.0.0"
     with open(major_changelog, encoding="utf-8") as file:
@@ -1040,5 +1068,36 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - sub *enhancement 1*
 - sub enhancement 2
 - Enhancement 2 (1.1.0)
+"""
+        )
+
+
+def test_patch_release_with_description(
+    patch_digit_changelog_with_extra_info, mock_date
+):
+    assert keepachangelog.release(patch_digit_changelog_with_extra_info) == "9.9.11"
+    with open(patch_digit_changelog_with_extra_info) as file:
+        assert (
+            file.read()
+            == """# Changelog
+All notable changes to this project will be documented in this file.
+
+The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
+and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
+
+## [Unreleased]
+
+## [9.9.11] - 2021-03-19
+A description is worth a thousand patches.
+### Fixed
+- Enhancement
+
+## [9.9.10] - 2018-05-31
+### Fixed
+- Enhancement
+
+## [9.9.9] - 2018-05-31
+### Fixed
+- Enhancement
 """
         )

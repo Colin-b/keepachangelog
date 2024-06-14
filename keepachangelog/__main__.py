@@ -1,5 +1,4 @@
 import sys
-from typing import List
 import argparse
 
 import keepachangelog
@@ -16,13 +15,15 @@ def _command_release(args: argparse.Namespace) -> None:
     new_version = keepachangelog.release(args.file, args.release)
 
     if not new_version:
-        sys.stderr.write(f"{args.file} must contains a description of the release content (within Unreleased section).")
+        sys.stderr.write(
+            f"{args.file} must contains a description of the release content (within Unreleased section)."
+        )
         exit(2)
 
     print(new_version)
 
 
-def _parse_args(command_line: List[str]) -> argparse.Namespace:
+def _parse_args(command_line: list[str]) -> argparse.Namespace:
     class CustomFormatter(
         argparse.ArgumentDefaultsHelpFormatter, argparse.RawDescriptionHelpFormatter
     ):
@@ -97,7 +98,7 @@ Examples:
     return parser.parse_args(command_line)
 
 
-def main(command_line: List[str] = None) -> None:
+def main(command_line: list[str] = None) -> None:
     args = _parse_args(command_line)
     args.func(args)
 
