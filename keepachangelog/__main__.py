@@ -15,7 +15,9 @@ def _command_release(args: argparse.Namespace) -> None:
     new_version = keepachangelog.release(args.file, args.release)
 
     if not new_version:
-        sys.stderr.write(f"{args.file} must contains a description of the release content (within Unreleased section).")
+        sys.stderr.write(
+            f"{args.file} must contains a description of the release content (within Unreleased section)."
+        )
         exit(2)
 
     print(new_version)

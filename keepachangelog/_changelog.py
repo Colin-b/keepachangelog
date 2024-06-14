@@ -62,7 +62,7 @@ def is_link(line: str) -> bool:
     return link_pattern.fullmatch(line) is not None
 
 
-def add_information(category: list[str], line: str):
+def add_information(category: list[str], line: str) -> None:
     category.append(line.lstrip(" *-").rstrip(" -"))
 
 
@@ -127,7 +127,7 @@ def _to_dict(change_log: Iterable[str], show_unreleased: bool) -> dict[str, dict
     return changes
 
 
-def from_dict(changes: dict[str, dict]):
+def from_dict(changes: dict[str, dict]) -> str:
     content = """# Changelog
 All notable changes to this project will be documented in this file.
 
@@ -227,7 +227,7 @@ def release(changelog_path: str, new_version: str = None) -> Optional[str]:
 
 def release_version(
     changelog_path: str, current_version: Optional[str], new_version: str
-):
+) -> None:
     unreleased_link_pattern = re.compile(r"^\[Unreleased\]: (.*)$", re.DOTALL)
     lines = []
     with open(changelog_path, encoding="utf-8") as change_log:

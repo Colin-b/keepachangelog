@@ -8,7 +8,7 @@ from keepachangelog._changelog import to_dict
 
 def add_changelog_endpoint(
     namespace: Union[flask_restx.Namespace, flask_restx.Api], changelog_path: str
-):
+) -> None:
     """
     Create /changelog: Changelog endpoint parsing https://keepachangelog.com/en/1.0.0/
 

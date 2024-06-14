@@ -5,7 +5,7 @@
 <a href="https://github.com/Colin-b/keepachangelog/actions"><img alt="Build status" src="https://github.com/Colin-b/keepachangelog/workflows/Release/badge.svg"></a>
 <a href="https://github.com/Colin-b/keepachangelog/actions"><img alt="Coverage" src="https://img.shields.io/badge/coverage-100%25-brightgreen"></a>
 <a href="https://github.com/psf/black"><img alt="Code style: black" src="https://img.shields.io/badge/code%20style-black-000000.svg"></a>
-<a href="https://github.com/Colin-b/keepachangelog/actions"><img alt="Number of tests" src="https://img.shields.io/badge/tests-47 passed-blue"></a>
+<a href="https://github.com/Colin-b/keepachangelog/actions"><img alt="Number of tests" src="https://img.shields.io/badge/tests-48 passed-blue"></a>
 <a href="https://pypi.org/project/keepachangelog/"><img alt="Number of downloads" src="https://img.shields.io/pypi/dm/keepachangelog"></a>
 </p>
 
@@ -327,23 +327,23 @@ keepachangelog --help
 
 ### Starlette
 
-An helper function is available to create a [starlette](https://www.starlette.io) endpoint to retrieve changelog as JSON.
+A helper function is available to create a [starlette](https://www.starlette.io) endpoint to retrieve changelog as JSON.
 
 ```python
 from starlette.applications import Starlette
-from keepachangelog.starlette import add_changelog_endpoint
+from starlette.routing import Route
+from keepachangelog.starlette import changelog_endpoint
 
-
-app = Starlette()
 # /changelog endpoint will return the dict extracted from the changelog as JSON.
-add_changelog_endpoint(app, "path/to/CHANGELOG.md")
+changelog_route = Route("/changelog", endpoint=changelog_endpoint("path/to/CHANGELOG.md"))
+app = Starlette(routes=[changelog_route])
 ```
 
 Note: [starlette](https://pypi.python.org/pypi/starlette) module must be installed.
 
 ### Flask-RestX
 
-An helper function is available to create a [Flask-RestX](https://flask-restx.readthedocs.io/en/latest/) endpoint to retrieve changelog as JSON.
+A helper function is available to create a [Flask-RestX](https://flask-restx.readthedocs.io/en/latest/) endpoint to retrieve changelog as JSON.
 
 ```python
 import flask

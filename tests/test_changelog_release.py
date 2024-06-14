@@ -1071,12 +1071,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 """
         )
 
-def test_patch_release_with_description(patch_digit_changelog_with_extra_info, mock_date):
+
+def test_patch_release_with_description(
+    patch_digit_changelog_with_extra_info, mock_date
+):
     assert keepachangelog.release(patch_digit_changelog_with_extra_info) == "9.9.11"
     with open(patch_digit_changelog_with_extra_info) as file:
         assert (
-                file.read()
-                == """# Changelog
+            file.read()
+            == """# Changelog
 All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),

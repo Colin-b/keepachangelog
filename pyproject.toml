@@ -1,0 +1,65 @@
+[build-system]
+requires = ["setuptools", "setuptools_scm"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "keepachangelog"
+description = "Manipulate keep a changelog files"
+readme = "README.md"
+requires-python = ">=3.9"
+license = {file = "LICENSE"}
+authors = [
+    {name = "Colin Bounouar", email = "colin.bounouar.dev@gmail.com" }
+]
+maintainers = [
+    {name = "Colin Bounouar", email = "colin.bounouar.dev@gmail.com" }
+]
+keywords = ["changelog", "CHANGELOG.md", "markdown"]
+classifiers=[
+    "Development Status :: 5 - Production/Stable",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: MIT License",
+    "Natural Language :: English",
+    "Typing :: Typed",
+    "Programming Language :: Python",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Topic :: Software Development :: Build Tools",
+]
+dependencies = []
+dynamic = ["version"]
+
+[project.urls]
+documentation = "https://colin-b.github.io/keepachangelog/"
+repository = "https://github.com/Colin-b/keepachangelog"
+changelog = "https://github.com/Colin-b/keepachangelog/blob/master/CHANGELOG.md"
+issues = "https://github.com/Colin-b/keepachangelog/issues"
+
+[project.optional-dependencies]
+testing = [
+    # Used to check starlette endpoint
+    "httpx==0.27.*",
+    "starlette==0.37.*",
+    # Used to check flask-restx endpoint
+    "flask-restx==1.*",
+    # Used to check coverage
+    "pytest-cov==5.*",
+]
+
+[project.scripts]
+keepachangelog = "keepachangelog.__main__:main"
+
+[tool.setuptools.packages.find]
+exclude = ["tests*"]
+
+[tool.setuptools.dynamic]
+version = {attr = "keepachangelog.version.__version__"}
+
+[tool.pytest.ini_options]
+filterwarnings = [
+    "error",
+    "ignore:jsonschema.RefResolver is deprecated.*:DeprecationWarning",
+]
