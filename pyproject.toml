@@ -61,4 +61,5 @@ version = {attr = "keepachangelog.version.__version__"}
 [tool.pytest.ini_options]
 filterwarnings = [
     "error",
+    "ignore:jsonschema.RefResolver is deprecated.*:DeprecationWarning",
 ]

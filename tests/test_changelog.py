@@ -172,12 +172,13 @@ def test_changelog_with_versions_and_all_categories(changelog):
 
 
 def test_changelog_with_versions_and_all_categories_as_file_reader(changelog):
-    with io.StringIO(open(changelog, encoding="utf-8").read()) as file_reader:
-        assert keepachangelog.to_dict(file_reader) == changelog_as_dict
+    with open(changelog, encoding="utf-8") as file_reader:
+        with io.StringIO(file_reader.read()) as memory_reader:
+            assert keepachangelog.to_dict(memory_reader) == changelog_as_dict
 
-        # Assert that file reader is not closed
-        file_reader.seek(0)
-        assert keepachangelog.to_dict(file_reader) == changelog_as_dict
+            # Assert that file reader is not closed
+            memory_reader.seek(0)
+            assert keepachangelog.to_dict(memory_reader) == changelog_as_dict
 
 
 def test_raw_changelog_with_versions_and_all_categories(changelog):

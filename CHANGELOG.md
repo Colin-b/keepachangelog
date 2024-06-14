@@ -17,6 +17,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Uncategorized change (usually comments) will no longer impact the release version. 
 - Typing is using built-in types for `tuple`, `list` and `dict` consistently.
 
+### Changed
+- `keepachangelog.starlette.add_changelog_endpoint` is now `keepachangelog.starlette.changelog_endpoint`. Refer to documentation for more details.
+
 ## [2.0.0.dev5] - 2023-01-03
 ### Changed
 - `keepachangelog show` does not support `--raw` option anymore. It will always be the raw markdown output.

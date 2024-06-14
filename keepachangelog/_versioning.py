@@ -26,7 +26,7 @@ def only_contains_bug_fixes(unreleased: dict) -> bool:
     return {"fixed"} == set(unreleased) - {"uncategorized"}
 
 
-def bump_major(semantic_version: dict):
+def bump_major(semantic_version: dict) -> None:
     semantic_version["major"] += 1
     semantic_version["minor"] = 0
     semantic_version["patch"] = 0
@@ -34,14 +34,14 @@ def bump_major(semantic_version: dict):
     semantic_version["buildmetadata"] = None
 
 
-def bump_minor(semantic_version: dict) -> str:
+def bump_minor(semantic_version: dict) -> None:
     semantic_version["minor"] += 1
     semantic_version["patch"] = 0
     semantic_version["prerelease"] = None
     semantic_version["buildmetadata"] = None
 
 
-def bump_patch(semantic_version: dict) -> str:
+def bump_patch(semantic_version: dict) -> None:
     semantic_version["patch"] += 1
     semantic_version["prerelease"] = None
     semantic_version["buildmetadata"] = None
