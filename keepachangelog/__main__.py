@@ -8,6 +8,13 @@ from keepachangelog._versioning import VersionAlreadyReleasedError
 
 def _command_show(args: argparse.Namespace) -> None:
     changelog = keepachangelog.to_raw_dict(args.file)
+
+    if args.release not in changelog.keys():
+        sys.stderr.write(
+            f"{args.file} does not contain release {args.release}."
+        )
+        exit(3)
+
     content = changelog.get(args.release)
     print(content["raw"])
 
@@ -50,7 +57,7 @@ Examples:
         formatter_class=CustomFormatter,
     )
 
-    subparser = parser.add_subparsers(title="commands")
+    subparser = parser.add_subparsers(title="commands", required=True)
 
     # keepachangelog show
     parser_show_help = "Show the content of a release from the changelog"
