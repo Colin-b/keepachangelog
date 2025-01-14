@@ -126,6 +126,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
         uncategorized = current_release.get("uncategorized", [])
         for category_content in uncategorized:
+            category_content = category_content.replace("\n", "\n ")
             content += f"\n* {category_content}"
         if uncategorized:
             content += "\n"
@@ -137,6 +138,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
             content += f"\n### {category_name.capitalize()}"
 
             for categorized in category_content:
+                categorized = categorized.replace("\n", "\n ")
                 content += f"\n- {categorized}"
 
             content += "\n"
