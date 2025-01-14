@@ -1,11 +1,15 @@
 import re
 
 # Link pattern should match lines like: "[1.2.3]: https://github.com/user/project/releases/tag/v0.0.1"
-link_pattern = re.compile(r"^\[(.*)\]: (.*)$")
+link_pattern = re.compile(r"^\[(.*)\]: (.*)\n$")
 
 
 def is_heading(line: str, heading_level: int) -> bool:
-    return line.startswith(f"{'#' * heading_level} ")
+    return line.lstrip().startswith(f"{'#' * heading_level} ")
+
+
+def from_heading(line: str, heading_level: int) -> str:
+    return line.lstrip()[heading_level:].strip(" \n")
 
 
 def unlink(value: str) -> str:
@@ -13,4 +17,4 @@ def unlink(value: str) -> str:
 
 
 def is_link(line: str) -> bool:
-    return link_pattern.fullmatch(line) is not None
+    return link_pattern.fullmatch(line.lstrip()) is not None

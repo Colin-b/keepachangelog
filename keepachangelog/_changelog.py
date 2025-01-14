@@ -7,6 +7,7 @@ from keepachangelog._markdown import (
     is_link,
     unlink,
     link_pattern,
+    from_heading,
 )
 from keepachangelog._versioning import (
     actual_version,
@@ -21,8 +22,12 @@ def is_release(line: str) -> bool:
     return is_heading(line, heading_level=2)
 
 
+def from_release(line: str) -> str:
+    return from_heading(line, heading_level=2)
+
+
 def add_release(changes: dict[str, dict], line: str) -> dict:
-    release_line = line[3:].lower().strip(" ")
+    release_line = from_release(line).lower()
     # A release is separated by a space between version and release date
     # Release pattern should match lines like: "[0.0.1] - 2020-12-31" or [Unreleased]
     version, release_date = (
@@ -52,13 +57,18 @@ def is_category(line: str) -> bool:
     return is_heading(line, heading_level=3)
 
 
+def from_category(line: str) -> str:
+    return from_heading(line, heading_level=3)
+
+
 def add_category(release: dict, line: str) -> list[str]:
-    category = line[4:].lower().strip(" ")
+    category = from_category(line).lower()
     return release.setdefault(category, [])
 
 
 def add_information(category: list[str], line: str) -> None:
-    category.append(line.lstrip(" *-").rstrip(" -"))
+    if clean_line := line.strip(" \n"):
+        category.append(clean_line.lstrip(" *-").rstrip(" -"))
 
 
 def to_dict(
@@ -86,8 +96,6 @@ def _to_dict(change_log: Iterable[str], show_unreleased: bool) -> dict[str, dict
     current_release = {}
     category = []
     for line in change_log:
-        line = line.strip(" \n")
-
         if is_release(line):
             current_release = add_release(changes, line)
             category = current_release.setdefault("uncategorized", [])
@@ -96,7 +104,7 @@ def _to_dict(change_log: Iterable[str], show_unreleased: bool) -> dict[str, dict
         elif is_link(line):
             link_match = link_pattern.fullmatch(line)
             urls[link_match.group(1).lower()] = link_match.group(2)
-        elif line:
+        else:
             add_information(category, line)
 
     # Add url for each version (create version if not existing)
@@ -175,14 +183,12 @@ def to_raw_dict(changelog_path: str) -> dict[str, dict]:
     with open(changelog_path, encoding="utf-8") as change_log:
         current_release = {}
         for line in change_log:
-            clean_line = line.strip(" \n")
-
-            if is_release(clean_line):
-                current_release = add_release(changes, clean_line)
-            elif is_link(clean_line):
-                link_match = link_pattern.fullmatch(clean_line)
+            if is_release(line):
+                current_release = add_release(changes, line)
+            elif is_link(line):
+                link_match = link_pattern.fullmatch(line)
                 urls[link_match.group(1).lower()] = link_match.group(2)
-            elif clean_line:
+            elif line.strip(" \n"):
                 current_release["raw"] = current_release.get("raw", "") + line
 
     # Add url for each version (create version if not existing)
@@ -194,7 +200,7 @@ def to_raw_dict(changelog_path: str) -> dict[str, dict]:
     unreleased_version = None
     for version, current_release in changes.items():
         metadata = current_release["metadata"]
-        # If there is an empty release date, it identify the unreleased section
+        # If there is an empty release date, it identifies the unreleased section
         if ("release_date" in metadata) and not metadata["release_date"]:
             unreleased_version = version
 
