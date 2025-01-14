@@ -10,9 +10,7 @@ def _command_show(args: argparse.Namespace) -> None:
     changelog = keepachangelog.to_raw_dict(args.file)
 
     if args.release not in changelog.keys():
-        sys.stderr.write(
-            f"{args.file} does not contain release {args.release}."
-        )
+        sys.stderr.write(f"{args.file} does not contain release {args.release}.")
         exit(3)
 
     content = changelog.get(args.release)
@@ -23,8 +21,8 @@ def _command_release(args: argparse.Namespace) -> None:
     try:
         new_version = keepachangelog.release(args.file, args.release)
     except VersionAlreadyReleasedError as ex:
-            sys.stderr.write(ex.args[0])
-            exit(3)
+        sys.stderr.write(ex.args[0])
+        exit(3)
 
     if not new_version:
         sys.stderr.write(
