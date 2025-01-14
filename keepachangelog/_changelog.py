@@ -54,23 +54,6 @@ def extract_date(date: str) -> str:
     return date.lstrip(" -(").rstrip(" )")
 
 
-def is_category(line: str) -> bool:
-    return is_heading(line, heading_level=3)
-
-
-def from_category(line: str) -> str:
-    return from_heading(line, heading_level=3)
-
-
-def add_category(release: dict, line: str) -> list[str]:
-    category = from_category(line).lower()
-    return release.setdefault(category, [])
-
-
-def add_information(category: list[str], line: str) -> None:
-    category.append(line.lstrip(" *-").rstrip(" -\n"))
-
-
 def to_dict(
     changelog_path: Union[str, Path], *, show_unreleased: bool = False
 ) -> dict[str, dict]:
@@ -90,15 +73,24 @@ def to_dict(
     return changes
 
 
+def is_category(line: str) -> bool:
+    return is_heading(line, heading_level=3)
+
+
+def from_category(line: str) -> str:
+    return from_heading(line, heading_level=3)
+
+
 def _release_to_dict(markdown_release: str) -> dict:
     category = []
     _release = {"uncategorized": category}
 
     for line in markdown_release.splitlines():
         if is_category(line):
-            category = add_category(_release, line)
+            category = from_category(line).lower()
+            _release.setdefault(category, [])
         else:
-            add_information(category, line)
+            category.append(line.lstrip(" *-").rstrip(" -\n"))
 
     # Avoid empty uncategorized
     if not _release["uncategorized"]:
