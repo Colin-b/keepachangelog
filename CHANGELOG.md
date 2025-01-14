@@ -12,6 +12,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 - `Python` `3.13` is now explicitly supported.
 
+### Changed
+- `keepachangelog.to_dict` does not allow to provide anything else than a `Path` or a `str` as path to the changelog.
+
 ## [2.0.0] - 2024-06-14
 ### Removed
 - `Python` `3.7` and `3.8` are not supported anymore.

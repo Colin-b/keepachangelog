@@ -1,6 +1,7 @@
 import datetime
 import re
-from typing import Optional, Iterable, Union
+from pathlib import Path
+from typing import Optional, Union
 
 from keepachangelog._markdown import (
     is_heading,
@@ -72,62 +73,39 @@ def add_information(category: list[str], line: str) -> None:
 
 
 def to_dict(
-    changelog_path: Union[str, Iterable[str]], *, show_unreleased: bool = False
+    changelog_path: Union[str, Path], *, show_unreleased: bool = False
 ) -> dict[str, dict]:
     """
     Convert changelog markdown file following keep a changelog format into python dict.
 
-    :param changelog_path: Path to the changelog file, or context manager providing iteration on lines.
+    :param changelog_path: Path to the changelog file.
     :param show_unreleased: Add unreleased section (if any) to the resulting dictionary.
     :return python dict containing version as key and related changes as value.
     """
-    # Allow for changelog as a file path or as a context manager providing content
-    try:
-        with open(changelog_path, encoding="utf-8") as change_log:
-            return _to_dict(change_log, show_unreleased)
-    except TypeError:
-        return _to_dict(changelog_path, show_unreleased)
+    changes = to_raw_dict(changelog_path, show_unreleased=show_unreleased)
+
+    for version, current_release in changes.items():
+        if raw_release := current_release.pop("raw", None):
+            current_release.update(_release_to_dict(raw_release))
+
+    return changes
 
 
-def _to_dict(change_log: Iterable[str], show_unreleased: bool) -> dict[str, dict]:
-    changes = {}
-    # As URLs can be defined before actual usage, maintain a separate dict
-    urls = {}
-    current_release = {}
+def _release_to_dict(markdown_release: str) -> dict:
     category = []
-    for line in change_log:
-        if is_release(line):
-            current_release = add_release(changes, line)
-            category = current_release.setdefault("uncategorized", [])
-        elif is_category(line):
-            category = add_category(current_release, line)
-        elif is_link(line):
-            link_match = link_pattern.fullmatch(line)
-            urls[link_match.group(1).lower()] = link_match.group(2)
+    _release = {"uncategorized": category}
+
+    for line in markdown_release.splitlines():
+        if is_category(line):
+            category = add_category(_release, line)
         else:
             add_information(category, line)
 
-    # Add url for each version (create version if not existing)
-    for version, url in urls.items():
-        changes.setdefault(version, {"metadata": {"version": version}})["metadata"][
-            "url"
-        ] = url
-
     # Avoid empty uncategorized
-    unreleased_version = None
-    for version, current_release in changes.items():
-        metadata = current_release["metadata"]
-        if not current_release.get("uncategorized"):
-            current_release.pop("uncategorized", None)
+    if not _release["uncategorized"]:
+        _release.pop("uncategorized", None)
 
-        # If there is an empty release date, it identify the unreleased section
-        if ("release_date" in metadata) and not metadata["release_date"]:
-            unreleased_version = version
-
-    if not show_unreleased:
-        changes.pop(unreleased_version, None)
-
-    return changes
+    return _release
 
 
 def from_dict(changes: dict[str, dict]) -> str:
@@ -176,7 +154,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
     return content
 
 
-def to_raw_dict(changelog_path: str) -> dict[str, dict]:
+def to_raw_dict(
+    changelog_path: Union[str, Path], *, show_unreleased: bool = False
+) -> dict[str, dict]:
+    """
+    Convert changelog markdown file following keep a changelog format into python dict.
+
+    :param changelog_path: Path to the changelog file.
+    :param show_unreleased: Add unreleased section (if any) to the resulting dictionary.
+    :return python dict containing version as key and related changes as value.
+    """
     changes = {}
     # As URLs can be defined before actual usage, maintain a separate dict
     urls = {}
@@ -204,7 +191,8 @@ def to_raw_dict(changelog_path: str) -> dict[str, dict]:
         if ("release_date" in metadata) and not metadata["release_date"]:
             unreleased_version = version
 
-    changes.pop(unreleased_version, None)
+    if not show_unreleased:
+        changes.pop(unreleased_version, None)
 
     return changes
 

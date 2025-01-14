@@ -1,4 +1,3 @@
-import io
 import os
 import os.path
 
@@ -169,16 +168,6 @@ changelog_as_dict = {
 
 def test_changelog_with_versions_and_all_categories(changelog):
     assert keepachangelog.to_dict(changelog) == changelog_as_dict
-
-
-def test_changelog_with_versions_and_all_categories_as_file_reader(changelog):
-    with open(changelog, encoding="utf-8") as file_reader:
-        with io.StringIO(file_reader.read()) as memory_reader:
-            assert keepachangelog.to_dict(memory_reader) == changelog_as_dict
-
-            # Assert that file reader is not closed
-            memory_reader.seek(0)
-            assert keepachangelog.to_dict(memory_reader) == changelog_as_dict
 
 
 def test_raw_changelog_with_versions_and_all_categories(changelog):
