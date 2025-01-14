@@ -9,6 +9,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Do not release same version twice.
 - Show helpful error message if `show <release>` does not find requested `release`.
 
+### Added
+- `Python` `3.13` is now explicitly supported.
+
 ## [2.0.0] - 2024-06-14
 ### Removed
 - `Python` `3.7` and `3.8` are not supported anymore.
