@@ -85,12 +85,10 @@ def test_changelog_with_versions_and_all_categories(changelog):
         "unreleased": {
             "changed": ["Release note 1.", "Release note 2."],
             "added": [
-                "Enhancement 1",
-                "sub enhancement 1",
-                "sub enhancement 2",
+                "Enhancement 1\n- sub enhancement 1\n* sub enhancement 2",
                 "Enhancement 2",
             ],
-            "fixed": ["Bug fix 1", "sub bug 1", "sub bug 2", "Bug fix 2"],
+            "fixed": ["Bug fix 1\n- sub bug 1\n* sub bug 2", "Bug fix 2"],
             "security": ["Known issue 1", "Known issue 2"],
             "uncategorized": ["Release note 0."],
             "deprecated": ["Deprecated feature 1", "Future removal 2"],
@@ -200,13 +198,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 - Enhancement 1
 - sub enhancement 1
-- sub enhancement 2
+* sub enhancement 2
 - Enhancement 2
 
 ### Fixed
 - Bug fix 1
 - sub bug 1
-- sub bug 2
+* sub bug 2
 - Bug fix 2
 
 ### Security

@@ -9,6 +9,7 @@ from keepachangelog._markdown import (
     unlink,
     link_pattern,
     from_heading,
+    unlist,
 )
 from keepachangelog._versioning import (
     actual_version,
@@ -83,14 +84,24 @@ def from_category(line: str) -> str:
 
 def _release_to_dict(markdown_release: str) -> dict:
     category = []
+    category_indent = None
     _release = {"uncategorized": category}
 
     for line in markdown_release.splitlines():
         if is_category(line):
-            category = from_category(line).lower()
-            _release.setdefault(category, [])
+            category_name = from_category(line).lower()
+            category_indent = None
+            category = _release.setdefault(category_name, [])
         else:
-            category.append(line.lstrip(" *-").rstrip(" -\n"))
+            line_indent = len(line) - len(line.lstrip(" "))
+            if category_indent is None:
+                category_indent = line_indent
+
+            if line_indent > category_indent:
+                category[-1] += f"\n{line[category_indent:].strip(' ')}"
+            else:
+                if clean_line := unlist(line[line_indent:]).strip(" "):
+                    category.append(clean_line)
 
     # Avoid empty uncategorized
     if not _release["uncategorized"]:

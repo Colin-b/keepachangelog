@@ -8,12 +8,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 - Do not release same version twice.
 - Show helpful error message if `show <release>` does not find requested `release`.
+- `keepachangelog.to_dict` will now return a single multi line string value for multi line values or values with sub items.
+- `keepachangelog.to_dict` will now also considers `+` as a list identifier (joining `-` and `*`).
 
 ### Added
 - `Python` `3.13` is now explicitly supported.
 
 ### Changed
 - `keepachangelog.to_dict` does not allow to provide anything else than a `Path` or a `str` as path to the changelog.
+- `keepachangelog.to_dict` will now return a single multi line string value for multi line values or values with sub items.
+- `keepachangelog.to_dict` will not contains values prefixed with `+` anymore as it is a list identifier.
 
 ## [2.0.0] - 2024-06-14
 ### Removed
