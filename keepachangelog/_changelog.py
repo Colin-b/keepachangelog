@@ -3,8 +3,7 @@ import re
 from typing import Optional, Iterable, Union
 
 from keepachangelog._markdown import (
-    is_heading_level_2,
-    is_heading_level_3,
+    is_heading,
     is_link,
     unlink,
     link_pattern,
@@ -19,7 +18,7 @@ from keepachangelog._versioning import (
 
 
 def is_release(line: str) -> bool:
-    return is_heading_level_2(line)
+    return is_heading(line, heading_level=2)
 
 
 def add_release(changes: dict[str, dict], line: str) -> dict:
@@ -50,7 +49,7 @@ def extract_date(date: str) -> str:
 
 
 def is_category(line: str) -> bool:
-    return is_heading_level_3(line)
+    return is_heading(line, heading_level=3)
 
 
 def add_category(release: dict, line: str) -> list[str]:

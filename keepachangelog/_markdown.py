@@ -4,16 +4,12 @@ import re
 link_pattern = re.compile(r"^\[(.*)\]: (.*)$")
 
 
-def is_heading_level_2(line: str) -> bool:
-    return line.startswith("## ")
+def is_heading(line: str, heading_level: int) -> bool:
+    return line.startswith(f"{'#' * heading_level} ")
 
 
 def unlink(value: str) -> str:
     return value.lstrip("[").rstrip("]")
-
-
-def is_heading_level_3(line: str) -> bool:
-    return line.startswith("### ")
 
 
 def is_link(line: str) -> bool:
