@@ -68,8 +68,7 @@ def add_category(release: dict, line: str) -> list[str]:
 
 
 def add_information(category: list[str], line: str) -> None:
-    if clean_line := line.strip(" \n"):
-        category.append(clean_line.lstrip(" *-").rstrip(" -"))
+    category.append(line.lstrip(" *-").rstrip(" -\n"))
 
 
 def to_dict(
