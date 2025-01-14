@@ -2,6 +2,13 @@ import datetime
 import re
 from typing import Optional, Iterable, Union
 
+from keepachangelog._markdown import (
+    is_heading_level_2,
+    is_heading_level_3,
+    is_link,
+    unlink,
+    link_pattern,
+)
 from keepachangelog._versioning import (
     actual_version,
     guess_unreleased_version,
@@ -12,7 +19,7 @@ from keepachangelog._versioning import (
 
 
 def is_release(line: str) -> bool:
-    return line.startswith("## ")
+    return is_heading_level_2(line)
 
 
 def add_release(changes: dict[str, dict], line: str) -> dict:
@@ -35,10 +42,6 @@ def add_release(changes: dict[str, dict], line: str) -> dict:
     return changes.setdefault(version, {"metadata": metadata})
 
 
-def unlink(value: str) -> str:
-    return value.lstrip("[").rstrip("]")
-
-
 def extract_date(date: str) -> str:
     if not date:
         return date
@@ -47,20 +50,12 @@ def extract_date(date: str) -> str:
 
 
 def is_category(line: str) -> bool:
-    return line.startswith("### ")
+    return is_heading_level_3(line)
 
 
 def add_category(release: dict, line: str) -> list[str]:
     category = line[4:].lower().strip(" ")
     return release.setdefault(category, [])
-
-
-# Link pattern should match lines like: "[1.2.3]: https://github.com/user/project/releases/tag/v0.0.1"
-link_pattern = re.compile(r"^\[(.*)\]: (.*)$")
-
-
-def is_link(line: str) -> bool:
-    return link_pattern.fullmatch(line) is not None
 
 
 def add_information(category: list[str], line: str) -> None:
