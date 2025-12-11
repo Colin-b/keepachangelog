@@ -7,7 +7,7 @@ from keepachangelog._versioning import VersionAlreadyReleasedError
 
 
 def _command_show(args: argparse.Namespace) -> None:
-    changelog = keepachangelog.to_raw_dict(args.file)
+    changelog = keepachangelog.to_raw_dict(args.file, show_unreleased=args.show_unreleased)
 
     if args.release not in changelog.keys():
         sys.stderr.write(f"{args.file} does not contain release {args.release}.")
@@ -73,6 +73,13 @@ Examples:
         nargs="?",
         default="CHANGELOG.md",
         help="The path to the changelog file",
+    )
+    parser_show.add_argument(
+        "-u",
+        "--show-unreleased",
+        action='store_true',
+        required=False,
+        help="Also include the unreleased entry",
     )
 
     parser_show.set_defaults(func=_command_show)

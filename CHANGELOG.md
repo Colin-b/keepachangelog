@@ -11,6 +11,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 - `Python` `3.13` is now explicitly supported.
+- `show_unreleased` optional argument to `to_raw_dict`
+- `keepachangelog show` option to include unreleased info: `-u` `--show-unreleased`
 
 ## [2.0.0] - 2024-06-14
 ### Removed

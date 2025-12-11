@@ -252,3 +252,35 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 [1.0.2]: https://github.test_url/test_project/compare/v1.0.1...v1.0.2
 """
     )
+
+
+def test_changelog_from_raw_dict(changelog):
+    releases = keepachangelog.to_raw_dict(changelog, show_unreleased=True)
+
+    assert (
+        releases['unreleased']['raw']
+        == """- Release note 0. 
+### Changed
+- Release note 1. 
+* Release note 2.
+### Added
+- Enhancement 1
+ - sub enhancement 1 
+ * sub enhancement 2
+- Enhancement 2
+### Fixed
+- Bug fix 1
+ - sub bug 1
+ * sub bug 2
+- Bug fix 2
+### Security
+* Known issue 1
+- Known issue 2
+### Deprecated
+- Deprecated feature 1 
+* Future removal 2
+### Removed
+- Deprecated feature 2
+* Future removal 1 
+"""
+    )
