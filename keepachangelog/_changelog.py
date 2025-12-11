@@ -174,7 +174,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
     return content
 
 
-def to_raw_dict(changelog_path: str) -> dict[str, dict]:
+def to_raw_dict(changelog_path: str, show_unreleased: bool = False) -> dict[str, dict]:
     changes = {}
     # As URLs can be defined before actual usage, maintain a separate dict
     urls = {}
@@ -196,6 +196,9 @@ def to_raw_dict(changelog_path: str) -> dict[str, dict]:
         changes.setdefault(version, {"metadata": {"version": version}})["metadata"][
             "url"
         ] = url
+
+    if show_unreleased:
+        return changes
 
     unreleased_version = None
     for version, current_release in changes.items():
