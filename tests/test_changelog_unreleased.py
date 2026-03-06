@@ -5,6 +5,8 @@ import pytest
 
 import keepachangelog
 
+from tests.conftest import to_dict_ignore_header
+
 
 @pytest.fixture
 def changelog(tmpdir):
@@ -81,7 +83,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 
 def test_changelog_with_versions_and_all_categories(changelog):
-    assert keepachangelog.to_dict(changelog, show_unreleased=True) == {
+    assert to_dict_ignore_header(changelog, show_unreleased=True) == {
         "unreleased": {
             "changed": ["Release note 1.", "Release note 2."],
             "added": [
@@ -181,13 +183,14 @@ def test_changelog_with_versions_and_all_categories(changelog):
 
 def test_changelog_from_dict(changelog):
     releases = keepachangelog.to_dict(changelog, show_unreleased=True)
+    print(keepachangelog.from_dict(releases))
 
     assert (
         keepachangelog.from_dict(releases)
         == """# Changelog
 All notable changes to this project will be documented in this file.
 
-The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
+The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]

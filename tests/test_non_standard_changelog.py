@@ -4,6 +4,7 @@ import os.path
 import pytest
 
 import keepachangelog
+from tests.conftest import to_dict_ignore_header
 
 
 @pytest.fixture
@@ -72,7 +73,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 
 def test_changelog_with_versions_and_all_categories(changelog):
-    assert keepachangelog.to_dict(changelog) == {
+    assert to_dict_ignore_header(changelog) == {
         "1.2.0": {
             "added": [
                 "Enhancement 1",
@@ -153,7 +154,7 @@ def test_changelog_with_versions_and_all_categories(changelog):
 
 
 def test_changelog_with_unreleased_versions_and_all_categories(changelog):
-    assert keepachangelog.to_dict(changelog, show_unreleased=True) == {
+    assert to_dict_ignore_header(changelog, show_unreleased=True) == {
         "master": {
             "metadata": {"release_date": None, "version": "master"},
         },

@@ -11,6 +11,10 @@ from keepachangelog._versioning import (
 )
 
 
+def is_header(line: str) -> bool:
+    return line.startswith("# ")
+
+
 def is_release(line: str) -> bool:
     return line.startswith("## ")
 
@@ -91,10 +95,17 @@ def _to_dict(change_log: Iterable[str], show_unreleased: bool) -> dict[str, dict
     urls = {}
     current_release = {}
     category = []
+    header = {}
+    is_header_text = False
     for line in change_log:
         line = line.strip(" \n")
 
-        if is_release(line):
+        if is_header(line):
+            header = changes.setdefault("header", {"title": "", "text": []})
+            header["title"] = line.lstrip("#").strip(" ")
+            is_header_text = True  # consider everything until next section as header
+        elif is_release(line):
+            is_header_text = False  # next section started
             current_release = add_release(changes, line)
             category = current_release.setdefault("uncategorized", [])
         elif is_category(line):
@@ -102,6 +113,8 @@ def _to_dict(change_log: Iterable[str], show_unreleased: bool) -> dict[str, dict
         elif is_link(line):
             link_match = link_pattern.fullmatch(line)
             urls[link_match.group(1).lower()] = link_match.group(2)
+        elif is_header_text:
+            header["text"].append(line)
         elif line:
             add_information(category, line)
 
@@ -114,6 +127,8 @@ def _to_dict(change_log: Iterable[str], show_unreleased: bool) -> dict[str, dict
     # Avoid empty uncategorized
     unreleased_version = None
     for version, current_release in changes.items():
+        if version == "header":
+            continue
         metadata = current_release["metadata"]
         if not current_release.get("uncategorized"):
             current_release.pop("uncategorized", None)
@@ -135,7 +150,15 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).\n"""
 
-    for current_release in changes.values():
+    if "header" in changes.keys():
+        header_title = changes["header"]["title"]
+        header_text = "\n".join(changes["header"]["text"])
+        content = f"# {header_title}\n{header_text}"
+
+    for key, val in changes.items():
+        if key == "header":  # ignore header
+            continue
+        current_release = val
         metadata = current_release["metadata"]
         content += f"\n## [{metadata['version'].capitalize()}]"
 
@@ -160,7 +183,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
             content += "\n"
 
     urls_content = []
-    for current_release in changes.values():
+    for key, val in changes.items():
+        if key == "header":
+            continue
+        current_release = val
         metadata = current_release["metadata"]
         if not metadata.get("url"):
             continue
