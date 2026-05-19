@@ -11,6 +11,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 - `Python` `3.13` is now explicitly supported.
+- handle `v` prefix in version name to convert it properly into semantic version
 
 ## [2.0.0] - 2024-06-14
 ### Removed

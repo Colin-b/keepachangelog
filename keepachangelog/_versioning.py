@@ -1,3 +1,4 @@
+import logging
 import re
 from functools import cmp_to_key
 from typing import Optional, Iterable
@@ -9,6 +10,8 @@ initial_semantic_version = {
     "prerelease": None,
     "buildmetadata": None,
 }
+
+logger = logging.getLogger(__name__)
 
 
 class InvalidSemanticVersion(Exception):
@@ -160,6 +163,13 @@ semantic_versioning = re.compile(
 def to_semantic(version: Optional[str]) -> dict:
     if not version:
         return initial_semantic_version.copy()
+
+    # handle common 'v' prefix
+    if version.startswith("v"):
+        logger.info(
+            f"Removing 'v' prefix from '{version}' to make it pure SemVer compliant."
+        )
+        version = version[1:]
 
     match = semantic_versioning.fullmatch(version)
     if match:
