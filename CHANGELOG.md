@@ -10,7 +10,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Show helpful error message if `show <release>` does not find requested `release`.
 
 ### Added
-- `Python` `3.13` is now explicitly supported.
+- `Python` `3.13` and `3.14` are now explicitly supported.
+
+### Removed
+
+- `Python` `3.9` support has been removed.
 
 ## [2.0.0] - 2024-06-14
 ### Removed
