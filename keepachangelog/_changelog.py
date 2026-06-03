@@ -1,5 +1,6 @@
 import datetime
 import re
+import logging
 from typing import Optional, Iterable, Union
 
 from keepachangelog._versioning import (
@@ -9,6 +10,8 @@ from keepachangelog._versioning import (
     InvalidSemanticVersion,
     VersionAlreadyReleasedError,
 )
+
+logger = logging.getLogger(__name__)
 
 
 def is_release(line: str) -> bool:
@@ -29,13 +32,24 @@ def add_release(changes: dict[str, dict], line: str) -> dict:
     metadata = {"version": version, "release_date": extract_date(release_date)}
     try:
         metadata["semantic_version"] = to_semantic(version)
-    except InvalidSemanticVersion:
-        pass
+    except InvalidSemanticVersion as err:
+        if version != "unreleased":
+            logger.warning(
+                f"'{version}' does not look to comply with SemVer. Trace: {err}"
+            )
 
     return changes.setdefault(version, {"metadata": metadata})
 
 
 def unlink(value: str) -> str:
+    """Remove markdown hyperlink chars (brackets '[' ']') from release version.
+
+    Args:
+        value (str): release version name
+
+    Returns:
+        str: release without brackets
+    """
     return value.lstrip("[").rstrip("]")
 
 
