@@ -135,7 +135,7 @@ def to_sorted_semantic(versions: Iterable[str]) -> list[tuple[str, dict]]:
         [
             (version, to_semantic(version))
             for version in versions
-            if version != "unreleased"
+            if version not in ["unreleased", "header"]
         ],
         key=cmp_to_key(semantic_order),
     )

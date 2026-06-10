@@ -5,6 +5,8 @@ import pytest
 
 import keepachangelog
 
+from tests.conftest import to_dict_ignore_header
+
 
 @pytest.fixture
 def changelog(tmpdir):
@@ -16,7 +18,7 @@ def changelog(tmpdir):
 
 
 def test_changelog_without_versions(changelog):
-    assert keepachangelog.to_dict(changelog) == {}
+    assert to_dict_ignore_header(changelog) == {}
 
 
 def test_raw_changelog_without_versions(changelog):
